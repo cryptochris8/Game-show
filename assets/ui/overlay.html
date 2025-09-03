@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clueboard Game</title>
+    <link rel="stylesheet" href="overlay.css">
+</head>
+<body>
+    <div id="gameContainer">
+        <!-- Game Board -->
+        <div id="board" class="board">
+            <div class="board-header">
+                <h1>CLUEBOARD</h1>
+            </div>
+            <div id="boardGrid" class="board-grid">
+                <!-- Categories and clue cells will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <!-- Clue Modal -->
+        <div id="clueModal" class="modal hidden">
+            <div class="modal-content">
+                <div id="clueCategory" class="clue-category"></div>
+                <div id="clueValue" class="clue-value"></div>
+                <div id="clueText" class="clue-text"></div>
+                
+                <!-- Daily Double Wager -->
+                <div id="wagerSection" class="wager-section hidden">
+                    <h3>DAILY DOUBLE!</h3>
+                    <p>Enter your wager:</p>
+                    <input type="number" id="wagerInput" min="5" max="10000" />
+                    <button id="submitWager" class="btn btn-primary">Submit Wager</button>
+                </div>
+                
+                <!-- Timer and Buzz Section -->
+                <div id="buzzSection" class="buzz-section hidden">
+                    <div id="timer" class="timer">10</div>
+                    <div id="lockoutMsg" class="lockout-msg hidden">LOCKOUT PERIOD</div>
+                    <button id="buzzBtn" class="buzz-btn" disabled>BUZZ!</button>
+                </div>
+                
+                <!-- Answer Section -->
+                <div id="answerSection" class="answer-section hidden">
+                    <input type="text" id="answerInput" placeholder="What is...?" />
+                    <button id="submitAnswer" class="btn btn-primary">Submit Answer</button>
+                </div>
+                
+                <!-- Result Display -->
+                <div id="resultSection" class="result-section hidden">
+                    <div id="resultText" class="result-text"></div>
+                    <div id="correctAnswer" class="correct-answer"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Final Round Modal -->
+        <div id="finalModal" class="modal hidden">
+            <div class="modal-content">
+                <h2>FINAL ROUND</h2>
+                <div id="finalCategory" class="final-category"></div>
+                
+                <!-- Wager Phase -->
+                <div id="finalWagerSection" class="final-wager-section">
+                    <p>Enter your wager (up to your current score or $1000, whichever is higher):</p>
+                    <input type="number" id="finalWagerInput" min="0" />
+                    <button id="submitFinalWager" class="btn btn-primary">Submit Wager</button>
+                </div>
+                
+                <!-- Answer Phase -->
+                <div id="finalAnswerSection" class="final-answer-section hidden">
+                    <div id="finalClueText" class="final-clue-text"></div>
+                    <input type="text" id="finalAnswerInput" placeholder="What is...?" />
+                    <button id="submitFinalAnswer" class="btn btn-primary">Submit Answer</button>
+                </div>
+                
+                <!-- Results Phase -->
+                <div id="finalResultsSection" class="final-results-section hidden">
+                    <div id="finalResults" class="final-results"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Score Panel -->
+        <div id="scorePanel" class="score-panel">
+            <h3>SCORES</h3>
+            <div id="playerScores" class="player-scores">
+                <!-- Player scores will be populated here -->
+            </div>
+        </div>
+
+        <!-- Game Status -->
+        <div id="statusPanel" class="status-panel">
+            <div id="gamePhase" class="game-phase">LOBBY</div>
+            <div id="hostMsg" class="host-msg">Waiting for players to join...</div>
+            <div id="currentPicker" class="current-picker hidden">Current Picker: <span id="pickerName"></span></div>
+        </div>
+
+        <!-- Mobile Controls -->
+        <div id="mobileControls" class="mobile-controls">
+            <button id="mobileBuzzBtn" class="mobile-buzz-btn" disabled>BUZZ!</button>
+        </div>
+    </div>
+
+    <script>
+        // HYTOPIA UI Communication
+        let gameState = null;
+        let playerId = null;
+
+        // Listen for data from server
+        hytopia.onData(data => {
+            console.log('Received data:', data);
+            
+            switch(data.type) {
+                case 'GAME_STATE':
+                    handleGameState(data.payload);
+                    break;
+                case 'CLUE_REVEAL':
+                    handleClueReveal(data.payload);
+                    break;
+                case 'BUZZ_RESULT':
+                    handleBuzzResult(data.payload);
+                    break;
+                case 'ANSWER_RESULT':
+                    handleAnswerResult(data.payload);
+                    break;
+                case 'FINAL_ROUND':
+                    handleFinalRound(data.payload);
+                    break;
+                case 'PLAYER_ID':
+                    playerId = data.payload;
+                    break;
+                default:
+                    console.log('Unknown data type:', data.type);
+            }
+        });
+
+        // Game State Management
+        function handleGameState(state) {
+            gameState = state;
+            updateUI();
+        }
+
+        function updateUI() {
+            if (!gameState) return;
+
+            // Update game phase
+            document.getElementById('gamePhase').textContent = gameState.phase;
+            document.getElementById('hostMsg').textContent = gameState.message || '';
+
+            // Update current picker
+            const pickerEl = document.getElementById('currentPicker');
+            if (gameState.currentPickerId) {
+                const picker = gameState.players.find(p => p.id === gameState.currentPickerId);
+                document.getElementById('pickerName').textContent = picker?.name || 'Unknown';
+                pickerEl.classList.remove('hidden');
+            } else {
+                pickerEl.classList.add('hidden');
+            }
+
+            // Update board
+            updateBoard();
+            
+            // Update scores
+            updateScores();
+        }
+
+        function updateBoard() {
+            if (!gameState.board) return;
+            
+            const boardGrid = document.getElementById('boardGrid');
+            boardGrid.innerHTML = '';
+            
+            // Create category headers
+            const headerRow = document.createElement('div');
+            headerRow.className = 'board-row header-row';
+            gameState.board.categories.forEach(category => {
+                const categoryCell = document.createElement('div');
+                categoryCell.className = 'category-cell';
+                categoryCell.textContent = category.name;
+                headerRow.appendChild(categoryCell);
+            });
+            boardGrid.appendChild(headerRow);
+            
+            // Create clue rows
+            for (let row = 0; row < 5; row++) {
+                const clueRow = document.createElement('div');
+                clueRow.className = 'board-row';
+                
+                for (let col = 0; col < 6; col++) {
+                    const clueCell = document.createElement('div');
+                    clueCell.className = 'clue-cell';
+                    
+                    const cellKey = `${col}-${row}`;
+                    const clue = gameState.board.categories[col].clues[row];
+                    
+                    if (gameState.usedCells.includes(cellKey)) {
+                        clueCell.classList.add('used');
+                        clueCell.textContent = '';
+                    } else {
+                        clueCell.textContent = `$${clue.value}`;
+                        clueCell.addEventListener('click', () => selectCell(col, row));
+                        
+                        // Check if this is a daily double
+                        const isDailyDouble = gameState.board.dailyDoubles?.some(dd => 
+                            dd.category === col && dd.index === row
+                        );
+                        if (isDailyDouble) {
+                            clueCell.classList.add('daily-double');
+                        }
+                    }
+                    
+                    clueRow.appendChild(clueCell);
+                }
+                boardGrid.appendChild(clueRow);
+            }
+        }
+
+        function updateScores() {
+            const scoresContainer = document.getElementById('playerScores');
+            scoresContainer.innerHTML = '';
+            
+            if (gameState.players) {
+                gameState.players.forEach(player => {
+                    const playerScore = document.createElement('div');
+                    playerScore.className = 'player-score';
+                    if (player.id === gameState.currentPickerId) {
+                        playerScore.classList.add('current-picker');
+                    }
+                    
+                    playerScore.innerHTML = `
+                        <div class="player-name">${player.name}</div>
+                        <div class="player-score-value">$${player.score || 0}</div>
+                    `;
+                    scoresContainer.appendChild(playerScore);
+                });
+            }
+        }
+
+        // Game Actions
+        function selectCell(category, index) {
+            // Only allow current picker or host to select cells
+            if (gameState.currentPickerId && gameState.currentPickerId !== playerId) {
+                return;
+            }
+            
+            hytopia.sendData({
+                type: 'SELECT_CELL',
+                payload: { category, index }
+            });
+        }
+
+        function handleClueReveal(clue) {
+            const modal = document.getElementById('clueModal');
+            document.getElementById('clueCategory').textContent = clue.category;
+            document.getElementById('clueValue').textContent = `$${clue.value}`;
+            document.getElementById('clueText').textContent = clue.text;
+            
+            // Show appropriate sections based on clue type
+            if (clue.isDailyDouble && clue.pickerId === playerId) {
+                showWagerSection(clue.maxWager);
+            } else {
+                showBuzzSection();
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        function showWagerSection(maxWager) {
+            document.getElementById('wagerInput').max = maxWager;
+            document.getElementById('wagerSection').classList.remove('hidden');
+            document.getElementById('buzzSection').classList.add('hidden');
+            document.getElementById('answerSection').classList.add('hidden');
+        }
+
+        function showBuzzSection() {
+            document.getElementById('wagerSection').classList.add('hidden');
+            document.getElementById('buzzSection').classList.remove('hidden');
+            document.getElementById('answerSection').classList.add('hidden');
+            
+            // Start timer display
+            startTimer();
+        }
+
+        function showAnswerSection() {
+            document.getElementById('buzzSection').classList.add('hidden');
+            document.getElementById('answerSection').classList.remove('hidden');
+            document.getElementById('answerInput').focus();
+        }
+
+        function startTimer() {
+            let timeLeft = 10;
+            const timerEl = document.getElementById('timer');
+            const buzzBtn = document.getElementById('buzzBtn');
+            const mobileBuzzBtn = document.getElementById('mobileBuzzBtn');
+            
+            // Show lockout initially
+            document.getElementById('lockoutMsg').classList.remove('hidden');
+            buzzBtn.disabled = true;
+            mobileBuzzBtn.disabled = true;
+            
+            // Remove lockout after 300ms
+            setTimeout(() => {
+                document.getElementById('lockoutMsg').classList.add('hidden');
+                buzzBtn.disabled = false;
+                mobileBuzzBtn.disabled = false;
+            }, 300);
+            
+            const interval = setInterval(() => {
+                timeLeft--;
+                timerEl.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    buzzBtn.disabled = true;
+                    mobileBuzzBtn.disabled = true;
+                }
+            }, 1000);
+        }
+
+        // Event Listeners
+        document.getElementById('buzzBtn').addEventListener('click', buzz);
+        document.getElementById('mobileBuzzBtn').addEventListener('click', buzz);
+        
+        document.getElementById('submitWager').addEventListener('click', () => {
+            const wager = parseInt(document.getElementById('wagerInput').value);
+            hytopia.sendData({
+                type: 'DAILY_DOUBLE_WAGER',
+                payload: { wager }
+            });
+        });
+        
+        document.getElementById('submitAnswer').addEventListener('click', () => {
+            const answer = document.getElementById('answerInput').value;
+            hytopia.sendData({
+                type: 'ANSWER_SUBMIT',
+                payload: { answer }
+            });
+        });
+        
+        document.getElementById('answerInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('submitAnswer').click();
+            }
+        });
+
+        function buzz() {
+            hytopia.sendData({
+                type: 'BUZZ',
+                payload: { timestamp: Date.now() }
+            });
+        }
+
+        function handleBuzzResult(result) {
+            if (result.winnerId === playerId) {
+                showAnswerSection();
+            }
+        }
+
+        function handleAnswerResult(result) {
+            const resultSection = document.getElementById('resultSection');
+            const resultText = document.getElementById('resultText');
+            const correctAnswer = document.getElementById('correctAnswer');
+            
+            resultText.textContent = result.correct ? 'CORRECT!' : 'INCORRECT';
+            resultText.className = `result-text ${result.correct ? 'correct' : 'incorrect'}`;
+            
+            if (!result.correct) {
+                correctAnswer.textContent = `Correct answer: ${result.correctAnswer}`;
+                correctAnswer.classList.remove('hidden');
+            } else {
+                correctAnswer.classList.add('hidden');
+            }
+            
+            resultSection.classList.remove('hidden');
+            
+            // Hide modal after showing result
+            setTimeout(() => {
+                document.getElementById('clueModal').classList.add('hidden');
+                resetModalSections();
+            }, 3000);
+        }
+
+        function resetModalSections() {
+            document.getElementById('wagerSection').classList.add('hidden');
+            document.getElementById('buzzSection').classList.add('hidden');
+            document.getElementById('answerSection').classList.add('hidden');
+            document.getElementById('resultSection').classList.add('hidden');
+            document.getElementById('answerInput').value = '';
+        }
+
+        function handleFinalRound(data) {
+            const modal = document.getElementById('finalModal');
+            document.getElementById('finalCategory').textContent = data.category;
+            
+            if (data.phase === 'wager') {
+                document.getElementById('finalWagerInput').max = data.maxWager;
+                document.getElementById('finalWagerSection').classList.remove('hidden');
+                document.getElementById('finalAnswerSection').classList.add('hidden');
+                document.getElementById('finalResultsSection').classList.add('hidden');
+            } else if (data.phase === 'answer') {
+                document.getElementById('finalClueText').textContent = data.clue;
+                document.getElementById('finalWagerSection').classList.add('hidden');
+                document.getElementById('finalAnswerSection').classList.remove('hidden');
+                document.getElementById('finalResultsSection').classList.add('hidden');
+            } else if (data.phase === 'results') {
+                document.getElementById('finalResults').innerHTML = data.results;
+                document.getElementById('finalWagerSection').classList.add('hidden');
+                document.getElementById('finalAnswerSection').classList.add('hidden');
+                document.getElementById('finalResultsSection').classList.remove('hidden');
+            }
+            
+            modal.classList.remove('hidden');
+        }
+
+        // Final Round Event Listeners
+        document.getElementById('submitFinalWager').addEventListener('click', () => {
+            const wager = parseInt(document.getElementById('finalWagerInput').value);
+            hytopia.sendData({
+                type: 'FINAL_WAGER',
+                payload: { wager }
+            });
+        });
+        
+        document.getElementById('submitFinalAnswer').addEventListener('click', () => {
+            const answer = document.getElementById('finalAnswerInput').value;
+            hytopia.sendData({
+                type: 'FINAL_ANSWER',
+                payload: { answer }
+            });
+        });
+        
+        document.getElementById('finalAnswerInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                document.getElementById('submitFinalAnswer').click();
+            }
+        });
+
+        // Mobile detection and responsive handling
+        function isMobile() {
+            return window.innerWidth <= 768;
+        }
+
+        function updateMobileLayout() {
+            const gameContainer = document.getElementById('gameContainer');
+            if (isMobile()) {
+                gameContainer.classList.add('mobile-layout');
+            } else {
+                gameContainer.classList.remove('mobile-layout');
+            }
+        }
+
+        window.addEventListener('resize', updateMobileLayout);
+        updateMobileLayout();
+    </script>
+</body>
+</html>

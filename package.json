@@ -1,0 +1,27 @@
+{
+  "name": "clueboard-trivia",
+  "version": "1.0.0",
+  "description": "Jeopardy-style multiplayer trivia game for HYTOPIA",
+  "main": "index.js",
+  "scripts": {
+    "dev": "hytopia start",
+    "build": "hytopia build",
+    "start": "hytopia start",
+    "package": "hytopia package",
+    "test": "echo \"Run 'npm run dev' to start the development server\"",
+    "install:clean": "rm -rf node_modules package-lock.json && npm install",
+    "verify": "node verify-setup.js"
+  },
+  "keywords": [],
+  "author": "HYTOPIA Game Developer",
+  "license": "MIT",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
+  "dependencies": {
+    "@hytopia.com/assets": "^0.3.20",
+    "hytopia": "^0.10.13"
+  }
+}

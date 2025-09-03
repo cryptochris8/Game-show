@@ -1,0 +1,68 @@
+{
+  "packId": "demo-clueboard-001",
+  "title": "General Knowledge Demo Pack",
+  "categories": [
+    {
+      "name": "SPORTS",
+      "clues": [
+        { "value": 100, "clue": "This sport uses a dimpled ball and 18-hole courses.", "answer": "What is golf?" },
+        { "value": 200, "clue": "In soccer, this player can use their hands inside the penalty area.", "answer": "Who is the goalkeeper?" },
+        { "value": 300, "clue": "The NBA team from Chicago is called this.", "answer": "What are the Bulls?" },
+        { "value": 400, "clue": "This tennis event is played on grass courts in London.", "answer": "What is Wimbledon?" },
+        { "value": 500, "clue": "He has the most men's Grand Slam singles titles as of 2025.", "answer": "Who is Novak Djokovic?" }
+      ]
+    },
+    {
+      "name": "SCIENCE",
+      "clues": [
+        { "value": 100, "clue": "H2O is better known as this.", "answer": "What is water?" },
+        { "value": 200, "clue": "This planet is known as the Red Planet.", "answer": "What is Mars?" },
+        { "value": 300, "clue": "The speed of light is approximately 3.0 × 10^8 in these units.", "answer": "What are meters per second?" },
+        { "value": 400, "clue": "DNA stands for deoxyribonucleic this.", "answer": "What is acid?" },
+        { "value": 500, "clue": "This scientist proposed the laws of motion and universal gravitation.", "answer": "Who is Isaac Newton?" }
+      ]
+    },
+    {
+      "name": "MOVIES",
+      "clues": [
+        { "value": 100, "clue": "This galaxy far, far away franchise features Jedi and Sith.", "answer": "What is Star Wars?" },
+        { "value": 200, "clue": "He directed 'Jurassic Park' and 'E.T.'.", "answer": "Who is Steven Spielberg?" },
+        { "value": 300, "clue": "This 1997 ship-sinking epic starred Leonardo DiCaprio and Kate Winslet.", "answer": "What is Titanic?" },
+        { "value": 400, "clue": "The Marvel hero also known as T'Challa is this feline monarch.", "answer": "Who is Black Panther?" },
+        { "value": 500, "clue": "This director is known for mind-bending films like 'Inception' and 'Tenet'.", "answer": "Who is Christopher Nolan?" }
+      ]
+    },
+    {
+      "name": "GEOGRAPHY",
+      "clues": [
+        { "value": 100, "clue": "This is the largest country in the world by area.", "answer": "What is Russia?" },
+        { "value": 200, "clue": "The Nile River flows primarily through this continent.", "answer": "What is Africa?" },
+        { "value": 300, "clue": "This U.S. state is known as the Sunshine State.", "answer": "What is Florida?" },
+        { "value": 400, "clue": "Mount Everest sits on the border of Nepal and this country.", "answer": "What is China?" },
+        { "value": 500, "clue": "This desert in northern Africa is the world's largest hot desert.", "answer": "What is the Sahara?" }
+      ]
+    },
+    {
+      "name": "HISTORY",
+      "clues": [
+        { "value": 100, "clue": "He was the first President of the United States.", "answer": "Who is George Washington?" },
+        { "value": 200, "clue": "This wall dividing Berlin fell in 1989.", "answer": "What is the Berlin Wall?" },
+        { "value": 300, "clue": "This U.S. document begins with 'We the People'.", "answer": "What is the Constitution?" },
+        { "value": 400, "clue": "The Renaissance began on this European peninsula.", "answer": "What is the Italian Peninsula?" },
+        { "value": 500, "clue": "This empire was ruled by Genghis Khan and later Kublai Khan.", "answer": "What is the Mongol Empire?" }
+      ]
+    },
+    {
+      "name": "POP CULTURE",
+      "clues": [
+        { "value": 100, "clue": "This social app is known for short-form videos and viral dances.", "answer": "What is TikTok?" },
+        { "value": 200, "clue": "This streaming platform's 'Stranger Things' became a cultural phenomenon.", "answer": "What is Netflix?" },
+        { "value": 300, "clue": "BTS is a mega-popular group from this country.", "answer": "What is South Korea?" },
+        { "value": 400, "clue": "He's the entrepreneur behind SpaceX and Tesla.", "answer": "Who is Elon Musk?" },
+        { "value": 500, "clue": "This phrase describes fans hunting for references across a connected film universe.", "answer": "What are Easter eggs?" }
+      ]
+    }
+  ],
+  "dailyDoubles": [ { "category": 1, "index": 3 }, { "category": 4, "index": 2 } ],
+  "finalRound": { "category": "WORLD FLAGS", "clue": "This country's flag features a red maple leaf.", "answer": "What is Canada?" }
+}
