@@ -1,7 +1,8 @@
 // RoundManager - Manages game rounds, Daily Doubles, and Final Round for Clueboard
 // Handles board state, clue selection, and round progression
 
-import { GamePhase, ClueData, CategoryData, DailyDoubleData, BoardData, CurrentClueData } from '../net/Events';
+import { GamePhase } from '../net/Events';
+import type { ClueData, CategoryData, DailyDoubleData, BoardData, CurrentClueData } from '../net/Events';
 import { logger } from '../util/Logger';
 
 export interface RoundState {

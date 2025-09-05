@@ -239,10 +239,10 @@ export class AnswerNormalizer {
     /**
      * Remove leading articles (a, an, the)
      */
-    private static removeLeadingArticles(text: string): string {
+        private static removeLeadingArticles(text: string): string {
         const words = text.split(' ');
 
-        if (words.length > 1 && NORMALIZATION_CONSTANTS.ARTICLES.includes(words[0])) {
+        if (words.length > 1 && NORMALIZATION_CONSTANTS.ARTICLES.includes(words[0] as any)) {
             return words.slice(1).join(' ');
         }
 

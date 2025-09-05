@@ -168,7 +168,7 @@ export class PersistenceManager_Clueboard {
             const leaderboardKey = `leaderboard:${type}`;
             const data = await PersistenceManager.instance.getGlobalData(leaderboardKey);
             
-            const entries: LeaderboardEntry[] = data?.entries || [];
+            const entries: LeaderboardEntry[] = Array.isArray(data?.entries) ? data.entries : [];
             
             // Sort and apply ranking
             const sorted = entries
@@ -225,7 +225,7 @@ export class PersistenceManager_Clueboard {
         const leaderboardKey = `leaderboard:${type}`;
         const data = await PersistenceManager.instance.getGlobalData(leaderboardKey);
         
-        let entries: LeaderboardEntry[] = data?.entries || [];
+        let entries: LeaderboardEntry[] = Array.isArray(data?.entries) ? data.entries : [];
         
         // Remove existing entry for this player
         entries = entries.filter(entry => entry.playerId !== player.id);

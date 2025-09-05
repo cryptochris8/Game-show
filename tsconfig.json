@@ -4,9 +4,12 @@
       "ESNext"
     ],
     "target": "ESNext",
-    "module": "Preserve",
+    "module": "CommonJS",
     "moduleResolution": "node",
-    "verbatimModuleSyntax": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "verbatimModuleSyntax": false,
     "strict": true,
     "skipLibCheck": true
   }

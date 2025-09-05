@@ -31,7 +31,7 @@ export interface LogEntry {
 
 export class Logger {
   private static instance: Logger;
-  private logLevel: LogLevel;
+  protected logLevel: LogLevel;
   private colors: Record<LogLevel, string> = {
     [LogLevel.DEBUG]: '\x1b[36m', // Cyan
     [LogLevel.INFO]: '\x1b[32m',  // Green
@@ -45,7 +45,7 @@ export class Logger {
     [LogLevel.ERROR]: 'ERROR'
   };
 
-  private constructor() {
+  constructor() {
     this.logLevel = this.getLogLevelFromConfig();
   }
 

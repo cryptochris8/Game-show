@@ -2,8 +2,9 @@
 // Integrates with HYTOPIA player persistence and manages game scoring
 
 import { Player } from 'hytopia';
-import { PlayerData, GameStateData } from '../net/Events';
-import { PersistenceManager_Clueboard, GameSession, PlayerStats } from '../util/Persistence';
+import type { PlayerData, GameStateData } from '../net/Events';
+import { PersistenceManager_Clueboard } from '../util/Persistence';
+import type { GameSession, PlayerStats } from '../util/Persistence';
 
 export interface ScoreChangeEvent {
     playerId: string;

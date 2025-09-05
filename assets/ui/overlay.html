@@ -4,10 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clueboard Game</title>
-    <link rel="stylesheet" href="overlay.css">
+    <link rel="stylesheet" href="overlay.css?v=2">
 </head>
 <body>
-    <div id="gameContainer">
+    <!-- Landing Page -->
+    <div id="landingPage" class="landing-page" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(180deg, #0a0e27 0%, #1a1a2e 50%, #16213e 100%); z-index: 1000;">
+        <div class="landing-content">
+            <div class="landing-header">
+                <h1>🎯 CLUEBOARD</h1>
+                <p class="tagline">The Ultimate Trivia Experience</p>
+            </div>
+
+            <div class="game-modes">
+                <div class="mode-card" id="singlePlayerCard">
+                    <div class="mode-icon">🤖</div>
+                    <h2>Single Player</h2>
+                    <p>Challenge yourself against AI opponents</p>
+                    <div class="ai-selector">
+                        <label>Number of AI Opponents:</label>
+                        <div class="ai-buttons">
+                            <button class="ai-btn" data-count="1">1</button>
+                            <button class="ai-btn" data-count="2">2</button>
+                            <button class="ai-btn active" data-count="3">3</button>
+                            <button class="ai-btn" data-count="4">4</button>
+                            <button class="ai-btn" data-count="5">5</button>
+                        </div>
+                    </div>
+                    <button class="btn btn-success mode-btn" id="singlePlayerBtn">
+                        🎮 Start Single Player Game
+                    </button>
+                </div>
+
+                <div class="mode-card" id="multiplayerCard">
+                    <div class="mode-icon">👥</div>
+                    <h2>Multiplayer</h2>
+                    <p>Play with friends online</p>
+                    <div class="multiplayer-info">
+                        <div class="player-count">Waiting for players...</div>
+                        <div class="requirements">Requires 2-6 players</div>
+                    </div>
+                    <button class="btn btn-primary mode-btn" id="multiplayerBtn">
+                        👥 Enter Multiplayer Lobby
+                    </button>
+                </div>
+            </div>
+
+            <div class="landing-footer">
+                <div class="features">
+                    <span>🎭 AI Personalities</span>
+                    <span>🏆 Daily Doubles</span>
+                    <span>🎪 Final Round</span>
+                    <span>⚡ Real-time Buzzing</span>
+                </div>
+                <div class="instructions">
+                    Choose your game mode above to begin!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="gameContainer" class="hidden">
         <!-- Game Board -->
         <div id="board" class="board">
             <div class="board-header">
@@ -94,6 +150,22 @@
             <div id="gamePhase" class="game-phase">LOBBY</div>
             <div id="hostMsg" class="host-msg">Waiting for players to join...</div>
             <div id="currentPicker" class="current-picker hidden">Current Picker: <span id="pickerName"></span></div>
+
+            <!-- Single Player Mode Selector -->
+            <div id="singlePlayerPanel" class="single-player-panel">
+                <h3>🎮 Single Player Mode</h3>
+                <div class="mode-selector">
+                    <button id="singlePlayerBtn" class="btn btn-success single-player-btn">
+                        🤖 Play vs AI (3 opponents)
+                    </button>
+                    <div class="ai-options">
+                        <button id="aiOption1" class="btn btn-outline ai-option" data-count="1">1 AI</button>
+                        <button id="aiOption3" class="btn btn-outline ai-option active" data-count="3">3 AI</button>
+                        <button id="aiOption5" class="btn btn-outline ai-option" data-count="5">5 AI</button>
+                    </div>
+                </div>
+                <div id="singlePlayerStatus" class="single-player-status"></div>
+            </div>
         </div>
 
         <!-- Mobile Controls -->
@@ -104,7 +176,19 @@
 
     <script>
         // HYTOPIA UI Communication
-        let gameState = null;
+        let gameState = {
+            phase: 'LOBBY',
+            players: [],
+            board: null,
+            usedCells: [],
+            currentPickerId: null,
+            currentClue: null,
+            lockoutUntil: 0,
+            buzzWindowEnd: 0,
+            message: 'Waiting for players to join...',
+            round: 1,
+            timeRemaining: 0
+        };
         let playerId = null;
 
         // Listen for data from server
@@ -148,9 +232,26 @@
             document.getElementById('gamePhase').textContent = gameState.phase;
             document.getElementById('hostMsg').textContent = gameState.message || '';
 
+            // Handle landing page vs game container visibility
+            const landingPage = document.getElementById('landingPage');
+            const gameContainer = document.getElementById('gameContainer');
+            const humanPlayers = (gameState.players || []).filter(p => !p.id.startsWith('ai_'));
+
+            if (gameState.phase === 'LOBBY' && humanPlayers.length <= 1) {
+                // Show landing page when in lobby with 0-1 human players
+                if (landingPage.classList.contains('hidden')) {
+                    showLandingPage();
+                }
+            } else {
+                // Show game container when game is active or multiple players
+                if (gameContainer.classList.contains('hidden')) {
+                    showGameContainer();
+                }
+            }
+
             // Update current picker
             const pickerEl = document.getElementById('currentPicker');
-            if (gameState.currentPickerId) {
+            if (gameState.currentPickerId && gameState.players) {
                 const picker = gameState.players.find(p => p.id === gameState.currentPickerId);
                 document.getElementById('pickerName').textContent = picker?.name || 'Unknown';
                 pickerEl.classList.remove('hidden');
@@ -321,6 +422,84 @@
         // Event Listeners
         document.getElementById('buzzBtn').addEventListener('click', buzz);
         document.getElementById('mobileBuzzBtn').addEventListener('click', buzz);
+
+        // Landing Page Event Listeners
+        let selectedAICount = 3;
+        const landingPage = document.getElementById('landingPage');
+        const gameContainer = document.getElementById('gameContainer');
+
+        // AI opponent count selection
+        const aiBtns = document.querySelectorAll('.ai-btn');
+        aiBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                // Remove active class from all buttons
+                aiBtns.forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                btn.classList.add('active');
+                selectedAICount = parseInt(btn.dataset.count);
+            });
+        });
+
+        // Single Player Mode Button
+        const singlePlayerBtn = document.getElementById('singlePlayerBtn');
+        singlePlayerBtn.addEventListener('click', () => {
+            // Show loading state
+            singlePlayerBtn.disabled = true;
+            singlePlayerBtn.textContent = '⏳ Starting Single Player Game...';
+
+            // Send single player mode activation to server
+            hytopia.sendData({
+                type: 'SINGLE_PLAYER_ACTIVATE',
+                payload: {
+                    aiCount: selectedAICount
+                }
+            });
+
+            // Transition to game after a short delay
+            setTimeout(() => {
+                showGameContainer();
+            }, 1500);
+        });
+
+        // Multiplayer Mode Button
+        const multiplayerBtn = document.getElementById('multiplayerBtn');
+        multiplayerBtn.addEventListener('click', () => {
+            // Show loading state
+            multiplayerBtn.disabled = true;
+            multiplayerBtn.textContent = '⏳ Entering Multiplayer Lobby...';
+
+            // For multiplayer, we just show the game container
+            // The server will handle player management
+            setTimeout(() => {
+                showGameContainer();
+            }, 1000);
+        });
+
+        function showGameContainer() {
+            // Hide landing page with animation
+            landingPage.style.animation = 'fadeOut 0.5s ease-out';
+            setTimeout(() => {
+                landingPage.classList.add('hidden');
+                gameContainer.classList.remove('hidden');
+                gameContainer.style.animation = 'fadeIn 0.5s ease-in';
+            }, 500);
+        }
+
+        function showLandingPage() {
+            // Hide game container and show landing page
+            gameContainer.classList.add('hidden');
+            landingPage.classList.remove('hidden');
+            landingPage.style.animation = 'fadeIn 0.5s ease-in';
+
+            // Reset button states
+            singlePlayerBtn.disabled = false;
+            singlePlayerBtn.textContent = '🎮 Start Single Player Game';
+            multiplayerBtn.disabled = false;
+            multiplayerBtn.textContent = '👥 Enter Multiplayer Lobby';
+        }
+
+        // Legacy single player panel references (can be removed if not needed)
+        // These are kept for backwards compatibility in case they're referenced elsewhere
         
         document.getElementById('submitWager').addEventListener('click', () => {
             const wager = parseInt(document.getElementById('wagerInput').value);
@@ -452,6 +631,9 @@
 
         window.addEventListener('resize', updateMobileLayout);
         updateMobileLayout();
+
+        // Initialize UI with default state
+        updateUI();
     </script>
 </body>
 </html>

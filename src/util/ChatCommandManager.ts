@@ -162,14 +162,24 @@ export class ChatCommandManager {
    */
   public sendHelpMessage(player: Player, world: World): void {
     const helpText = this.getHelpText();
-    world.chatManager.sendPlayerMessage(player, helpText, '#4A90E2');
+    try {
+      world.chatManager.sendPlayerMessage(player, helpText, '4A90E2');
+    } catch (error) {
+      // Fallback without color if there's an issue
+      world.chatManager.sendPlayerMessage(player, helpText);
+    }
   }
 
   /**
    * Send error message to player
    */
   private sendErrorMessage(player: Player, world: World, message: string): void {
-    world.chatManager.sendPlayerMessage(player, `❌ ${message}`, '#FF6B6B');
+    try {
+      world.chatManager.sendPlayerMessage(player, `❌ ${message}`, 'FF6B6B');
+    } catch (error) {
+      // Fallback without color if there's an issue
+      world.chatManager.sendPlayerMessage(player, `❌ ${message}`);
+    }
   }
 
   /**

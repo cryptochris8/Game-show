@@ -68,7 +68,7 @@ export interface PlayerData {
 export interface GameStateData {
     phase: GamePhase;
     board: BoardData | null;
-    usedCells: string[]; // Format: "category-index" 
+    usedCells: string[]; // Format: "category-index"
     players: PlayerData[];
     currentPickerId: string | null;
     currentClue: CurrentClueData | null;
@@ -77,6 +77,7 @@ export interface GameStateData {
     message: string;
     round: number;
     timeRemaining: number;
+    playerId?: string; // Current player's ID for client identification
 }
 
 export interface CurrentClueData {

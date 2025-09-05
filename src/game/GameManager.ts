@@ -2,33 +2,40 @@
 // Coordinates all systems and manages game flow using HYTOPIA SDK
 
 import { Player, PlayerManager, World, PlayerUIEvent } from 'hytopia';
-import { 
-    ClueboardEvent, 
-    GamePhase, 
-    GameStateData, 
-    PlayerData,
+import {
+    ClueboardEvent,
+    GamePhase,
     createServerEvent,
+    MIN_PLAYERS,
+    MAX_PLAYERS
+} from '../net/Events';
+import type {
+    GameStateData,
+    PlayerData,
     SelectCellPayload,
     BuzzPayload,
     AnswerSubmitPayload,
     DailyDoubleWagerPayload,
     FinalWagerPayload,
     FinalAnswerPayload,
-    MIN_PLAYERS,
-    MAX_PLAYERS,
     EventData
 } from '../net/Events';
 import BuzzManager from './BuzzManager';
 import ScoreManager from './ScoreManager';
 import RoundManager from './RoundManager';
-import PackLoader, { LoadResult } from './PackLoader';
+import PackLoader from './PackLoader';
+import type { LoadResult } from './PackLoader';
 import { AnswerNormalizer } from './Normalize';
+import { logger } from '../util/Logger';
+import AIPlayer, { AI_PERSONALITIES, AIPersonality, AIGameActions } from './AIPlayer';
 
 export interface GameConfig {
     packName?: string;
     hostPlayerId?: string;
     autoStart: boolean;
     autoHostDelay: number; // ms to wait before auto-hosting
+    singlePlayerMode?: boolean;
+    aiPlayersCount?: number;
 }
 
 export interface FinalRoundState {
@@ -45,8 +52,10 @@ export class GameManager {
     private world: World;
     private gamePhase: GamePhase = GamePhase.LOBBY;
     private players: Map<string, Player> = new Map();
+    private aiPlayers: Map<string, AIPlayer> = new Map();
     private hostPlayerId: string | null = null;
     private currentPickerId: string | null = null;
+    private gameStateUpdateTimer: NodeJS.Timeout | null = null;
     
     private scoreManager: ScoreManager;
     private buzzManager: BuzzManager;
@@ -67,13 +76,61 @@ export class GameManager {
             packName: 'trivia_pack',
             autoStart: true,
             autoHostDelay: 10000,
+            singlePlayerMode: false,
+            aiPlayersCount: 3,
             ...config
         };
-        
+
         this.scoreManager = new ScoreManager();
         this.buzzManager = new BuzzManager();
-        
+
+        // Initialize AI players if in single player mode
+        if (this.gameConfig.singlePlayerMode) {
+            this.initializeAIPlayers();
+        }
+
         this.setupEventHandlers();
+    }
+
+    /**
+     * Initialize AI players for single player mode
+     */
+    private initializeAIPlayers(): void {
+        const aiCount = Math.min(this.gameConfig.aiPlayersCount || 3, 5); // Max 5 AI players
+        const shuffledPersonalities = [...AI_PERSONALITIES].sort(() => Math.random() - 0.5);
+
+        // Create game actions for AI players
+        const gameActions: AIGameActions = {
+            selectCell: (categoryIndex: number, clueIndex: number, playerId: string) => {
+                this.handleAISelCell(categoryIndex, clueIndex, playerId);
+            },
+            buzz: (playerId: string) => {
+                this.handleAIBuzz(playerId);
+            },
+            submitAnswer: (answer: string, playerId: string) => {
+                this.handleAISubmitAnswer(answer, playerId);
+            },
+            submitWager: (wager: number, playerId: string) => {
+                this.handleAISubmitWager(wager, playerId);
+            }
+        };
+
+        for (let i = 0; i < aiCount; i++) {
+            const personality = shuffledPersonalities[i % shuffledPersonalities.length];
+            const aiPlayer = new AIPlayer(this.world, personality, gameActions);
+
+            this.aiPlayers.set(aiPlayer.id, aiPlayer);
+
+            logger.info(`AI Player initialized: ${aiPlayer.username}`, {
+                component: 'GameManager',
+                aiPlayerId: aiPlayer.id,
+                difficulty: personality.difficulty
+            });
+        }
+
+        logger.info(`Initialized ${aiCount} AI players for single player mode`, {
+            component: 'GameManager'
+        });
     }
 
     /**
@@ -82,8 +139,8 @@ export class GameManager {
     private setupEventHandlers(): void {
         // Handle players joining
         this.world.on('playerJoined', this.handlePlayerJoined.bind(this));
-        
-        // Handle players leaving  
+
+        // Handle players leaving
         this.world.on('playerLeft', this.handlePlayerLeft.bind(this));
     }
 
@@ -103,9 +160,21 @@ export class GameManager {
         player.ui.load('ui/overlay.html');
         
         // Send player their ID for client-side identification
-        player.ui.sendData(createServerEvent(ClueboardEvent.GAME_STATE, { 
-            type: 'PLAYER_ID', 
-            payload: player.id 
+        player.ui.sendData(createServerEvent(ClueboardEvent.GAME_STATE, {
+            gameState: {
+                phase: this.gamePhase,
+                board: null,
+                usedCells: [],
+                players: [],
+                currentPickerId: null,
+                currentClue: null,
+                lockoutUntil: 0,
+                buzzWindowEnd: 0,
+                message: 'Welcome to Clueboard!',
+                round: 1,
+                timeRemaining: 0,
+                playerId: player.id // Add player ID to game state
+            }
         }));
         
         // Setup UI event handling for this player
@@ -187,12 +256,59 @@ export class GameManager {
                 case ClueboardEvent.FINAL_ANSWER:
                     await this.handleFinalAnswer(player, data.payload as FinalAnswerPayload);
                     break;
-                    
+
+                case 'SINGLE_PLAYER_ACTIVATE':
+                    await this.handleSinglePlayerActivate(player, data.payload);
+                    break;
+
                 default:
                     console.warn(`Unknown event type: ${data.type}`);
             }
         } catch (error) {
             console.error(`Error handling ${data.type} from ${player.username}:`, error);
+        }
+    }
+
+    /**
+     * Handle single player mode activation
+     */
+    private async handleSinglePlayerActivate(player: Player, payload: { aiCount: number }): Promise<void> {
+        const aiCount = Math.max(1, Math.min(5, payload.aiCount || 3)); // Ensure valid range
+
+        logger.info(`Player ${player.username} activating single player mode with ${aiCount} AI opponents`, {
+            component: 'GameManager',
+            playerId: player.id,
+            aiCount
+        });
+
+        // Update game configuration for single player mode
+        this.gameConfig.singlePlayerMode = true;
+        this.gameConfig.aiPlayersCount = aiCount;
+
+        // Initialize AI players if not already done
+        if (this.aiPlayers.size === 0) {
+            this.initializeAIPlayers();
+        }
+
+        // Send confirmation to player
+        this.sendPlayerMessage(player, `🎮 Single player mode activated! Starting game with ${aiCount} AI opponents...`, '#00FF00');
+
+        // Start the game immediately
+        try {
+            await this.startGame();
+            logger.info('Single player game started successfully', {
+                component: 'GameManager',
+                playerId: player.id,
+                aiCount,
+                totalPlayers: this.players.size + this.aiPlayers.size
+            });
+        } catch (error) {
+            logger.error('Failed to start single player game', error as Error, {
+                component: 'GameManager',
+                playerId: player.id,
+                aiCount
+            });
+            this.sendPlayerMessage(player, '❌ Failed to start single player game. Please try again.', '#FF6B6B');
         }
     }
 
@@ -204,8 +320,9 @@ export class GameManager {
             console.warn('Cannot start game - not in lobby phase');
             return;
         }
-        
-        if (this.players.size < MIN_PLAYERS) {
+
+        const totalPlayers = this.players.size + this.aiPlayers.size;
+        if (totalPlayers < MIN_PLAYERS) {
             console.warn(`Cannot start game - need at least ${MIN_PLAYERS} players`);
             return;
         }
@@ -233,8 +350,186 @@ export class GameManager {
         
         await this.broadcastGameState();
         this.broadcastMessage('Game started! Round 1 begins now.');
-        
+
+        // Start AI player update loop if in single player mode
+        if (this.gameConfig.singlePlayerMode && this.aiPlayers.size > 0) {
+            this.startAIUpdateLoop();
+        }
+
         console.log('Game started successfully');
+    }
+
+    /**
+     * Start AI player update loop
+     */
+    private startAIUpdateLoop(): void {
+        // Clear any existing timer
+        if (this.gameStateUpdateTimer) {
+            clearInterval(this.gameStateUpdateTimer);
+        }
+
+        // Update AI players every 2 seconds with current game state
+        this.gameStateUpdateTimer = setInterval(async () => {
+            try {
+                if (this.gamePhase !== GamePhase.LOBBY && this.gamePhase !== GamePhase.RESULTS) {
+                    // Get current game state
+                    const currentGameState = await this.getCurrentGameStateForAI();
+
+                    // Update all AI players
+                    for (const aiPlayer of this.aiPlayers.values()) {
+                        try {
+                            aiPlayer.updateGameState(currentGameState);
+                        } catch (error) {
+                            logger.error('Error updating AI player', error as Error, {
+                                component: 'GameManager',
+                                aiPlayerId: aiPlayer.id
+                            });
+                        }
+                    }
+                }
+            } catch (error) {
+                logger.error('Error in AI update loop', error as Error, {
+                    component: 'GameManager'
+                });
+            }
+        }, 2000); // Update every 2 seconds
+
+        logger.info('AI player update loop started', {
+            component: 'GameManager',
+            aiPlayerCount: this.aiPlayers.size,
+            updateInterval: 2000
+        });
+    }
+
+    /**
+     * Get current game state for AI decision making
+     */
+    private async getCurrentGameStateForAI(): Promise<GameStateData> {
+        return {
+            phase: this.gamePhase,
+            board: this.roundManager?.getCurrentBoard() || null,
+            usedCells: this.roundManager?.getUsedCells() || [],
+            players: [], // AI doesn't need full player list
+            currentPickerId: this.currentPickerId,
+            currentClue: this.roundManager?.getCurrentClue() || null,
+            lockoutUntil: 0, // AI handles timing internally
+            buzzWindowEnd: 0, // AI handles timing internally
+            message: '',
+            round: this.roundManager?.getCurrentRound() || 1,
+            timeRemaining: 0
+        };
+    }
+
+    /**
+     * Stop AI update loop
+     */
+    private stopAIUpdateLoop(): void {
+        if (this.gameStateUpdateTimer) {
+            clearInterval(this.gameStateUpdateTimer);
+            this.gameStateUpdateTimer = null;
+            logger.info('AI player update loop stopped', {
+                component: 'GameManager'
+            });
+        }
+    }
+
+    /**
+     * Handle AI cell selection
+     */
+    private async handleAISelCell(categoryIndex: number, clueIndex: number, aiPlayerId: string): Promise<void> {
+        const aiPlayer = this.aiPlayers.get(aiPlayerId);
+        if (!aiPlayer) {
+            logger.error('AI player not found for cell selection', null, {
+                component: 'GameManager',
+                aiPlayerId
+            });
+            return;
+        }
+
+        // Check if AI can select (is current picker)
+        if (this.currentPickerId !== aiPlayerId) {
+            logger.warn('AI tried to select cell but is not current picker', {
+                component: 'GameManager',
+                aiPlayerId,
+                currentPickerId: this.currentPickerId
+            });
+            return;
+        }
+
+        // Create a mock payload for the existing handler
+        const payload: SelectCellPayload = {
+            categoryIndex,
+            clueIndex
+        };
+
+        // Use the existing cell selection logic
+        await this.handleCellSelection(aiPlayer as any, payload);
+    }
+
+    /**
+     * Handle AI buzz
+     */
+    private async handleAIBuzz(aiPlayerId: string): Promise<void> {
+        const aiPlayer = this.aiPlayers.get(aiPlayerId);
+        if (!aiPlayer) {
+            logger.error('AI player not found for buzz', null, {
+                component: 'GameManager',
+                aiPlayerId
+            });
+            return;
+        }
+
+        // Create a mock payload for the existing handler
+        const payload: BuzzPayload = {
+            timestamp: Date.now()
+        };
+
+        // Use the existing buzz logic
+        await this.handleBuzz(aiPlayer as any, payload);
+    }
+
+    /**
+     * Handle AI answer submission
+     */
+    private async handleAISubmitAnswer(answer: string, aiPlayerId: string): Promise<void> {
+        const aiPlayer = this.aiPlayers.get(aiPlayerId);
+        if (!aiPlayer) {
+            logger.error('AI player not found for answer submission', null, {
+                component: 'GameManager',
+                aiPlayerId
+            });
+            return;
+        }
+
+        // Create a mock payload for the existing handler
+        const payload: AnswerSubmitPayload = {
+            answer
+        };
+
+        // Use the existing answer submission logic
+        await this.handleAnswerSubmit(aiPlayer as any, payload);
+    }
+
+    /**
+     * Handle AI wager submission
+     */
+    private async handleAISubmitWager(wager: number, aiPlayerId: string): Promise<void> {
+        const aiPlayer = this.aiPlayers.get(aiPlayerId);
+        if (!aiPlayer) {
+            logger.error('AI player not found for wager submission', null, {
+                component: 'GameManager',
+                aiPlayerId
+            });
+            return;
+        }
+
+        // Create a mock payload for the existing handler
+        const payload: DailyDoubleWagerPayload = {
+            wager
+        };
+
+        // Use the existing wager logic
+        await this.handleDailyDoubleWager(aiPlayer as any, payload);
     }
 
     /**
@@ -372,7 +667,7 @@ export class GameManager {
         if (isCorrect) {
             // Correct answer - picker gets control
             this.currentPickerId = player.id;
-            this.roundManager.clearCurrentClue();
+            this.roundManager?.clearCurrentClue();
             this.buzzManager.closeBuzzWindow();
             
             await this.checkRoundComplete();
@@ -383,7 +678,7 @@ export class GameManager {
             if (currentClue.isDailyDouble) {
                 // Daily Double wrong answer - end clue
                 this.currentPickerId = this.assignNextPicker() || this.currentPickerId;
-                this.roundManager.clearCurrentClue();
+                this.roundManager?.clearCurrentClue();
                 await this.checkRoundComplete();
             } else {
                 // Continue buzz window for other players
@@ -631,6 +926,26 @@ export class GameManager {
             clearTimeout(this.wagerTimer);
             this.wagerTimer = null;
         }
+        if (this.autoHostTimeout) {
+            clearTimeout(this.autoHostTimeout);
+            this.autoHostTimeout = null;
+        }
+
+        // Stop AI update loop
+        this.stopAIUpdateLoop();
+
+        // Clean up AI players
+        for (const aiPlayer of this.aiPlayers.values()) {
+            try {
+                aiPlayer.destroy();
+            } catch (error) {
+                logger.error('Error destroying AI player', error as Error, {
+                    component: 'GameManager',
+                    aiPlayerId: aiPlayer.id
+                });
+            }
+        }
+        this.aiPlayers.clear();
         
         this.broadcastGameState();
         this.broadcastMessage('Ready for new game!');
@@ -658,29 +973,43 @@ export class GameManager {
     }
 
     private assignRandomPicker(): void {
-        const playerIds = Array.from(this.players.keys());
-        if (playerIds.length > 0) {
-            const randomIndex = Math.floor(Math.random() * playerIds.length);
-            this.currentPickerId = playerIds[randomIndex];
+        const allPlayerIds = [
+            ...Array.from(this.players.keys()),
+            ...Array.from(this.aiPlayers.keys())
+        ];
+        if (allPlayerIds.length > 0) {
+            const randomIndex = Math.floor(Math.random() * allPlayerIds.length);
+            this.currentPickerId = allPlayerIds[randomIndex];
         }
     }
 
     private assignNextPicker(): string | null {
-        const playerIds = Array.from(this.players.keys());
-        if (playerIds.length === 0) return null;
-        
-        const currentIndex = playerIds.indexOf(this.currentPickerId || '');
-        const nextIndex = (currentIndex + 1) % playerIds.length;
-        this.currentPickerId = playerIds[nextIndex];
+        const allPlayerIds = [
+            ...Array.from(this.players.keys()),
+            ...Array.from(this.aiPlayers.keys())
+        ];
+        if (allPlayerIds.length === 0) return null;
+
+        const currentIndex = allPlayerIds.indexOf(this.currentPickerId || '');
+        const nextIndex = (currentIndex + 1) % allPlayerIds.length;
+        this.currentPickerId = allPlayerIds[nextIndex];
         return this.currentPickerId;
     }
 
     private checkAutoStart(): void {
-        if (this.gameConfig.autoStart && 
-            this.gamePhase === GamePhase.LOBBY && 
-            this.players.size >= MIN_PLAYERS && 
+        const totalPlayers = this.players.size + this.aiPlayers.size;
+
+        if (this.gameConfig.autoStart &&
+            this.gamePhase === GamePhase.LOBBY &&
+            totalPlayers >= MIN_PLAYERS &&
             !this.autoHostTimeout) {
-            
+
+            // In single player mode, start immediately with AI players
+            if (this.gameConfig.singlePlayerMode) {
+                this.startGame();
+                return;
+            }
+
             this.autoHostTimeout = setTimeout(() => {
                 this.startGame();
                 this.autoHostTimeout = null;
@@ -707,8 +1036,8 @@ export class GameManager {
                 scoreChange: 0,
                 newScore: 0
             });
-            
-            this.roundManager.clearCurrentClue();
+
+            this.roundManager?.clearCurrentClue();
             this.checkRoundComplete();
         }
     }
@@ -724,11 +1053,30 @@ export class GameManager {
     }
 
     private async broadcastGameState(): Promise<void> {
+        // Get human player scores
+        const humanPlayers = this.scoreManager.getCurrentScores();
+
+        // Add AI players to the player list
+        const aiPlayerData: PlayerData[] = Array.from(this.aiPlayers.values()).map(ai => ({
+            id: ai.id,
+            name: ai.username,
+            score: ai.score,
+            stats: {
+                correctAnswers: 0, // Would track these in AI player
+                incorrectAnswers: 0,
+                buzzWins: 0,
+                averageBuzzTime: ai.personality.buzzDelay,
+                currentStreak: 0
+            }
+        }));
+
+        const allPlayers = [...humanPlayers, ...aiPlayerData];
+
         const gameState: GameStateData = {
             phase: this.gamePhase,
             board: this.roundManager?.getCurrentBoard() || null,
             usedCells: this.roundManager?.getUsedCells() || [],
-            players: this.scoreManager.getCurrentScores(),
+            players: allPlayers,
             currentPickerId: this.currentPickerId,
             currentClue: this.roundManager?.getCurrentClue() || null,
             lockoutUntil: 0, // Would be calculated from buzz manager
@@ -767,13 +1115,49 @@ export class GameManager {
     }
 
     private broadcastMessage(message: string, color: string = '#FFFFFF'): void {
+        const validColor = this.validateColor(color);
         for (const player of this.players.values()) {
-            this.world.chatManager.sendPlayerMessage(player, message, color);
+            try {
+                this.world.chatManager.sendPlayerMessage(player, message, validColor);
+            } catch (error) {
+                logger.error('Failed to broadcast message to player', error as Error, {
+                    component: 'GameManager',
+                    playerId: player.id,
+                    messageLength: message.length
+                });
+                // Fallback without color
+                this.world.chatManager.sendPlayerMessage(player, message);
+            }
         }
     }
 
     private sendPlayerMessage(player: Player, message: string, color: string = '#FFFFFF'): void {
-        this.world.chatManager.sendPlayerMessage(player, message, color);
+        try {
+            // Ensure color is valid hex format
+            const validColor = this.validateColor(color);
+            this.world.chatManager.sendPlayerMessage(player, message, validColor);
+        } catch (error) {
+            logger.error('Failed to send player message', error as Error, {
+                component: 'GameManager',
+                playerId: player.id,
+                messageLength: message.length
+            });
+            // Fallback without color
+            this.world.chatManager.sendPlayerMessage(player, message);
+        }
+    }
+
+    private validateColor(color: string): string {
+        // Remove # if present and ensure color is valid hex format
+        const cleanColor = color.replace('#', '');
+        
+        if (!/^[0-9A-Fa-f]{6}$/.test(cleanColor)) {
+            logger.warn(`Invalid color format: ${color}, using default`, {
+                component: 'GameManager'
+            });
+            return 'FFFFFF'; // Return without #
+        }
+        return cleanColor.toUpperCase();
     }
 }
 

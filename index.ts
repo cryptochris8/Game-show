@@ -42,7 +42,9 @@ startServer(world => {
     component: 'Server',
     debugMode: serverConfig.debugMode,
     audioEnabled: serverConfig.audioEnabled,
-    packName: gameConfig.packName
+    packName: gameConfig.packName,
+    singlePlayerMode: process.env.SINGLE_PLAYER_MODE === 'true',
+    aiPlayersCount: parseInt(process.env.AI_PLAYERS_COUNT || '3')
   });
 
   /**
@@ -60,7 +62,9 @@ startServer(world => {
   const gameManager = new GameManager(world, {
     packName: gameConfig.packName,
     autoStart: gameConfig.autoStart,
-    autoHostDelay: gameConfig.autoHostDelay
+    autoHostDelay: gameConfig.autoHostDelay,
+    singlePlayerMode: process.env.SINGLE_PLAYER_MODE === 'true' || false,
+    aiPlayersCount: parseInt(process.env.AI_PLAYERS_COUNT || '3')
   });
 
   /**
@@ -91,7 +95,7 @@ startServer(world => {
         const playerEntity = playerManager.getPlayerEntity(player.id);
         if (playerEntity) {
           playerEntity.applyImpulse({ x: 0, y: 20, z: 0 });
-          world.chatManager.sendPlayerMessage(player, '🚀 Woosh!', '#FF6B6B');
+          world.chatManager.sendPlayerMessage(player, '🚀 Woosh!', 'FF6B6B');
           logger.playerAction(player.id, 'rocket_command', { component: 'ChatCommand' });
         }
       },
@@ -111,13 +115,47 @@ startServer(world => {
       usage: '',
       handler: async (player, args, world) => {
         // TODO: Integrate with persistence system
-        world.chatManager.sendPlayerMessage(player, '📊 Stats feature coming soon! Play games to build your statistics.', '#4A90E2');
+        world.chatManager.sendPlayerMessage(player, '📊 Stats feature coming soon! Play games to build your statistics.', '4A90E2');
+      }
+    },
+    {
+      name: 'singleplayer',
+      description: 'Start single player mode with AI opponents',
+      usage: '/singleplayer [count] - count is optional, defaults to 3 AI players',
+      handler: (player, args, world) => {
+        const aiCount = args.length > 0 ? parseInt(args[0]) : 3;
+        if (aiCount < 1 || aiCount > 5) {
+          world.chatManager.sendPlayerMessage(player, '❌ AI player count must be between 1 and 5.', 'FF6B6B');
+          return;
+        }
+
+        // Enable single player mode
+        process.env.SINGLE_PLAYER_MODE = 'true';
+        process.env.AI_PLAYERS_COUNT = aiCount.toString();
+
+        world.chatManager.sendPlayerMessage(player,
+          `🎮 Single player mode activated! Starting game with ${aiCount} AI opponents.`, '00FF00');
+
+        // The game will start automatically when the next player joins
+        world.chatManager.sendPlayerMessage(player,
+          '💡 The game will start automatically when you join. Use /join to start playing!', '4A90E2');
+      }
+    },
+    {
+      name: 'multiplayer',
+      description: 'Return to multiplayer mode',
+      usage: '/multiplayer - Switch back to waiting for human players',
+      handler: (player, args, world) => {
+        process.env.SINGLE_PLAYER_MODE = 'false';
+        world.chatManager.sendPlayerMessage(player,
+          '👥 Switched to multiplayer mode. Waiting for more human players to join.', '4A90E2');
       }
     }
   ]);
 
   // Setup chat command handler
-  world.chatManager.onMessage = (message, player) => {
+  world.on('playerMessage', (data: any) => {
+    const { player, message } = data;
     if (message.text.startsWith('/')) {
       const parts = message.text.slice(1).split(' ');
       const commandName = parts[0].toLowerCase();
@@ -132,28 +170,17 @@ startServer(world => {
       messageLength: message.text.length,
       component: 'Chat'
     });
-  };
+  });
 
   /**
    * Game ambient audio - create an engaging trivia game atmosphere
+   * Disabled for now due to missing audio files
    */
   if (serverConfig.audioEnabled) {
-    try {
-      new Audio({
-        uri: 'audio/music/hytopia-main.mp3',
-        loop: true,
-        volume: serverConfig.audioVolume,
-      }).play(world);
-
-      logger.info('Ambient audio started', {
-        component: 'Server',
-        volume: serverConfig.audioVolume
-      });
-    } catch (error) {
-      logger.error('Failed to start ambient audio', error as Error, {
-        component: 'Server'
-      });
-    }
+    logger.info('Ambient audio enabled but audio files not available', {
+      component: 'Server',
+      note: 'Audio files would need to be added to /assets/audio/music/'
+    });
   } else {
     logger.info('Ambient audio disabled by configuration', { component: 'Server' });
   }

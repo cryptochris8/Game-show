@@ -3,7 +3,7 @@
 
 import { promises as fs } from 'fs';
 import { join } from 'path';
-import { BoardData, CategoryData, ClueData, DailyDoubleData } from '../net/Events';
+import type { BoardData, CategoryData, ClueData, DailyDoubleData } from '../net/Events';
 
 export interface TriviaPackData {
     packId: string;

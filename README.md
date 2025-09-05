@@ -12,6 +12,14 @@ A production-ready, server-authoritative multiplayer trivia game built for HYTOP
 - **Buzz System** with 300ms lockout + timed response window
 - **Answer Normalization** (case-insensitive, article-stripping, fuzzy matching)
 
+### Single Player Mode with AI 🤖
+- **AI Opponents** with realistic human-like behavior
+- **5 Unique AI Personalities** (Scholar, Speedster, Thinker, Newbie, Strategist)
+- **Configurable Difficulty Levels** (Easy, Medium, Hard, Expert)
+- **NPC Visual Representation** using HYTOPIA's built-in models
+- **Realistic Reaction Times** and strategic decision-making
+- **Chat Commands**: `/singleplayer [count]` to start with AI players
+
 ### Technical Features
 - **Mobile-Responsive UI** with touch-optimized controls
 - **Persistent Player Statistics** (games, wins, streaks, buzz times)
@@ -254,10 +262,26 @@ Key CSS classes for customization:
 
 ### Local Testing
 1. Run `npm run dev` (starts HYTOPIA development server)
-2. Open multiple HYTOPIA Play clients in different browser tabs/windows
-3. Connect all clients to localhost
-4. Test full game flow with 2+ players
-5. Verify all features work with Node.js/NPM environment
+2. Open HYTOPIA Play client in browser
+3. Connect to localhost
+4. **For Single Player Mode:**
+   - Type `/singleplayer` in chat (starts with 3 AI opponents)
+   - Type `/singleplayer 5` for 5 AI opponents
+   - Join the game and play against AI!
+5. **For Multiplayer Mode:**
+   - Open multiple HYTOPIA Play clients in different browser tabs/windows
+   - Connect all clients to localhost
+   - Test full game flow with 2+ human players
+6. Verify all features work with Node.js/NPM environment
+
+### Single Player Mode Commands
+```bash
+/singleplayer          # Start with 3 AI opponents
+/singleplayer 5        # Start with 5 AI opponents
+/singleplayer 1        # Start with 1 AI opponent
+/multiplayer           # Return to multiplayer mode
+/help                  # Show all available commands
+```
 
 ### Multiplayer Testing
 - Use HYTOPIA's built-in multiplayer testing features

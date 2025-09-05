@@ -178,7 +178,12 @@ export class PlayerLifecycleManager {
     this.welcomeMessages.forEach((message, index) => {
       setTimeout(() => {
         const color = this.getMessageColor(index);
-        this.world.chatManager.sendPlayerMessage(player, message, color);
+        try {
+          this.world.chatManager.sendPlayerMessage(player, message, color);
+        } catch (error) {
+          // Fallback without color if there's an issue
+          this.world.chatManager.sendPlayerMessage(player, message);
+        }
       }, index * messageDelay);
     });
   }
@@ -187,8 +192,10 @@ export class PlayerLifecycleManager {
    * Get message color based on index
    */
   private getMessageColor(index: number): string {
-    const colors = ['#FFD700', '#4A90E2', '#FFFFFF', '#00FF00'];
-    return colors[index] || '#FFFFFF';
+    const colors = ['FFD700', '4A90E2', 'FFFFFF', '00FF00']; // Without # for HYTOPIA API
+    const color = colors[index] || 'FFFFFF';
+    // Ensure color is uppercase for consistency
+    return color.toUpperCase();
   }
 
   /**

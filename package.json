@@ -23,5 +23,9 @@
   "dependencies": {
     "@hytopia.com/assets": "^0.3.20",
     "hytopia": "^0.10.13"
+  },
+  "devDependencies": {
+    "@types/node": "^24.3.0",
+    "@types/ws": "^8.18.1"
   }
 }
