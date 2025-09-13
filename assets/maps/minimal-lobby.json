@@ -1,0 +1,84 @@
+{
+  "blockTypes": [
+    {
+      "id": 1,
+      "name": "glass",
+      "textureUri": "blocks/glass.png"
+    },
+    {
+      "id": 2,
+      "name": "stone",
+      "textureUri": "blocks/stone.png" 
+    },
+    {
+      "id": 3,
+      "name": "gold",
+      "textureUri": "blocks/gold.png"
+    }
+  ],
+  "chunks": [
+    {
+      "coord": {
+        "x": 0,
+        "y": 0,
+        "z": 0
+      },
+      "blocks": [
+        {
+          "x": 7,
+          "y": 9,
+          "z": 7,
+          "blockTypeId": 2
+        },
+        {
+          "x": 8,
+          "y": 9,
+          "z": 7,
+          "blockTypeId": 2
+        },
+        {
+          "x": 9,
+          "y": 9,
+          "z": 7,
+          "blockTypeId": 2
+        },
+        {
+          "x": 7,
+          "y": 9,
+          "z": 8,
+          "blockTypeId": 2
+        },
+        {
+          "x": 8,
+          "y": 9,
+          "z": 8,
+          "blockTypeId": 3
+        },
+        {
+          "x": 9,
+          "y": 9,
+          "z": 8,
+          "blockTypeId": 2
+        },
+        {
+          "x": 7,
+          "y": 9,
+          "z": 9,
+          "blockTypeId": 2
+        },
+        {
+          "x": 8,
+          "y": 9,
+          "z": 9,
+          "blockTypeId": 2
+        },
+        {
+          "x": 9,
+          "y": 9,
+          "z": 9,
+          "blockTypeId": 2
+        }
+      ]
+    }
+  ]
+}

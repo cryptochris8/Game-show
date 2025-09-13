@@ -93,9 +93,29 @@ export class GameManager {
     }
 
     /**
+     * Update game configuration
+     */
+    public updateConfig(newConfig: Partial<GameConfig>): void {
+        this.gameConfig = { ...this.gameConfig, ...newConfig };
+        logger.info('Game configuration updated', {
+            component: 'GameManager',
+            config: this.gameConfig
+        });
+    }
+
+    /**
+     * Handle UI events from players
+     */
+    public handleUIEvent(player: Player, data: any): void {
+        // Handle game-specific UI events
+        logger.debug(`GameManager handling UI event from ${player.username}:`, data);
+        // Implementation will be added based on existing UI event handlers
+    }
+
+    /**
      * Initialize AI players for single player mode
      */
-    private initializeAIPlayers(): void {
+    public initializeAIPlayers(): void {
         const aiCount = Math.min(this.gameConfig.aiPlayersCount || 3, 5); // Max 5 AI players
         const shuffledPersonalities = [...AI_PERSONALITIES].sort(() => Math.random() - 0.5);
 
@@ -156,8 +176,7 @@ export class GameManager {
         // Initialize player in score manager
         await this.scoreManager.initializePlayer(player);
         
-        // Load UI for the player
-        player.ui.load('ui/overlay.html');
+        // UI loading is now handled by main server - don't load here
         
         // Send player their ID for client-side identification
         player.ui.sendData(createServerEvent(ClueboardEvent.GAME_STATE, {

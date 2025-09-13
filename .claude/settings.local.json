@@ -5,7 +5,8 @@
       "Bash(cat:*)",
       "Bash(ls:*)",
       "Bash(find:*)",
-      "mcp__hytopia-mcp__getDocumentation"
+      "mcp__hytopia-mcp__getDocumentation",
+      "Bash(npx tsc:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

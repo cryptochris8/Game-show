@@ -1,7 +1,7 @@
 // AIPlayer - Artificial Intelligence player for single player mode
 // Simulates human player behavior with configurable difficulty and personality
 
-import { Player, World, DefaultPlayerEntity } from 'hytopia';
+import { Player, World, Entity, RigidBodyType } from 'hytopia';
 import { GameStateData, ClueData } from '../net/Events';
 import { logger } from '../util/Logger';
 
@@ -35,7 +35,7 @@ export class AIPlayer {
     public username: string;
     public personality: AIPersonality;
     public score: number = 0;
-    public entity: DefaultPlayerEntity | null = null;
+    public entity: Entity | null = null;
 
     // AI state
     private knowledge: Map<string, boolean> = new Map(); // clue -> knows answer
@@ -63,30 +63,15 @@ export class AIPlayer {
 
     private spawnNPC(world: World): void {
         try {
-            // Create a mock player object with necessary properties for AI
-            const mockPlayer = {
-                id: this.id,
-                username: this.username,
-                camera: {
-                    orientation: { pitch: 0, yaw: 0 },
-                    facingDirection: { x: 0, y: 0, z: -1 },
-                    setMode: () => {},
-                    setOffset: () => {},
-                    setForwardOffset: () => {},
-                    setFilmOffset: () => {},
-                    setHiddenModelNodes: () => {}
-                },
-                world: world,
-                input: {
-                    // Mock player input for AI
-                    movement: { x: 0, y: 0, z: 0 },
-                    actions: new Set()
-                }
-            } as any;
-
-            this.entity = new DefaultPlayerEntity({
-                player: mockPlayer,
+            // Create a proper NPC entity using the HYTOPIA SDK
+            this.entity = new Entity({
                 name: this.username,
+                modelUri: `models/npcs/${this.personality.avatar}.gltf`,
+                modelScale: 1.0,
+                modelLoopedAnimations: ['idle'], // Play idle animation if available
+                rigidBodyOptions: {
+                    type: RigidBodyType.KINEMATIC_POSITION, // Allows programmatic movement control
+                }
             });
 
             // Generate random spawn position near human players
@@ -96,12 +81,15 @@ export class AIPlayer {
             logger.info(`AI Player ${this.username} spawned NPC`, {
                 component: 'AIPlayer',
                 playerId: this.id,
-                position: spawnPosition
+                position: spawnPosition,
+                model: this.personality.avatar,
+                modelPath: `models/npcs/${this.personality.avatar}.gltf`
             });
         } catch (error) {
             logger.error(`Failed to spawn AI player ${this.username}`, error as Error, {
                 component: 'AIPlayer',
-                playerId: this.id
+                playerId: this.id,
+                model: this.personality.avatar
             });
         }
     }
@@ -115,6 +103,45 @@ export class AIPlayer {
             y: 10,
             z: Math.sin(angle) * radius
         };
+    }
+
+    /**
+     * Make the AI NPC look at a specific position
+     */
+    public lookAt(targetPosition: { x: number; y: number; z: number }): void {
+        if (!this.entity || !this.entity.isSpawned) return;
+        
+        try {
+            const currentPos = this.entity.position;
+            const direction = {
+                x: targetPosition.x - currentPos.x,
+                z: targetPosition.z - currentPos.z
+            };
+            
+            const yaw = Math.atan2(direction.x, direction.z);
+            // Use quaternion rotation for HYTOPIA SDK
+            const quaternion = {
+                x: 0,
+                y: Math.sin(yaw / 2),
+                z: 0,
+                w: Math.cos(yaw / 2)
+            };
+            this.entity.setRotation(quaternion);
+        } catch (error) {
+            logger.warn(`Failed to make AI ${this.username} look at target`, {
+                component: 'AIPlayer',
+                playerId: this.id,
+                error: error
+            });
+        }
+    }
+
+    /**
+     * Get the current position of the AI NPC
+     */
+    public getPosition(): { x: number; y: number; z: number } | null {
+        if (!this.entity || !this.entity.isSpawned) return null;
+        return this.entity.position;
     }
 
     // AI decision making - called by GameManager
@@ -314,9 +341,9 @@ export class AIPlayer {
         this.isActive = false;
 
         // Clear any pending timers
-        for (const timer of this.buzzTimers.values()) {
+        this.buzzTimers.forEach((timer) => {
             clearTimeout(timer);
-        }
+        });
         this.buzzTimers.clear();
 
         // Destroy NPC entity
@@ -333,11 +360,11 @@ export class AIPlayer {
     }
 }
 
-// Predefined AI personalities with different play styles
+// Predefined AI personalities with different play styles using actual HYTOPIA NPC models
 export const AI_PERSONALITIES: AIPersonality[] = [
     {
-        name: "Alex the Scholar",
-        avatar: "scholar",
+        name: "Professor Mindflayer",
+        avatar: "mindflayer", // Intelligent-looking creature for the scholar
         difficulty: AIDifficulty.HARD,
         buzzDelay: 800,
         buzzAccuracy: 0.9,
@@ -346,8 +373,8 @@ export const AI_PERSONALITIES: AIPersonality[] = [
         cluePreference: 'highValue'
     },
     {
-        name: "Jordan the Speedster",
-        avatar: "athlete",
+        name: "Buzzy Bee",
+        avatar: "bee-adult", // Fast, nimble bee for the speedster
         difficulty: AIDifficulty.MEDIUM,
         buzzDelay: 300,
         buzzAccuracy: 0.95,
@@ -356,8 +383,8 @@ export const AI_PERSONALITIES: AIPersonality[] = [
         cluePreference: 'random'
     },
     {
-        name: "Taylor the Thinker",
-        avatar: "thinker",
+        name: "Wise Ocelot",
+        avatar: "ocelot", // Thoughtful, calculating feline
         difficulty: AIDifficulty.EXPERT,
         buzzDelay: 1200,
         buzzAccuracy: 0.8,
@@ -366,8 +393,8 @@ export const AI_PERSONALITIES: AIPersonality[] = [
         cluePreference: 'categories'
     },
     {
-        name: "Casey the Newbie",
-        avatar: "student",
+        name: "Rookie Rabbit",
+        avatar: "rabbit", // Cute, inexperienced bunny for the newbie
         difficulty: AIDifficulty.EASY,
         buzzDelay: 2000,
         buzzAccuracy: 0.6,
@@ -376,8 +403,8 @@ export const AI_PERSONALITIES: AIPersonality[] = [
         cluePreference: 'lowValue'
     },
     {
-        name: "Morgan the Strategist",
-        avatar: "strategist",
+        name: "Captain Spider",
+        avatar: "spider", // Strategic, web-weaving planner
         difficulty: AIDifficulty.HARD,
         buzzDelay: 1000,
         buzzAccuracy: 0.85,

@@ -1,0 +1,1025 @@
+<!-- BUZZCHAIN TRIVIA - Main Menu Screen -->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
+  
+  :root {
+    --primary-gold: #FFD700;
+    --secondary-gold: #FFA500;
+    --dark-bg: #0a0a0f;
+    --card-bg: rgba(20, 20, 30, 0.95);
+    --accent-blue: #00BFFF;
+    --success-green: #00FF88;
+    --text-light: #FFFFFF;
+    --text-dim: #CCCCCC;
+    --shadow-glow: 0 0 30px rgba(255, 215, 0, 0.3);
+    --animation-speed: 0.3s;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Exo 2', sans-serif;
+    background: linear-gradient(135deg, 
+      #0a0a0f 0%, 
+      #1a1a2e 25%, 
+      #16213e 50%,
+      #0f0f1e 75%,
+      #0a0a0f 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 10s ease infinite;
+    color: var(--text-light);
+    min-height: 100vh;
+    overflow: hidden;
+    position: relative;
+  }
+
+  @keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* Animated Background Particles */
+  .bg-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--primary-gold);
+    border-radius: 50%;
+    animation: float 15s linear infinite;
+    opacity: 0.7;
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(100vh) rotate(0deg);
+      opacity: 0;
+    }
+    10% {
+      opacity: 0.7;
+    }
+    90% {
+      opacity: 0.7;
+    }
+    100% {
+      transform: translateY(-100px) rotate(360deg);
+      opacity: 0;
+    }
+  }
+
+  .main-container {
+    position: relative;
+    z-index: 10;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 1rem;
+    padding-top: 2rem;
+    text-align: center;
+  }
+
+  /* Logo Section */
+  .logo-section {
+    margin-bottom: 1.5rem;
+    animation: fadeInDown 1s ease-out;
+  }
+
+  .logo-container {
+    position: relative;
+    display: inline-block;
+    margin-bottom: 1rem;
+  }
+
+  .logo-image {
+    max-width: 200px;
+    height: auto;
+    filter: drop-shadow(var(--shadow-glow));
+    animation: logoGlow 3s ease-in-out infinite alternate;
+  }
+
+  @keyframes logoGlow {
+    0% {
+      filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.5));
+    }
+    100% {
+      filter: drop-shadow(0 0 40px rgba(255, 215, 0, 0.8));
+    }
+  }
+
+  .game-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.5rem;
+    font-weight: 900;
+    background: linear-gradient(45deg, var(--primary-gold), var(--secondary-gold), var(--accent-blue));
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: titleShine 2s ease-in-out infinite alternate;
+    text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+    margin-bottom: 0.3rem;
+  }
+
+  @keyframes titleShine {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 100% 50%; }
+  }
+
+  .game-subtitle {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+
+  .tagline {
+    font-size: 1.1rem;
+    color: var(--accent-blue);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 1rem;
+  }
+
+  /* Game Mode Cards */
+  .game-modes {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+    max-width: 900px;
+    width: 100%;
+    margin-bottom: 1rem;
+    animation: fadeInUp 1s ease-out 0.3s both;
+  }
+
+  .mode-card {
+    background: var(--card-bg);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    transition: all var(--animation-speed) ease;
+    backdrop-filter: blur(10px);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .mode-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 215, 0, 0.1), transparent);
+    transition: left 0.6s ease;
+  }
+
+  .mode-card:hover::before {
+    left: 100%;
+  }
+
+  .mode-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    border-color: var(--primary-gold);
+    box-shadow: var(--shadow-glow);
+  }
+
+  .mode-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    display: block;
+  }
+
+  .mode-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-gold);
+    margin-bottom: 1rem;
+  }
+
+  .mode-description {
+    font-size: 1rem;
+    color: var(--text-dim);
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .ai-selector {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+  }
+
+  .ai-selector label {
+    display: block;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: var(--text-light);
+  }
+
+  .ai-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .ai-btn {
+    width: 50px;
+    height: 50px;
+    border: 2px solid var(--accent-blue);
+    background: transparent;
+    color: var(--accent-blue);
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all var(--animation-speed) ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-btn:hover {
+    background: var(--accent-blue);
+    color: var(--dark-bg);
+    transform: scale(1.1);
+  }
+
+  .ai-btn.active {
+    background: var(--primary-gold);
+    border-color: var(--primary-gold);
+    color: var(--dark-bg);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+  }
+
+  .mode-btn {
+    width: 100%;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all var(--animation-speed) ease;
+    font-family: 'Exo 2', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-single-player {
+    background: linear-gradient(45deg, var(--success-green), #00CC70);
+    color: var(--dark-bg);
+  }
+
+  .btn-multiplayer {
+    background: linear-gradient(45deg, var(--accent-blue), #0080FF);
+    color: var(--text-light);
+  }
+
+  .mode-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  }
+
+  .mode-btn:active {
+    transform: translateY(-1px);
+  }
+
+  .mode-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* Features Section */
+  .features-section {
+    display: none; /* Hidden to save vertical space */
+    animation: fadeInUp 1s ease-out 0.6s both;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    max-width: 800px;
+    margin-bottom: 2rem;
+  }
+
+  .feature-item {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 1rem;
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 215, 0, 0.2);
+    transition: all var(--animation-speed) ease;
+  }
+
+  .feature-item:hover {
+    background: rgba(255, 215, 0, 0.2);
+    transform: translateY(-3px);
+  }
+
+  .feature-icon {
+    font-size: 1.5rem;
+  }
+
+  .feature-text {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  /* Audio Controls */
+  .audio-controls {
+    position: fixed;
+    top: 2rem;
+    right: 2rem;
+    z-index: 100;
+    display: flex;
+    gap: 1rem;
+  }
+
+  .audio-btn {
+    width: 50px;
+    height: 50px;
+    border: 2px solid var(--primary-gold);
+    background: var(--card-bg);
+    color: var(--primary-gold);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all var(--animation-speed) ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    backdrop-filter: blur(10px);
+  }
+
+  .audio-btn:hover {
+    background: var(--primary-gold);
+    color: var(--dark-bg);
+    transform: scale(1.1);
+  }
+
+  .audio-btn.disabled {
+    opacity: 0.5;
+    border-color: #666;
+    color: #666;
+  }
+
+  .audio-btn.disabled:hover {
+    background: var(--card-bg);
+    color: #666;
+    transform: none;
+  }
+
+  /* Loading States */
+  .loading {
+    position: relative;
+  }
+
+  .loading::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 2px solid transparent;
+    border-top: 2px solid currentColor;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  /* Animations */
+  @keyframes fadeInDown {
+    from {
+      opacity: 0;
+      transform: translateY(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeOut {
+    from {
+      opacity: 1;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.9);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .main-container {
+      padding: 1rem;
+    }
+
+    .logo-image {
+      max-width: 200px;
+    }
+
+    .game-title {
+      font-size: 2.5rem;
+    }
+
+    .game-modes {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+
+    .mode-card {
+      padding: 1.5rem;
+    }
+
+    .features-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .audio-controls {
+      top: 1rem;
+      right: 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .game-title {
+      font-size: 2rem;
+    }
+
+    .mode-card {
+      padding: 1rem;
+    }
+
+    .mode-icon {
+      font-size: 3rem;
+    }
+
+    .mode-title {
+      font-size: 1.5rem;
+    }
+  }
+
+  /* Hidden class for transitions */
+  .hidden {
+    display: none !important;
+  }
+
+  .fade-out {
+    animation: fadeOut 0.5s ease-out forwards;
+  }
+
+  .fade-in {
+    animation: fadeIn 0.5s ease-in forwards;
+  }
+</style>
+
+<!-- Background Particles -->
+<div class="bg-particles" id="particles"></div>
+
+<!-- Audio Controls -->
+<div class="audio-controls">
+  <button class="audio-btn" id="musicToggle" title="Toggle Music">🎵</button>
+  <button class="audio-btn" id="sfxToggle" title="Toggle Sound Effects">🔊</button>
+</div>
+
+<!-- Main Menu Container -->
+<div class="main-container" id="mainMenu">
+  <!-- Logo Section -->
+  <div class="logo-section">
+    <div class="logo-container">
+      <img src="/assets/buzzchain-logo.png" alt="Buzzchain Logo" class="logo-image" id="logoImage">
+    </div>
+    <h1 class="game-title">BUZZCHAIN</h1>
+    <p class="game-subtitle">Trivia Redefined</p>
+    <p class="tagline">The Ultimate Jeopardy Experience</p>
+  </div>
+
+  <!-- Game Mode Selection -->
+  <div class="game-modes">
+    <!-- Single Player Mode -->
+    <div class="mode-card" id="singlePlayerCard">
+      <div class="mode-icon">🤖</div>
+      <h2 class="mode-title">Single Player</h2>
+      <p class="mode-description">Challenge yourself against intelligent AI opponents with unique personalities and strategies.</p>
+      
+      <div class="ai-selector">
+        <label>Choose Number of AI Opponents:</label>
+        <div class="ai-buttons">
+          <button class="ai-btn" data-count="1">1</button>
+          <button class="ai-btn" data-count="2">2</button>
+          <button class="ai-btn active" data-count="3">3</button>
+          <button class="ai-btn" data-count="4">4</button>
+          <button class="ai-btn" data-count="5">5</button>
+        </div>
+      </div>
+      
+      <button class="mode-btn btn-single-player" id="singlePlayerBtn">
+        🎮 Start Single Player Game
+      </button>
+    </div>
+
+    <!-- Multiplayer Mode -->
+    <div class="mode-card" id="multiplayerCard">
+      <div class="mode-icon">👥</div>
+      <h2 class="mode-title">Multiplayer</h2>
+      <p class="mode-description">Compete with friends and players from around the world in real-time trivia battles.</p>
+      
+      <div class="ai-selector">
+        <label>Multiplayer Features:</label>
+        <div class="features-list" style="text-align: left; margin-top: 1rem;">
+          <p style="margin: 0.5rem 0; color: var(--text-dim);">• 2-6 players supported</p>
+          <p style="margin: 0.5rem 0; color: var(--text-dim);">• Real-time buzzing system</p>
+          <p style="margin: 0.5rem 0; color: var(--text-dim);">• Spectator mode available</p>
+        </div>
+      </div>
+      
+      <button class="mode-btn btn-multiplayer" id="multiplayerBtn">
+        👥 Enter Multiplayer Lobby
+      </button>
+    </div>
+  </div>
+
+  <!-- Features Section -->
+  <div class="features-section">
+    <div class="features-grid">
+      <div class="feature-item">
+        <span class="feature-icon">🎭</span>
+        <span class="feature-text">AI Personalities</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🏆</span>
+        <span class="feature-text">Daily Doubles</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🎪</span>
+        <span class="feature-text">Final Round</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">⚡</span>
+        <span class="feature-text">Real-time Buzzing</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">📱</span>
+        <span class="feature-text">Mobile Optimized</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🎵</span>
+        <span class="feature-text">Sound Effects</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">🌟</span>
+        <span class="feature-text">Visual Effects</span>
+      </div>
+      <div class="feature-item">
+        <span class="feature-icon">📊</span>
+        <span class="feature-text">Live Statistics</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Game state and configuration
+  let gameConfig = {
+    selectedAICount: 3,
+    musicEnabled: true,
+    sfxEnabled: true,
+    backgroundMusic: null,
+    particles: []
+  };
+
+  // Initialize the main menu
+  function initializeMainMenu() {
+    // Check if hytopia is available
+    if (typeof hytopia === 'undefined') {
+      console.error('HYTOPIA API not available! Waiting...');
+      setTimeout(initializeMainMenu, 100);
+      return;
+    }
+    
+    createBackgroundParticles();
+    setupEventListeners();
+    setupAudioSystem();
+    
+    // Add logo load error handling
+    const logoImage = document.getElementById('logoImage');
+    logoImage.onerror = function() {
+      // If logo fails to load, hide the image but keep the text
+      this.style.display = 'none';
+      console.warn('Buzzchain logo could not be loaded');
+    };
+
+    console.log('🎯 Buzzchain Trivia Main Menu Initialized');
+  }
+
+  // Create animated background particles
+  function createBackgroundParticles() {
+    const particlesContainer = document.getElementById('particles');
+    const particleCount = 50;
+
+    for (let i = 0; i < particleCount; i++) {
+      createParticle(particlesContainer);
+    }
+
+    // Continuously add new particles
+    setInterval(() => {
+      if (gameConfig.particles.length < particleCount) {
+        createParticle(particlesContainer);
+      }
+    }, 300);
+  }
+
+  function createParticle(container) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    
+    // Random starting position
+    particle.style.left = Math.random() * 100 + '%';
+    particle.style.animationDelay = Math.random() * 15 + 's';
+    particle.style.animationDuration = (15 + Math.random() * 10) + 's';
+    
+    container.appendChild(particle);
+    gameConfig.particles.push(particle);
+
+    // Remove particle after animation completes
+    setTimeout(() => {
+      if (particle.parentNode) {
+        particle.parentNode.removeChild(particle);
+      }
+      const index = gameConfig.particles.indexOf(particle);
+      if (index > -1) {
+        gameConfig.particles.splice(index, 1);
+      }
+    }, 25000);
+  }
+
+  // Setup event listeners
+  function setupEventListeners() {
+    // AI opponent count selection
+    const aiBtns = document.querySelectorAll('.ai-btn');
+    aiBtns.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        playClickSound();
+        
+        // Remove active class from all buttons
+        aiBtns.forEach(b => b.classList.remove('active'));
+        
+        // Add active class to clicked button
+        btn.classList.add('active');
+        gameConfig.selectedAICount = parseInt(btn.dataset.count);
+        
+        console.log(`Selected ${gameConfig.selectedAICount} AI opponents`);
+      });
+    });
+
+    // Single Player Mode Button
+    const singlePlayerBtn = document.getElementById('singlePlayerBtn');
+    singlePlayerBtn.addEventListener('click', () => {
+      console.log('Single Player button clicked!');
+      playConfirmSound();
+      startSinglePlayerGame();
+    });
+
+    // Multiplayer Mode Button
+    const multiplayerBtn = document.getElementById('multiplayerBtn');
+    multiplayerBtn.addEventListener('click', () => {
+      playConfirmSound();
+      startMultiplayerGame();
+    });
+
+    // Audio control buttons
+    const musicToggle = document.getElementById('musicToggle');
+    const sfxToggle = document.getElementById('sfxToggle');
+
+    musicToggle.addEventListener('click', () => {
+      toggleMusic();
+    });
+
+    sfxToggle.addEventListener('click', () => {
+      toggleSFX();
+    });
+
+    // Add hover sound effects to buttons
+    document.querySelectorAll('.mode-btn, .ai-btn, .audio-btn').forEach(btn => {
+      btn.addEventListener('mouseenter', () => {
+        if (gameConfig.sfxEnabled) {
+          playHoverSound();
+        }
+      });
+    });
+  }
+
+  // Audio system setup
+  function setupAudioSystem() {
+    // Note: Audio will be handled by HYTOPIA Audio class from the server
+    updateAudioButtons();
+  }
+
+  function toggleMusic() {
+    gameConfig.musicEnabled = !gameConfig.musicEnabled;
+    updateAudioButtons();
+    
+    // Send music toggle to server
+    hytopia.sendData({
+      type: 'TOGGLE_MUSIC',
+      payload: { enabled: gameConfig.musicEnabled }
+    });
+    
+    playClickSound();
+  }
+
+  function toggleSFX() {
+    gameConfig.sfxEnabled = !gameConfig.sfxEnabled;
+    updateAudioButtons();
+    
+    // Send SFX toggle to server
+    hytopia.sendData({
+      type: 'TOGGLE_SFX',
+      payload: { enabled: gameConfig.sfxEnabled }
+    });
+    
+    if (gameConfig.sfxEnabled) {
+      playClickSound();
+    }
+  }
+
+  function updateAudioButtons() {
+    const musicToggle = document.getElementById('musicToggle');
+    const sfxToggle = document.getElementById('sfxToggle');
+
+    if (gameConfig.musicEnabled) {
+      musicToggle.classList.remove('disabled');
+      musicToggle.title = 'Turn Music Off';
+    } else {
+      musicToggle.classList.add('disabled');
+      musicToggle.title = 'Turn Music On';
+    }
+
+    if (gameConfig.sfxEnabled) {
+      sfxToggle.classList.remove('disabled');
+      sfxToggle.title = 'Turn Sound Effects Off';
+    } else {
+      sfxToggle.classList.add('disabled');
+      sfxToggle.title = 'Turn Sound Effects On';
+    }
+  }
+
+  // Sound effect functions (will be handled by server)
+  function playHoverSound() {
+    if (!gameConfig.sfxEnabled) return;
+    hytopia.sendData({
+      type: 'PLAY_SOUND',
+      payload: { sound: 'hover' }
+    });
+  }
+
+  function playClickSound() {
+    if (!gameConfig.sfxEnabled) return;
+    hytopia.sendData({
+      type: 'PLAY_SOUND',
+      payload: { sound: 'click' }
+    });
+  }
+
+  function playConfirmSound() {
+    if (!gameConfig.sfxEnabled) return;
+    hytopia.sendData({
+      type: 'PLAY_SOUND',
+      payload: { sound: 'confirm' }
+    });
+  }
+
+  // Game mode functions
+  function startSinglePlayerGame() {
+    const singlePlayerBtn = document.getElementById('singlePlayerBtn');
+    
+    // Show loading state
+    singlePlayerBtn.disabled = true;
+    singlePlayerBtn.classList.add('loading');
+    singlePlayerBtn.textContent = 'Initializing AI Opponents...';
+
+    // Send single player activation to server
+    hytopia.sendData({
+      type: 'START_SINGLE_PLAYER',
+      payload: {
+        aiCount: gameConfig.selectedAICount,
+        musicEnabled: gameConfig.musicEnabled,
+        sfxEnabled: gameConfig.sfxEnabled
+      }
+    });
+
+    console.log(`🤖 Starting Single Player with ${gameConfig.selectedAICount} AI opponents`);
+
+    // Transition to game after delay
+    setTimeout(() => {
+      transitionToGame();
+    }, 2000);
+  }
+
+  function startMultiplayerGame() {
+    const multiplayerBtn = document.getElementById('multiplayerBtn');
+    
+    // Show loading state
+    multiplayerBtn.disabled = true;
+    multiplayerBtn.classList.add('loading');
+    multiplayerBtn.textContent = 'Connecting to Lobby...';
+
+    // Send multiplayer activation to server
+    hytopia.sendData({
+      type: 'START_MULTIPLAYER',
+      payload: {
+        musicEnabled: gameConfig.musicEnabled,
+        sfxEnabled: gameConfig.sfxEnabled
+      }
+    });
+
+    console.log('👥 Starting Multiplayer Mode');
+
+    // Transition to game after delay
+    setTimeout(() => {
+      transitionToGame();
+    }, 1500);
+  }
+
+  function transitionToGame() {
+    const mainMenu = document.getElementById('mainMenu');
+    
+    // Play transition sound
+    hytopia.sendData({
+      type: 'PLAY_SOUND',
+      payload: { sound: 'transition' }
+    });
+
+    // Fade out main menu
+    mainMenu.classList.add('fade-out');
+    
+    setTimeout(() => {
+      // Don't load game UI - stay in main menu and transform it
+      // Just notify server that game should start
+      console.log('🎯 Game starting - staying in main menu UI...');
+      
+      // Transform main menu to show "Game Starting" state
+      showGameStartingState();
+    }, 500);
+  }
+
+  function showGameStartingState() {
+    const mainMenu = document.getElementById('mainMenu');
+    
+    // Remove fade-out and show the menu again
+    mainMenu.classList.remove('fade-out');
+    mainMenu.classList.remove('hidden');
+    mainMenu.classList.add('fade-in');
+    
+    // Update the logo section to show game starting state
+    const logoSection = document.querySelector('.logo-section');
+    logoSection.innerHTML = `
+      <div class="logo-container">
+        <img src="/assets/buzzchain-logo.png" alt="Buzzchain Logo" class="logo-image" id="logoImage">
+      </div>
+      <h1 class="game-title">GAME STARTING</h1>
+      <p class="game-subtitle">Preparing Trivia Experience</p>
+      <p class="tagline">Get Ready to Play!</p>
+    `;
+    
+    // Hide the game modes and features
+    document.querySelector('.game-modes').style.display = 'none';
+    document.querySelector('.features-section').style.display = 'none';
+    
+    // Show a countdown or loading message
+    const loadingMessage = document.createElement('div');
+    loadingMessage.className = 'loading-message';
+    loadingMessage.style.cssText = `
+      margin-top: 3rem;
+      font-size: 1.5rem;
+      color: var(--primary-gold);
+      text-align: center;
+      animation: pulse 2s ease-in-out infinite;
+    `;
+    loadingMessage.innerHTML = `
+      <div class="loading-spinner" style="
+        width: 60px;
+        height: 60px;
+        border: 4px solid rgba(255, 215, 0, 0.3);
+        border-top: 4px solid var(--primary-gold);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 2rem auto;
+      "></div>
+      <p>🎯 Initializing Game Board...</p>
+      <p style="font-size: 1rem; color: var(--text-dim); margin-top: 1rem;">
+        Loading questions, setting up AI players, and preparing the ultimate trivia experience!
+      </p>
+    `;
+    
+    mainMenu.appendChild(loadingMessage);
+    
+    console.log('✨ Transformed main menu to game starting state');
+  }
+
+  // Listen for data from server
+  hytopia.onData(data => {
+    console.log('Main Menu received data:', data);
+    
+    switch(data.type) {
+      case 'GAME_READY':
+        // Game is ready, complete transition
+        console.log('🎮 Game Ready - Transition Complete');
+        break;
+        
+      case 'ERROR':
+        // Handle errors and reset buttons
+        resetButtonStates();
+        console.error('Game Error:', data.payload);
+        break;
+        
+      default:
+        console.log('Unknown data type:', data.type);
+    }
+  });
+
+  function resetButtonStates() {
+    const singlePlayerBtn = document.getElementById('singlePlayerBtn');
+    const multiplayerBtn = document.getElementById('multiplayerBtn');
+    
+    // Reset single player button
+    singlePlayerBtn.disabled = false;
+    singlePlayerBtn.classList.remove('loading');
+    singlePlayerBtn.textContent = '🎮 Start Single Player Game';
+    
+    // Reset multiplayer button
+    multiplayerBtn.disabled = false;
+    multiplayerBtn.classList.remove('loading');
+    multiplayerBtn.textContent = '👥 Enter Multiplayer Lobby';
+  }
+
+  // Initialize when page loads
+  document.addEventListener('DOMContentLoaded', initializeMainMenu);
+  
+  // Also initialize immediately if DOM is already loaded
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeMainMenu);
+  } else {
+    initializeMainMenu();
+  }
+</script>
