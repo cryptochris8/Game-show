@@ -298,6 +298,15 @@ startServer(world => {
       type: 'GAME_READY',
       payload: { mode: 'singleplayer', aiCount: config.aiCount }
     });
+
+    // Actually start the game after a short delay
+    setTimeout(() => {
+      logger.info('Starting single player game after AI initialization', {
+        component: 'GameMode',
+        playerId: player.id
+      });
+      gameManager.startGame();
+    }, 1000);
   }
 
   /**

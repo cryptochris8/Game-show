@@ -70,6 +70,10 @@ export class PackLoader {
             const validationResult = this.validatePack(packData);
 
             if (!validationResult.valid) {
+                console.error('Pack validation failed with errors:', validationResult.errors);
+                if (validationResult.warnings.length > 0) {
+                    console.warn('Pack validation warnings:', validationResult.warnings);
+                }
                 return {
                     success: false,
                     error: 'Pack validation failed',
@@ -93,6 +97,7 @@ export class PackLoader {
             };
 
         } catch (error) {
+            console.error('Failed to load pack:', error);
             return {
                 success: false,
                 error: `Failed to load pack: ${error instanceof Error ? error.message : 'Unknown error'}`
@@ -105,6 +110,8 @@ export class PackLoader {
      */
     static async loadPackByName(packName: string): Promise<LoadResult> {
         const packPath = join(process.cwd(), 'assets', 'packs', `${packName}.json`);
+        console.log('Attempting to load pack from:', packPath);
+        console.log('Current working directory:', process.cwd());
         return this.loadPack(packPath);
     }
 
@@ -135,8 +142,8 @@ export class PackLoader {
         // Required fields
         this.validateRequiredField(packData, 'packId', 'string', errors);
         this.validateRequiredField(packData, 'title', 'string', errors);
-        this.validateRequiredField(packData, 'categories', 'object', errors);
-        this.validateRequiredField(packData, 'dailyDoubles', 'object', errors);
+        this.validateRequiredField(packData, 'categories', 'array', errors);
+        this.validateRequiredField(packData, 'dailyDoubles', 'array', errors);
         this.validateRequiredField(packData, 'finalRound', 'object', errors);
 
         if (errors.length > 0) {
@@ -222,7 +229,7 @@ export class PackLoader {
 
         // Required fields
         this.validateRequiredField(category, 'name', 'string', errors, field);
-        this.validateRequiredField(category, 'clues', 'object', errors, field);
+        this.validateRequiredField(category, 'clues', 'array', errors, field);
 
         if (!Array.isArray(category.clues)) {
             errors.push({

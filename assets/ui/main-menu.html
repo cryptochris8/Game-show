@@ -935,7 +935,7 @@
     const logoSection = document.querySelector('.logo-section');
     logoSection.innerHTML = `
       <div class="logo-container">
-        <img src="/assets/buzzchain-logo.png" alt="Buzzchain Logo" class="logo-image" id="logoImage">
+        <img src="/assets/buzzchain-logo.png" alt="Buzzchain Logo" class="logo-image" id="logoImage" style="max-width: 150px;">
       </div>
       <h1 class="game-title">GAME STARTING</h1>
       <p class="game-subtitle">Preparing Trivia Experience</p>
@@ -987,6 +987,14 @@
         console.log('🎮 Game Ready - Transition Complete');
         break;
         
+      case 'GAME_STATE':
+        // Handle game state updates
+        console.log('📊 Game State Update:', data.payload);
+        if (data.payload && data.payload.gameState) {
+          updateGameDisplay(data.payload.gameState);
+        }
+        break;
+        
       case 'ERROR':
         // Handle errors and reset buttons
         resetButtonStates();
@@ -997,6 +1005,26 @@
         console.log('Unknown data type:', data.type);
     }
   });
+  
+  function updateGameDisplay(gameState) {
+    console.log('Updating game display with state:', gameState);
+    
+    // If game has started, show a simple message for now
+    if (gameState.phase && gameState.phase !== 'LOBBY') {
+      const mainMenu = document.getElementById('mainMenu');
+      mainMenu.innerHTML = `
+        <div style="text-align: center; padding: 2rem; color: var(--primary-gold);">
+          <h1 style="font-size: 2rem; margin-bottom: 1rem;">🎮 GAME IN PROGRESS</h1>
+          <p style="font-size: 1.2rem;">Phase: ${gameState.phase}</p>
+          <p style="font-size: 1rem; margin-top: 1rem;">Round: ${gameState.round || 1}</p>
+          <p style="font-size: 1rem; color: var(--text-dim);">
+            The full game board UI is coming soon!<br>
+            For now, use chat commands to play.
+          </p>
+        </div>
+      `;
+    }
+  }
 
   function resetButtonStates() {
     const singlePlayerBtn = document.getElementById('singlePlayerBtn');

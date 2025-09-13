@@ -63,6 +63,6 @@
       ]
     }
   ],
-  "dailyDoubles": [ { "category": 1, "index": 3 }, { "category": 4, "index": 2 } ],
+  "dailyDoubles": [ { "category": 0, "index": 3 }, { "category": 3, "index": 2 } ],
   "finalRound": { "category": "WORLD FLAGS", "clue": "This country's flag features a red maple leaf.", "answer": "What is Canada?" }
 }
