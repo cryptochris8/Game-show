@@ -456,19 +456,16 @@ export class GameManager {
      * Send current game state to a specific player
      */
     public sendGameStateToPlayer(player: Player): void {
-        const boardData = this.roundManager ? {
-            categories: this.roundManager.getCategories(),
-            currentClue: this.currentClue,
-            answeredCells: this.roundManager.getAnsweredCells()
-        } : null;
+        // Use getCurrentBoard() which returns the proper structure with categories array
+        const boardData = this.roundManager ? this.roundManager.getCurrentBoard() : null;
 
         const playersData = {};
         this.players.forEach((p, id) => {
             playersData[id] = {
                 id: id,
                 name: p.username || id,
-                score: this.scores.get(id) || 0,
-                hasBuzzed: this.buzzManager?.getWinner() === id
+                score: this.scoreManager.getPlayer(id)?.score || 0,
+                hasBuzzed: this.buzzManager?.getCurrentWinner() === id
             };
         });
 
@@ -476,9 +473,9 @@ export class GameManager {
         this.aiPlayers.forEach((ai, id) => {
             playersData[id] = {
                 id: id,
-                name: ai.name,
-                score: this.scores.get(id) || 0,
-                hasBuzzed: this.buzzManager?.getWinner() === id
+                name: ai.username,
+                score: ai.score || 0,
+                hasBuzzed: this.buzzManager?.getCurrentWinner() === id
             };
         });
 
@@ -486,7 +483,7 @@ export class GameManager {
             type: 'GAME_STATE',
             payload: {
                 phase: this.gamePhase,
-                round: this.currentRound,
+                round: this.roundManager?.getCurrentRound() || 1,
                 board: boardData,
                 players: playersData,
                 currentPlayer: this.currentPickerId
@@ -524,7 +521,7 @@ export class GameManager {
         };
 
         // Use the existing cell selection logic
-        await this.handleCellSelection(aiPlayer as any, payload);
+        await this.handleCellSelection(aiPlayer, payload);
     }
 
     /**
@@ -596,9 +593,16 @@ export class GameManager {
     /**
      * Handle cell selection
      */
-    private async handleCellSelection(player: Player, payload: SelectCellPayload): Promise<void> {
-        // Check if player can select (is host or current picker)
-        if (this.currentPickerId !== player.id && this.hostPlayerId !== player.id) {
+    private async handleCellSelection(player: Player | AIPlayer, payload: SelectCellPayload): Promise<void> {
+        const playerId = typeof player === 'string' ? player : (player as any).id || player.id;
+
+        // Check if player can select (is current picker)
+        if (this.currentPickerId !== playerId) {
+            logger.warn('Player tried to select cell but is not current picker', {
+                component: 'GameManager',
+                playerId,
+                currentPickerId: this.currentPickerId
+            });
             return;
         }
         
@@ -610,10 +614,14 @@ export class GameManager {
         const categoryIndex = payload.categoryIndex !== undefined ? payload.categoryIndex : payload.category;
         const clueIndex = payload.clueIndex !== undefined ? payload.clueIndex : payload.index;
 
-        const result = this.roundManager.selectCell(categoryIndex, clueIndex, player.id);
+        const playerId = typeof player === 'string' ? player : (player as any).id || player.id;
+        const result = this.roundManager.selectCell(categoryIndex, clueIndex, playerId);
         
         if (!result.success) {
-            this.sendPlayerMessage(player, result.error || 'Invalid cell selection');
+            // Only send message to human players
+            if (player && typeof player !== 'string' && (player as any).ui) {
+                this.sendPlayerMessage(player as Player, result.error || 'Invalid cell selection');
+            }
             return;
         }
         

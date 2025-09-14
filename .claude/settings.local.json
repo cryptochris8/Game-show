@@ -1,12 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dir:*)",
-      "Bash(cat:*)",
-      "Bash(ls:*)",
-      "Bash(find:*)",
-      "mcp__hytopia-mcp__getDocumentation",
-      "Bash(npx tsc:*)"
+      "mcp__hytopia-mcp__listProjects",
+      "mcp__hytopia-mcp__getDocumentation"
     ]
   },
   "enableAllProjectMcpServers": true,

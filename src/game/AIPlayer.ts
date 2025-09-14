@@ -204,25 +204,68 @@ export class AIPlayer {
 
     private selectHighValueClue(gameState: GameStateData): void {
         // Find highest value available clue
-        let bestCategory = 0;
-        let bestIndex = 0;
-        let highestValue = 0;
-
-        // This would need board data - simplified for now
-        this.simulateClueSelection(bestCategory, bestIndex);
+        for (let index = 4; index >= 0; index--) { // Start from highest value
+            for (let category = 0; category < 6; category++) {
+                const cellKey = `${category}-${index}`;
+                if (gameState.usedCells && !gameState.usedCells.includes(cellKey)) {
+                    this.simulateClueSelection(category, index);
+                    return;
+                }
+            }
+        }
+        // Fallback to random if no high value found
+        this.selectRandomClue(gameState);
     }
 
     private selectLowValueClue(gameState: GameStateData): void {
         // Find lowest value available clue
-        let bestCategory = 0;
-        let bestIndex = 4; // Start with highest index (lowest value)
-        this.simulateClueSelection(bestCategory, bestIndex);
+        for (let index = 0; index < 5; index++) { // Start from lowest value
+            for (let category = 0; category < 6; category++) {
+                const cellKey = `${category}-${index}`;
+                if (gameState.usedCells && !gameState.usedCells.includes(cellKey)) {
+                    this.simulateClueSelection(category, index);
+                    return;
+                }
+            }
+        }
+        // Fallback to random if no low value found
+        this.selectRandomClue(gameState);
     }
 
     private selectRandomClue(gameState: GameStateData): void {
-        const category = Math.floor(Math.random() * 6);
-        const index = Math.floor(Math.random() * 5);
-        this.simulateClueSelection(category, index);
+        // Try to find an available cell
+        const maxAttempts = 30;
+        let attempts = 0;
+
+        while (attempts < maxAttempts) {
+            const category = Math.floor(Math.random() * 6);
+            const index = Math.floor(Math.random() * 5);
+            const cellKey = `${category}-${index}`;
+
+            // Check if cell is not used
+            if (!gameState.usedCells || !gameState.usedCells.includes(cellKey)) {
+                this.simulateClueSelection(category, index);
+                return;
+            }
+            attempts++;
+        }
+
+        // If no random cell found, try to find any available cell systematically
+        for (let cat = 0; cat < 6; cat++) {
+            for (let idx = 0; idx < 5; idx++) {
+                const cellKey = `${cat}-${idx}`;
+                if (!gameState.usedCells || !gameState.usedCells.includes(cellKey)) {
+                    this.simulateClueSelection(cat, idx);
+                    return;
+                }
+            }
+        }
+
+        logger.warn(`AI ${this.username} could not find any available cells`, {
+            component: 'AIPlayer',
+            playerId: this.id,
+            usedCells: gameState.usedCells
+        });
     }
 
     private simulateClueSelection(categoryIndex: number, clueIndex: number): void {

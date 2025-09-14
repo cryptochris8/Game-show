@@ -16,7 +16,7 @@
  */
 
 import { startServer, Audio, PlayerEvent, PlayerUIEvent } from 'hytopia';
-import worldMap from './assets/maps/minimal-lobby.json';
+import worldMap from './assets/maps/map.json';
 import GameManager from './src/game/GameManager';
 import { PlayerLifecycleManager } from './src/util/PlayerManager';
 import { ChatCommandManager, registerCommands } from './src/util/ChatCommandManager';
