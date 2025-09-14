@@ -903,7 +903,7 @@
 
   function transitionToGame() {
     const mainMenu = document.getElementById('mainMenu');
-    
+
     // Play transition sound
     hytopia.sendData({
       type: 'PLAY_SOUND',
@@ -912,28 +912,37 @@
 
     // Fade out main menu
     mainMenu.classList.add('fade-out');
-    
+
     setTimeout(() => {
-      // Don't load game UI - stay in main menu and transform it
-      // Just notify server that game should start
-      console.log('🎯 Game starting - staying in main menu UI...');
-      
-      // Transform main menu to show "Game Starting" state
-      showGameStartingState();
+      // Load the game board UI
+      console.log('🎯 Loading game board UI...');
+      hytopia.sendData({
+        type: 'LOAD_GAME_BOARD',
+        payload: {}
+      });
+
+      // The server will handle loading the game board UI
     }, 500);
   }
 
   function showGameStartingState() {
     const mainMenu = document.getElementById('mainMenu');
-    
+
+    // Check if mainMenu exists before proceeding
+    if (!mainMenu) {
+      console.error('Main menu element not found!');
+      return;
+    }
+
     // Remove fade-out and show the menu again
     mainMenu.classList.remove('fade-out');
     mainMenu.classList.remove('hidden');
     mainMenu.classList.add('fade-in');
-    
+
     // Update the logo section to show game starting state
     const logoSection = document.querySelector('.logo-section');
-    logoSection.innerHTML = `
+    if (logoSection) {
+      logoSection.innerHTML = `
       <div class="logo-container">
         <img src="/assets/buzzchain-logo.png" alt="Buzzchain Logo" class="logo-image" id="logoImage" style="max-width: 150px;">
       </div>
@@ -941,10 +950,14 @@
       <p class="game-subtitle">Preparing Trivia Experience</p>
       <p class="tagline">Get Ready to Play!</p>
     `;
-    
-    // Hide the game modes and features
-    document.querySelector('.game-modes').style.display = 'none';
-    document.querySelector('.features-section').style.display = 'none';
+    }
+
+    // Hide the game modes and features if they exist
+    const gameModes = document.querySelector('.game-modes');
+    if (gameModes) gameModes.style.display = 'none';
+
+    const featuresSection = document.querySelector('.features-section');
+    if (featuresSection) featuresSection.style.display = 'none';
     
     // Show a countdown or loading message
     const loadingMessage = document.createElement('div');

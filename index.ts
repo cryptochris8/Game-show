@@ -257,12 +257,9 @@ startServer(world => {
         playSound(data.payload.sound);
         break;
 
-      case 'LOAD_GAME_UI':
-        // UI-focused mode: Don't load separate game UI, keep main menu
-        logger.info(`Keeping main menu UI for ${player.username} (UI-focused mode)`, {
-          component: 'UISystem',
-          playerId: player.id
-        });
+      case 'LOAD_GAME_BOARD':
+        // Load the game board UI
+        loadGameBoardUI(player);
         break;
 
       default:
@@ -363,26 +360,29 @@ startServer(world => {
   }
 
   /**
-   * Load Game UI
+   * Load Game Board UI
    */
-  function loadGameUI(player: any) {
-    logger.info(`Loading game UI for ${player.username}`, {
+  function loadGameBoardUI(player: any) {
+    logger.info(`Loading game board UI for ${player.username}`, {
       component: 'UISystem',
       playerId: player.id
     });
 
-    // Load the original game UI
-    player.ui.load('ui/overlay.html');
+    // Load the game board UI
+    player.ui.load('ui/game-board.html');
 
-    // Lock pointer for game interaction
-    player.ui.lockPointer(true);
+    // Unlock pointer for UI interaction
+    player.ui.lockPointer(false);
 
     // Stop main menu music and start game music if available
     if (audioSystem.backgroundMusic) {
       audioSystem.backgroundMusic.pause();
     }
 
-    // TODO: Start game-specific background music
+    // Send initial game state to the new UI
+    setTimeout(() => {
+      gameManager.sendGameStateToPlayer(player);
+    }, 500);
   }
 
   // Setup chat command handler

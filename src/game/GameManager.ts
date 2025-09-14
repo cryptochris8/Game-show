@@ -453,6 +453,48 @@ export class GameManager {
     }
 
     /**
+     * Send current game state to a specific player
+     */
+    public sendGameStateToPlayer(player: Player): void {
+        const boardData = this.roundManager ? {
+            categories: this.roundManager.getCategories(),
+            currentClue: this.currentClue,
+            answeredCells: this.roundManager.getAnsweredCells()
+        } : null;
+
+        const playersData = {};
+        this.players.forEach((p, id) => {
+            playersData[id] = {
+                id: id,
+                name: p.username || id,
+                score: this.scores.get(id) || 0,
+                hasBuzzed: this.buzzManager?.getWinner() === id
+            };
+        });
+
+        // Add AI players
+        this.aiPlayers.forEach((ai, id) => {
+            playersData[id] = {
+                id: id,
+                name: ai.name,
+                score: this.scores.get(id) || 0,
+                hasBuzzed: this.buzzManager?.getWinner() === id
+            };
+        });
+
+        player.ui.sendData({
+            type: 'GAME_STATE',
+            payload: {
+                phase: this.gamePhase,
+                round: this.currentRound,
+                board: boardData,
+                players: playersData,
+                currentPlayer: this.currentPickerId
+            }
+        });
+    }
+
+    /**
      * Handle AI cell selection
      */
     private async handleAISelCell(categoryIndex: number, clueIndex: number, aiPlayerId: string): Promise<void> {
@@ -564,7 +606,11 @@ export class GameManager {
             return;
         }
         
-        const result = this.roundManager.selectCell(payload.category, payload.index, player.id);
+        // Handle both naming conventions for compatibility
+        const categoryIndex = payload.categoryIndex !== undefined ? payload.categoryIndex : payload.category;
+        const clueIndex = payload.clueIndex !== undefined ? payload.clueIndex : payload.index;
+
+        const result = this.roundManager.selectCell(categoryIndex, clueIndex, player.id);
         
         if (!result.success) {
             this.sendPlayerMessage(player, result.error || 'Invalid cell selection');

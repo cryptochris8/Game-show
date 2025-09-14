@@ -1,0 +1,1095 @@
+<!-- BUZZCHAIN TRIVIA - Game Board UI -->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600;700&display=swap');
+
+  :root {
+    --primary-gold: #FFD700;
+    --secondary-gold: #FFA500;
+    --dark-bg: #0a0a0f;
+    --card-bg: rgba(20, 20, 30, 0.95);
+    --accent-blue: #00BFFF;
+    --success-green: #00FF88;
+    --error-red: #FF4444;
+    --text-light: #FFFFFF;
+    --text-dim: #CCCCCC;
+    --shadow-glow: 0 0 30px rgba(255, 215, 0, 0.3);
+    --animation-speed: 0.3s;
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: 'Exo 2', sans-serif;
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #0a0a0f 100%);
+    color: var(--text-light);
+    min-height: 100vh;
+    overflow: hidden;
+  }
+
+  /* Main Game Container */
+  .game-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: relative;
+  }
+
+  /* Top Bar with Logo and Timer */
+  .top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: var(--card-bg);
+    border-bottom: 2px solid var(--primary-gold);
+  }
+
+  .game-logo {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .logo-text {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.5rem;
+    font-weight: 900;
+    background: linear-gradient(45deg, var(--primary-gold), var(--secondary-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .round-info {
+    text-align: center;
+  }
+
+  .round-label {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+  }
+
+  .round-name {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--primary-gold);
+  }
+
+  .timer {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.5rem;
+    color: var(--accent-blue);
+    min-width: 100px;
+    text-align: center;
+  }
+
+  /* Game Board */
+  .board-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    overflow: auto;
+  }
+
+  .game-board {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: auto repeat(5, 1fr);
+    gap: 0.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    height: 100%;
+  }
+
+  /* Category Headers */
+  .category-header {
+    background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+    color: var(--dark-bg);
+    padding: 1rem;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+  }
+
+  /* Clue Cells */
+  .clue-cell {
+    background: var(--card-bg);
+    border: 2px solid var(--primary-gold);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-gold);
+    cursor: pointer;
+    transition: all var(--animation-speed) ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .clue-cell:hover:not(.answered) {
+    transform: scale(1.05);
+    box-shadow: var(--shadow-glow);
+    border-color: var(--text-light);
+  }
+
+  .clue-cell.answered {
+    background: rgba(40, 40, 50, 0.5);
+    border-color: rgba(255, 215, 0, 0.2);
+    color: rgba(255, 215, 0, 0.3);
+    cursor: not-allowed;
+  }
+
+  .clue-cell.daily-double {
+    animation: pulseGold 2s ease-in-out infinite;
+  }
+
+  @keyframes pulseGold {
+    0%, 100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
+    50% { box-shadow: 0 0 40px rgba(255, 215, 0, 0.8); }
+  }
+
+  /* Players Section */
+  .players-section {
+    background: var(--card-bg);
+    border-top: 2px solid var(--primary-gold);
+    padding: 1rem 2rem;
+  }
+
+  .players-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .player-card {
+    text-align: center;
+    padding: 1rem;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    min-width: 150px;
+    transition: all var(--animation-speed) ease;
+  }
+
+  .player-card.current-turn {
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 165, 0, 0.2));
+    border: 2px solid var(--primary-gold);
+    animation: turnPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes turnPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+  }
+
+  .player-card.buzzer-winner {
+    background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 191, 255, 0.2));
+    border: 2px solid var(--success-green);
+  }
+
+  .player-name {
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-light);
+  }
+
+  .player-score {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary-gold);
+  }
+
+  .player-score.negative {
+    color: var(--error-red);
+  }
+
+  .player-indicator {
+    font-size: 0.8rem;
+    color: var(--accent-blue);
+    margin-top: 0.3rem;
+    height: 1rem;
+  }
+
+  /* Question Modal */
+  .question-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .question-modal.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  .question-content {
+    background: var(--card-bg);
+    border: 3px solid var(--primary-gold);
+    border-radius: 20px;
+    padding: 3rem;
+    max-width: 800px;
+    width: 90%;
+    text-align: center;
+    animation: slideIn 0.3s ease;
+  }
+
+  @keyframes slideIn {
+    from { transform: translateY(-50px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .question-value {
+    font-family: 'Orbitron', monospace;
+    font-size: 2rem;
+    color: var(--primary-gold);
+    margin-bottom: 1rem;
+  }
+
+  .question-category {
+    font-size: 1.2rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    margin-bottom: 2rem;
+  }
+
+  .question-text {
+    font-size: 1.8rem;
+    line-height: 1.5;
+    margin-bottom: 2rem;
+    color: var(--text-light);
+  }
+
+  .question-timer {
+    font-family: 'Orbitron', monospace;
+    font-size: 3rem;
+    color: var(--accent-blue);
+    margin-bottom: 2rem;
+  }
+
+  .question-timer.warning {
+    color: var(--secondary-gold);
+    animation: timerPulse 1s ease-in-out infinite;
+  }
+
+  .question-timer.danger {
+    color: var(--error-red);
+    animation: timerPulse 0.5s ease-in-out infinite;
+  }
+
+  @keyframes timerPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+
+  /* Buzz Button */
+  .buzz-container {
+    margin-top: 2rem;
+  }
+
+  .buzz-button {
+    background: linear-gradient(135deg, var(--error-red), #FF6666);
+    color: var(--text-light);
+    border: none;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+    font-size: 2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--animation-speed) ease;
+    box-shadow: 0 10px 30px rgba(255, 68, 68, 0.3);
+  }
+
+  .buzz-button:hover:not(:disabled) {
+    transform: scale(1.1);
+    box-shadow: 0 15px 40px rgba(255, 68, 68, 0.5);
+  }
+
+  .buzz-button:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  .buzz-button:disabled {
+    background: rgba(100, 100, 100, 0.5);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* Answer Input */
+  .answer-container {
+    display: none;
+    margin-top: 2rem;
+  }
+
+  .answer-container.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .answer-input {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1.3rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--accent-blue);
+    border-radius: 10px;
+    color: var(--text-light);
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  .answer-input:focus {
+    outline: none;
+    border-color: var(--primary-gold);
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+  }
+
+  .submit-button {
+    background: linear-gradient(135deg, var(--success-green), #00CC70);
+    color: var(--dark-bg);
+    border: none;
+    border-radius: 50px;
+    padding: 1rem 3rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--animation-speed) ease;
+  }
+
+  .submit-button:hover:not(:disabled) {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(0, 255, 136, 0.3);
+  }
+
+  .submit-button:disabled {
+    background: rgba(100, 100, 100, 0.5);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
+  /* Final Jeopardy */
+  .final-jeopardy-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1a1a2e, #0a0a0f);
+    z-index: 1000;
+  }
+
+  .final-jeopardy-modal.active {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .final-title {
+    font-family: 'Orbitron', monospace;
+    font-size: 3rem;
+    font-weight: 900;
+    background: linear-gradient(45deg, var(--primary-gold), var(--secondary-gold));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 2rem;
+    animation: finalPulse 2s ease-in-out infinite;
+  }
+
+  @keyframes finalPulse {
+    0%, 100% { transform: scale(1); text-shadow: 0 0 30px rgba(255, 215, 0, 0.5); }
+    50% { transform: scale(1.05); text-shadow: 0 0 50px rgba(255, 215, 0, 0.8); }
+  }
+
+  .wager-container {
+    background: var(--card-bg);
+    border: 3px solid var(--primary-gold);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .wager-input {
+    width: 300px;
+    padding: 1rem;
+    font-size: 1.5rem;
+    font-family: 'Orbitron', monospace;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid var(--accent-blue);
+    border-radius: 10px;
+    color: var(--primary-gold);
+    text-align: center;
+  }
+
+  /* Messages */
+  .message-overlay {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--card-bg);
+    border: 3px solid var(--primary-gold);
+    border-radius: 20px;
+    padding: 2rem 3rem;
+    z-index: 2000;
+    text-align: center;
+  }
+
+  .message-overlay.active {
+    display: block;
+    animation: bounceIn 0.5s ease;
+  }
+
+  @keyframes bounceIn {
+    0% { transform: translate(-50%, -50%) scale(0); }
+    70% { transform: translate(-50%, -50%) scale(1.1); }
+    100% { transform: translate(-50%, -50%) scale(1); }
+  }
+
+  .message-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-light);
+  }
+
+  .message-overlay.correct .message-text {
+    color: var(--success-green);
+  }
+
+  .message-overlay.incorrect .message-text {
+    color: var(--error-red);
+  }
+
+  /* Chat/Activity Feed */
+  .activity-feed {
+    position: fixed;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 300px;
+    max-height: 400px;
+    background: rgba(20, 20, 30, 0.9);
+    border: 2px solid rgba(255, 215, 0, 0.3);
+    border-radius: 10px;
+    padding: 1rem;
+    overflow-y: auto;
+  }
+
+  .activity-title {
+    font-weight: 700;
+    color: var(--primary-gold);
+    margin-bottom: 1rem;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  .activity-item {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: var(--text-dim);
+    animation: slideInRight 0.3s ease;
+  }
+
+  @keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+  }
+
+  .activity-item .player-name {
+    color: var(--accent-blue);
+    font-weight: 600;
+  }
+
+  .activity-item .points {
+    color: var(--primary-gold);
+    font-weight: 700;
+  }
+
+  /* Mobile Responsive */
+  @media (max-width: 768px) {
+    .game-board {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .clue-cell {
+      font-size: 1.5rem;
+    }
+
+    .players-container {
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .player-card {
+      min-width: 100px;
+    }
+
+    .activity-feed {
+      display: none;
+    }
+  }
+</style>
+
+<div class="game-container">
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="game-logo">
+      <span class="logo-text">BUZZCHAIN</span>
+    </div>
+    <div class="round-info">
+      <div class="round-label">Current Round</div>
+      <div class="round-name" id="roundName">ROUND 1</div>
+    </div>
+    <div class="timer" id="gameTimer">--:--</div>
+  </div>
+
+  <!-- Game Board -->
+  <div class="board-section">
+    <div class="game-board" id="gameBoard">
+      <!-- Categories and clues will be dynamically inserted here -->
+    </div>
+  </div>
+
+  <!-- Players Section -->
+  <div class="players-section">
+    <div class="players-container" id="playersContainer">
+      <!-- Player cards will be dynamically inserted here -->
+    </div>
+  </div>
+</div>
+
+<!-- Question Modal -->
+<div class="question-modal" id="questionModal">
+  <div class="question-content">
+    <div class="question-value" id="questionValue">$0</div>
+    <div class="question-category" id="questionCategory">CATEGORY</div>
+    <div class="question-text" id="questionText">Question will appear here</div>
+    <div class="question-timer" id="questionTimer">30</div>
+
+    <div class="buzz-container" id="buzzContainer">
+      <button class="buzz-button" id="buzzButton">BUZZ!</button>
+    </div>
+
+    <div class="answer-container" id="answerContainer">
+      <input type="text" class="answer-input" id="answerInput" placeholder="What is your answer?" />
+      <button class="submit-button" id="submitButton">Submit Answer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Final Jeopardy Modal -->
+<div class="final-jeopardy-modal" id="finalModal">
+  <h1 class="final-title">FINAL JEOPARDY</h1>
+  <div class="wager-container">
+    <h2 style="color: var(--text-dim); margin-bottom: 1rem;">Enter Your Wager</h2>
+    <input type="number" class="wager-input" id="wagerInput" placeholder="$0" min="0" />
+    <button class="submit-button" id="submitWager" style="margin-top: 1rem;">Lock In Wager</button>
+  </div>
+  <div class="question-content" id="finalQuestion" style="display: none;">
+    <div class="question-category" id="finalCategory">CATEGORY</div>
+    <div class="question-text" id="finalClue">Final Jeopardy clue will appear here</div>
+    <div class="answer-container active">
+      <input type="text" class="answer-input" id="finalAnswer" placeholder="What is your answer?" />
+      <button class="submit-button" id="submitFinalAnswer">Submit Final Answer</button>
+    </div>
+  </div>
+</div>
+
+<!-- Message Overlay -->
+<div class="message-overlay" id="messageOverlay">
+  <div class="message-text" id="messageText"></div>
+</div>
+
+<!-- Activity Feed -->
+<div class="activity-feed" id="activityFeed">
+  <div class="activity-title">Game Activity</div>
+  <div id="activityItems"></div>
+</div>
+
+<script>
+// Game State
+let gameState = {
+  phase: 'LOBBY',
+  round: 1,
+  categories: [],
+  board: [],
+  players: {},
+  currentPlayer: null,
+  currentQuestion: null,
+  buzzerActive: false,
+  timeRemaining: 0,
+  timerInterval: null
+};
+
+// Initialize game when ready
+function initializeGame() {
+  if (typeof hytopia === 'undefined') {
+    console.error('HYTOPIA API not available! Waiting...');
+    setTimeout(initializeGame, 100);
+    return;
+  }
+
+  console.log('🎮 Buzzchain Game Board Initialized');
+  setupEventListeners();
+
+  // Listen for game updates from server
+  hytopia.onData(handleServerMessage);
+
+  // Request initial game state
+  hytopia.sendData({
+    type: 'GET_GAME_STATE'
+  });
+}
+
+// Handle messages from server
+function handleServerMessage(data) {
+  console.log('Received from server:', data);
+
+  switch(data.type) {
+    case 'GAME_STATE':
+      updateGameState(data.payload);
+      break;
+    case 'BOARD_UPDATE':
+      updateBoard(data.payload);
+      break;
+    case 'QUESTION_START':
+      showQuestion(data.payload);
+      break;
+    case 'BUZZ_WINNER':
+      handleBuzzWinner(data.payload);
+      break;
+    case 'ANSWER_RESULT':
+      showAnswerResult(data.payload);
+      break;
+    case 'PLAYER_UPDATE':
+      updatePlayers(data.payload);
+      break;
+    case 'ROUND_CHANGE':
+      handleRoundChange(data.payload);
+      break;
+    case 'FINAL_JEOPARDY':
+      showFinalJeopardy(data.payload);
+      break;
+    case 'GAME_END':
+      showGameEnd(data.payload);
+      break;
+    case 'ACTIVITY':
+      addActivity(data.payload);
+      break;
+  }
+}
+
+// Update game state
+function updateGameState(state) {
+  gameState = { ...gameState, ...state };
+
+  // Update UI based on state
+  updateRoundDisplay();
+  updateBoard(state.board);
+  updatePlayers(state.players);
+
+  if (state.phase === 'FINAL') {
+    showFinalJeopardy();
+  }
+}
+
+// Update round display
+function updateRoundDisplay() {
+  const roundName = document.getElementById('roundName');
+  if (gameState.phase === 'FINAL') {
+    roundName.textContent = 'FINAL JEOPARDY';
+  } else {
+    roundName.textContent = `ROUND ${gameState.round}`;
+  }
+}
+
+// Update game board
+function updateBoard(boardData) {
+  const boardElement = document.getElementById('gameBoard');
+  boardElement.innerHTML = '';
+
+  if (!boardData || !boardData.categories) {
+    console.error('No board data available');
+    return;
+  }
+
+  // Add category headers
+  boardData.categories.forEach(category => {
+    const header = document.createElement('div');
+    header.className = 'category-header';
+    header.textContent = category.name;
+    boardElement.appendChild(header);
+  });
+
+  // Add clue cells
+  for (let row = 0; row < 5; row++) {
+    for (let col = 0; col < boardData.categories.length; col++) {
+      const clue = boardData.categories[col].clues[row];
+      const cell = document.createElement('div');
+      cell.className = 'clue-cell';
+
+      if (clue.answered) {
+        cell.classList.add('answered');
+      }
+
+      if (clue.isDailyDouble) {
+        cell.classList.add('daily-double');
+      }
+
+      cell.textContent = clue.answered ? '' : `$${clue.value}`;
+      cell.dataset.category = col;
+      cell.dataset.clue = row;
+
+      if (!clue.answered) {
+        cell.addEventListener('click', () => selectClue(col, row));
+      }
+
+      boardElement.appendChild(cell);
+    }
+  }
+}
+
+// Update players display
+function updatePlayers(playersData) {
+  const container = document.getElementById('playersContainer');
+  container.innerHTML = '';
+
+  if (!playersData) return;
+
+  Object.values(playersData).forEach(player => {
+    const card = document.createElement('div');
+    card.className = 'player-card';
+
+    if (player.id === gameState.currentPlayer) {
+      card.classList.add('current-turn');
+    }
+
+    if (player.hasBuzzed) {
+      card.classList.add('buzzer-winner');
+    }
+
+    card.innerHTML = `
+      <div class="player-name">${player.name}</div>
+      <div class="player-score ${player.score < 0 ? 'negative' : ''}">
+        $${player.score.toLocaleString()}
+      </div>
+      <div class="player-indicator">
+        ${player.id === gameState.currentPlayer ? '▶ YOUR TURN' : ''}
+        ${player.hasBuzzed ? '🔔 BUZZED' : ''}
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+}
+
+// Select a clue
+function selectClue(categoryIndex, clueIndex) {
+  if (gameState.currentQuestion) return;
+
+  hytopia.sendData({
+    type: 'SELECT_CELL',
+    payload: {
+      categoryIndex,
+      clueIndex
+    }
+  });
+}
+
+// Show question modal
+function showQuestion(questionData) {
+  gameState.currentQuestion = questionData;
+
+  const modal = document.getElementById('questionModal');
+  const valueEl = document.getElementById('questionValue');
+  const categoryEl = document.getElementById('questionCategory');
+  const textEl = document.getElementById('questionText');
+  const timerEl = document.getElementById('questionTimer');
+  const buzzContainer = document.getElementById('buzzContainer');
+  const answerContainer = document.getElementById('answerContainer');
+
+  // Set question content
+  valueEl.textContent = questionData.isDailyDouble ? 'DAILY DOUBLE!' : `$${questionData.value}`;
+  categoryEl.textContent = questionData.category;
+  textEl.textContent = questionData.clue;
+
+  // Reset UI state
+  buzzContainer.style.display = questionData.isDailyDouble ? 'none' : 'block';
+  answerContainer.classList.remove('active');
+  document.getElementById('buzzButton').disabled = false;
+  document.getElementById('answerInput').value = '';
+
+  // Show modal
+  modal.classList.add('active');
+
+  // Start timer
+  startQuestionTimer(questionData.timeLimit || 30);
+
+  // If Daily Double, show answer input immediately
+  if (questionData.isDailyDouble) {
+    answerContainer.classList.add('active');
+    document.getElementById('answerInput').focus();
+  }
+}
+
+// Start question timer
+function startQuestionTimer(seconds) {
+  gameState.timeRemaining = seconds;
+  const timerEl = document.getElementById('questionTimer');
+
+  clearInterval(gameState.timerInterval);
+
+  gameState.timerInterval = setInterval(() => {
+    gameState.timeRemaining--;
+    timerEl.textContent = gameState.timeRemaining;
+
+    // Add warning classes
+    timerEl.classList.remove('warning', 'danger');
+    if (gameState.timeRemaining <= 5) {
+      timerEl.classList.add('danger');
+    } else if (gameState.timeRemaining <= 10) {
+      timerEl.classList.add('warning');
+    }
+
+    if (gameState.timeRemaining <= 0) {
+      clearInterval(gameState.timerInterval);
+      closeQuestionModal();
+    }
+  }, 1000);
+}
+
+// Handle buzz button
+function buzz() {
+  if (gameState.buzzerActive) return;
+
+  gameState.buzzerActive = true;
+  document.getElementById('buzzButton').disabled = true;
+
+  hytopia.sendData({
+    type: 'BUZZ',
+    payload: {}
+  });
+}
+
+// Handle buzz winner
+function handleBuzzWinner(data) {
+  if (data.winnerId === hytopia.playerId) {
+    // Show answer input
+    document.getElementById('answerContainer').classList.add('active');
+    document.getElementById('answerInput').focus();
+    showMessage('You buzzed in!', 'info');
+  } else {
+    // Show who buzzed
+    showMessage(`${data.winnerName} buzzed in!`, 'info');
+    document.getElementById('buzzButton').disabled = true;
+  }
+}
+
+// Submit answer
+function submitAnswer() {
+  const answer = document.getElementById('answerInput').value.trim();
+
+  if (!answer) return;
+
+  hytopia.sendData({
+    type: 'ANSWER_SUBMIT',
+    payload: { answer }
+  });
+
+  document.getElementById('submitButton').disabled = true;
+}
+
+// Show answer result
+function showAnswerResult(result) {
+  const messageClass = result.correct ? 'correct' : 'incorrect';
+  const message = result.correct
+    ? `✅ CORRECT! +$${result.points}`
+    : `❌ INCORRECT! -$${Math.abs(result.points)}`;
+
+  showMessage(message, messageClass);
+
+  // Add to activity feed
+  addActivity({
+    text: `${result.playerName} ${result.correct ? 'got' : 'missed'} ${result.category} for $${Math.abs(result.points)}`,
+    type: result.correct ? 'correct' : 'incorrect'
+  });
+
+  // Close modal after delay
+  setTimeout(() => {
+    closeQuestionModal();
+  }, 2000);
+}
+
+// Close question modal
+function closeQuestionModal() {
+  clearInterval(gameState.timerInterval);
+  document.getElementById('questionModal').classList.remove('active');
+  gameState.currentQuestion = null;
+  gameState.buzzerActive = false;
+}
+
+// Show Final Jeopardy
+function showFinalJeopardy(data) {
+  const modal = document.getElementById('finalModal');
+  modal.classList.add('active');
+
+  if (data && data.category) {
+    // Show the question
+    document.getElementById('finalCategory').textContent = data.category;
+    document.getElementById('finalClue').textContent = data.clue;
+    document.querySelector('.wager-container').style.display = 'none';
+    document.getElementById('finalQuestion').style.display = 'block';
+  }
+}
+
+// Submit wager
+function submitWager() {
+  const wager = parseInt(document.getElementById('wagerInput').value) || 0;
+
+  hytopia.sendData({
+    type: 'FINAL_WAGER',
+    payload: { wager }
+  });
+
+  document.getElementById('submitWager').disabled = true;
+}
+
+// Submit final answer
+function submitFinalAnswer() {
+  const answer = document.getElementById('finalAnswer').value.trim();
+
+  hytopia.sendData({
+    type: 'FINAL_ANSWER',
+    payload: { answer }
+  });
+
+  document.getElementById('submitFinalAnswer').disabled = true;
+}
+
+// Show message overlay
+function showMessage(text, type = 'info') {
+  const overlay = document.getElementById('messageOverlay');
+  const textEl = document.getElementById('messageText');
+
+  overlay.className = `message-overlay active ${type}`;
+  textEl.textContent = text;
+
+  setTimeout(() => {
+    overlay.classList.remove('active');
+  }, 3000);
+}
+
+// Add activity to feed
+function addActivity(activity) {
+  const container = document.getElementById('activityItems');
+  const item = document.createElement('div');
+  item.className = 'activity-item';
+  item.innerHTML = activity.text;
+
+  container.insertBefore(item, container.firstChild);
+
+  // Keep only last 10 items
+  while (container.children.length > 10) {
+    container.removeChild(container.lastChild);
+  }
+}
+
+// Setup event listeners
+function setupEventListeners() {
+  document.getElementById('buzzButton').addEventListener('click', buzz);
+  document.getElementById('submitButton').addEventListener('click', submitAnswer);
+  document.getElementById('submitWager').addEventListener('click', submitWager);
+  document.getElementById('submitFinalAnswer').addEventListener('click', submitFinalAnswer);
+
+  // Enter key submits answer
+  document.getElementById('answerInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') submitAnswer();
+  });
+
+  document.getElementById('finalAnswer').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') submitFinalAnswer();
+  });
+}
+
+// Handle round change
+function handleRoundChange(data) {
+  showMessage(`Round ${data.round} Starting!`, 'info');
+  gameState.round = data.round;
+  updateRoundDisplay();
+}
+
+// Show game end
+function showGameEnd(data) {
+  const winner = Object.values(data.finalScores).reduce((a, b) =>
+    a.score > b.score ? a : b
+  );
+
+  showMessage(`🏆 ${winner.name} WINS with $${winner.score}!`, 'correct');
+
+  // Show final scores
+  setTimeout(() => {
+    const modal = document.getElementById('finalModal');
+    modal.innerHTML = `
+      <h1 class="final-title">GAME OVER</h1>
+      <div class="wager-container">
+        <h2 style="color: var(--primary-gold); margin-bottom: 2rem;">Final Scores</h2>
+        ${Object.values(data.finalScores).map(player => `
+          <div style="margin: 1rem 0; font-size: 1.5rem;">
+            <span style="color: var(--text-light);">${player.name}:</span>
+            <span style="color: var(--primary-gold); font-weight: 700;">$${player.score}</span>
+          </div>
+        `).join('')}
+        <button class="submit-button" onclick="location.reload()" style="margin-top: 2rem;">
+          Play Again
+        </button>
+      </div>
+    `;
+    modal.classList.add('active');
+  }, 3000);
+}
+
+// Initialize when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeGame);
+} else {
+  initializeGame();
+}
+</script>

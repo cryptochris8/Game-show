@@ -231,6 +231,31 @@ export class RoundManager {
     }
 
     /**
+     * Get categories for display
+     */
+    getCategories(): any {
+        if (!this.roundState.board) return null;
+
+        return {
+            categories: this.roundState.board.categories.map((cat, catIndex) => ({
+                name: cat.name,
+                clues: cat.clues.map((clue, clueIndex) => ({
+                    value: clue.value,
+                    answered: this.roundState.usedCells.has(`${catIndex}-${clueIndex}`),
+                    isDailyDouble: this.isDailyDouble(catIndex, clueIndex)
+                }))
+            }))
+        };
+    }
+
+    /**
+     * Get answered cells
+     */
+    getAnsweredCells(): Set<string> {
+        return this.roundState.usedCells;
+    }
+
+    /**
      * Get clue value by position
      */
     getClueValue(categoryIndex: number, clueIndex: number): number {
