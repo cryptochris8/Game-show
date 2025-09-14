@@ -614,7 +614,6 @@ export class GameManager {
         const categoryIndex = payload.categoryIndex !== undefined ? payload.categoryIndex : payload.category;
         const clueIndex = payload.clueIndex !== undefined ? payload.clueIndex : payload.index;
 
-        const playerId = typeof player === 'string' ? player : (player as any).id || player.id;
         const result = this.roundManager.selectCell(categoryIndex, clueIndex, playerId);
         
         if (!result.success) {
