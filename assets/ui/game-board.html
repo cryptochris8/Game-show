@@ -664,7 +664,10 @@ let gameState = {
   currentQuestion: null,
   buzzerActive: false,
   timeRemaining: 0,
-  timerInterval: null
+  timerInterval: null,
+  questionStartTime: 0,
+  questionDuration: 10000,
+  modalCloseTimeout: null
 };
 
 // Initialize game when ready
@@ -693,6 +696,7 @@ function handleServerMessage(data) {
 
   switch(data.type) {
     case 'GAME_STATE':
+      console.log('Received GAME_STATE:', data.payload);
       updateGameState(data.payload.gameState || data.payload);
       break;
     case 'BOARD_UPDATE':
@@ -700,12 +704,13 @@ function handleServerMessage(data) {
       break;
     case 'QUESTION_START':
     case 'CLUE_REVEAL':
+      console.log('Received CLUE_REVEAL:', data.payload);
       showQuestion(data.payload);
       break;
     case 'BUZZ_WINNER':
       handleBuzzWinner(data.payload);
       break;
-    case 'ANSWER_RESULT':
+    case 'JUDGE':
       showAnswerResult(data.payload);
       break;
     case 'PLAYER_UPDATE':
@@ -728,7 +733,22 @@ function handleServerMessage(data) {
 
 // Update game state
 function updateGameState(state) {
+  console.log('updateGameState called with:', state);
+  console.log('state.currentClue:', state.currentClue);
+  console.log('Current question modal state:', gameState.currentQuestion ? 'OPEN' : 'CLOSED');
+
+  // Preserve local timer state when updating from server
+  const localTimeRemaining = gameState.timeRemaining;
+  const localTimerInterval = gameState.timerInterval;
+
   gameState = { ...gameState, ...state };
+
+  // Restore local timer state if we have an active timer
+  if (localTimerInterval && localTimeRemaining > 0) {
+    gameState.timeRemaining = localTimeRemaining;
+    gameState.timerInterval = localTimerInterval;
+    console.log(`🔧 Preserved local timer state: ${localTimeRemaining} seconds remaining`);
+  }
 
   // Update UI based on state
   updateRoundDisplay();
@@ -859,7 +879,12 @@ function selectClue(categoryIndex, clueIndex) {
 
 // Show question modal
 function showQuestion(questionData) {
+  console.log('showQuestion called with data:', questionData);
+  console.log('questionData.timeLimit:', questionData.timeLimit);
+
   gameState.currentQuestion = questionData;
+  gameState.questionStartTime = Date.now();
+  gameState.questionDuration = (questionData.timeLimit || 10) * 1000; // Convert to milliseconds
 
   const modal = document.getElementById('questionModal');
   const valueEl = document.getElementById('questionValue');
@@ -883,8 +908,10 @@ function showQuestion(questionData) {
   // Show modal
   modal.classList.add('active');
 
-  // Start timer (10 seconds for answers)
-  startQuestionTimer(questionData.timeLimit || 10);
+  // Start timer (ensure minimum 10 seconds for human players)
+  const timerSeconds = Math.max(questionData.timeLimit || 10, 10);
+  console.log(`Using timer duration: ${timerSeconds} seconds`);
+  startQuestionTimer(timerSeconds);
 
   // If Daily Double, show answer input immediately
   if (questionData.isDailyDouble) {
@@ -895,13 +922,17 @@ function showQuestion(questionData) {
 
 // Start question timer
 function startQuestionTimer(seconds) {
+  console.log(`🕐 Starting question timer with ${seconds} seconds`);
   gameState.timeRemaining = seconds;
   const timerEl = document.getElementById('questionTimer');
 
   clearInterval(gameState.timerInterval);
 
   gameState.timerInterval = setInterval(() => {
+    console.log(`⏰ Timer tick: ${gameState.timeRemaining} seconds remaining`);
+
     if (gameState.timeRemaining <= 0) {
+      console.log(`⏰ Timer expired! Closing question modal`);
       clearInterval(gameState.timerInterval);
       closeQuestionModal();
       return;
@@ -965,26 +996,51 @@ function submitAnswer() {
 function showAnswerResult(result) {
   const messageClass = result.correct ? 'correct' : 'incorrect';
   const message = result.correct
-    ? `✅ CORRECT! +$${result.points}`
-    : `❌ INCORRECT! -$${Math.abs(result.points)}`;
+    ? `✅ CORRECT! +$${result.scoreChange || result.points}`
+    : `❌ INCORRECT! -$${Math.abs(result.scoreChange || result.points)}`;
 
   showMessage(message, messageClass);
 
   // Add to activity feed
   addActivity({
-    text: `${result.playerName} ${result.correct ? 'got' : 'missed'} ${result.category} for $${Math.abs(result.points)}`,
+    text: `${result.playerName} ${result.correct ? 'got' : 'missed'} for $${Math.abs(result.scoreChange || result.points)}`,
     type: result.correct ? 'correct' : 'incorrect'
   });
 
-  // Close modal after delay
-  setTimeout(() => {
+  // Instead of closing modal after 2 seconds, respect the full question timer
+  const elapsed = Date.now() - gameState.questionStartTime;
+  const remaining = gameState.questionDuration - elapsed;
+
+  // Clear any existing modal close timeout
+  if (gameState.modalCloseTimeout) {
+    clearTimeout(gameState.modalCloseTimeout);
+  }
+
+  if (remaining > 0) {
+    // Question timer is still running - wait for it to complete
+    console.log(`Answer received early, waiting ${remaining}ms more for question timer to complete`);
+    gameState.modalCloseTimeout = setTimeout(() => {
+      closeQuestionModal();
+    }, remaining);
+  } else {
+    // Question timer already expired - close immediately
     closeQuestionModal();
-  }, 2000);
+  }
 }
 
 // Close question modal
 function closeQuestionModal() {
+  console.log('🚨 closeQuestionModal() called!');
+  console.trace('Call stack:');
+
   clearInterval(gameState.timerInterval);
+
+  // Clear modal close timeout if it exists
+  if (gameState.modalCloseTimeout) {
+    clearTimeout(gameState.modalCloseTimeout);
+    gameState.modalCloseTimeout = null;
+  }
+
   document.getElementById('questionModal').classList.remove('active');
   gameState.currentQuestion = null;
   gameState.buzzerActive = false;
