@@ -199,7 +199,17 @@ export class AIPlayer {
 
         if (knowsAnswer && Math.random() < this.personality.buzzAccuracy) {
             // Schedule buzz with personality-based delay
-            const buzzDelay = this.personality.buzzDelay + (Math.random() * 2000); // More random delay
+            // Add 10 second minimum delay to give human players advantage
+            const MIN_AI_BUZZ_DELAY = 10000; // 10 seconds minimum for AI
+            const buzzDelay = MIN_AI_BUZZ_DELAY + this.personality.buzzDelay + (Math.random() * 2000);
+
+            logger.info(`AI ${this.username} will buzz in ${buzzDelay}ms`, {
+                component: 'AIPlayer',
+                playerId: this.id,
+                baseDelay: MIN_AI_BUZZ_DELAY,
+                personalityDelay: this.personality.buzzDelay
+            });
+
             setTimeout(() => {
                 this.simulateBuzz();
                 // After buzzing, schedule answer submission
@@ -587,7 +597,7 @@ export const AI_PERSONALITIES: AIPersonality[] = [
         name: "Professor Mindflayer",
         avatar: "mindflayer", // Intelligent-looking creature for the scholar
         difficulty: AIDifficulty.HARD,
-        buzzDelay: 800,
+        buzzDelay: 800,  // Additional delay after 10-second minimum
         buzzAccuracy: 0.9,
         answerAccuracy: 0.85,
         wagerStrategy: 'optimal',
@@ -597,7 +607,7 @@ export const AI_PERSONALITIES: AIPersonality[] = [
         name: "Buzzy Bee",
         avatar: "bee-adult", // Fast, nimble bee for the speedster
         difficulty: AIDifficulty.MEDIUM,
-        buzzDelay: 300,
+        buzzDelay: 300,  // Additional delay after 10-second minimum
         buzzAccuracy: 0.95,
         answerAccuracy: 0.75,
         wagerStrategy: 'aggressive',
@@ -607,7 +617,7 @@ export const AI_PERSONALITIES: AIPersonality[] = [
         name: "Wise Ocelot",
         avatar: "ocelot", // Thoughtful, calculating feline
         difficulty: AIDifficulty.EXPERT,
-        buzzDelay: 1200,
+        buzzDelay: 1200,  // Additional delay after 10-second minimum
         buzzAccuracy: 0.8,
         answerAccuracy: 0.95,
         wagerStrategy: 'conservative',
@@ -617,7 +627,7 @@ export const AI_PERSONALITIES: AIPersonality[] = [
         name: "Rookie Rabbit",
         avatar: "rabbit", // Cute, inexperienced bunny for the newbie
         difficulty: AIDifficulty.EASY,
-        buzzDelay: 2000,
+        buzzDelay: 2000,  // Additional delay after 10-second minimum
         buzzAccuracy: 0.6,
         answerAccuracy: 0.6,
         wagerStrategy: 'conservative',
@@ -627,7 +637,7 @@ export const AI_PERSONALITIES: AIPersonality[] = [
         name: "Captain Spider",
         avatar: "spider", // Strategic, web-weaving planner
         difficulty: AIDifficulty.HARD,
-        buzzDelay: 1000,
+        buzzDelay: 1000,  // Additional delay after 10-second minimum
         buzzAccuracy: 0.85,
         answerAccuracy: 0.9,
         wagerStrategy: 'optimal',

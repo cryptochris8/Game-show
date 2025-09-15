@@ -110,9 +110,14 @@ startServer(world => {
   // Initialize background music
   if (serverConfig.audioEnabled) {
     audioSystem.backgroundMusic = new Audio({
-      uri: 'audio/music/hytopia-menu-theme.mp3',
+      uri: 'audio/music/main-menu.mp3',
       loop: true,
       volume: 0.3
+    });
+
+    logger.info('Loading custom main menu music', {
+      component: 'AudioSystem',
+      file: 'main-menu.mp3'
     });
 
     // Initialize sound effects with correct file paths
@@ -281,9 +286,25 @@ startServer(world => {
     // Unlock pointer so they can interact with the menu
     player.ui.lockPointer(false);
 
-    // Start background music if enabled
+    // Start background music if enabled - force auto-play
     if (audioSystem.backgroundMusic && audioSystem.musicEnabled) {
-      audioSystem.backgroundMusic.play(world);
+      try {
+        audioSystem.backgroundMusic.play(world);
+        logger.info(`Background music started for player: ${player.username}`, {
+          component: 'AudioSystem',
+          playerId: player.id,
+          musicFile: 'main-menu.mp3'
+        });
+      } catch (error) {
+        logger.warn(`Failed to start background music for ${player.username}`, {
+          component: 'AudioSystem',
+          error: error
+        });
+      }
+    } else {
+      logger.warn(`Background music not started - music: ${!!audioSystem.backgroundMusic}, enabled: ${audioSystem.musicEnabled}`, {
+        component: 'AudioSystem'
+      });
     }
 
     // Set up UI event handler for this player
@@ -324,6 +345,10 @@ startServer(world => {
 
       case 'PLAY_SOUND':
         playSound(data.payload.sound);
+        break;
+
+      case 'PLAY_FINAL_MUSIC':
+        playFinalRoundMusic();
         break;
 
       case 'LOAD_GAME_BOARD':
@@ -458,6 +483,33 @@ startServer(world => {
   }
 
   /**
+   * Switch to Final Round Music
+   */
+  function playFinalRoundMusic() {
+    if (!serverConfig.audioEnabled) return;
+
+    // Stop current game music
+    const currentGameMusic = audioSystem.soundEffects.get('gameMusic');
+    if (currentGameMusic) {
+      currentGameMusic.pause();
+    }
+
+    // Start Final Round music
+    const finalMusic = new Audio({
+      uri: 'audio/music/final-round.mp3',
+      loop: true,
+      volume: 0.25
+    });
+    finalMusic.play(world);
+    audioSystem.soundEffects.set('finalMusic', finalMusic);
+
+    logger.info('Started Final Round music', {
+      component: 'AudioSystem',
+      file: 'final-round.mp3'
+    });
+  }
+
+  /**
    * Load Game Board UI
    */
   function loadGameBoardUI(player: any) {
@@ -475,17 +527,23 @@ startServer(world => {
     // Stop main menu music and start game music
     if (audioSystem.backgroundMusic) {
       audioSystem.backgroundMusic.pause();
+      logger.info('Stopped main menu music', { component: 'AudioSystem' });
     }
 
     // Start game background music
     if (serverConfig.audioEnabled) {
       const gameMusic = new Audio({
-        uri: 'audio/music/hytopia-main-theme.mp3',
+        uri: 'audio/music/game-background.mp3',
         loop: true,
         volume: 0.2
       });
       gameMusic.play(world);
       audioSystem.soundEffects.set('gameMusic', gameMusic);
+
+      logger.info('Loading custom game background music', {
+        component: 'AudioSystem',
+        file: 'game-background.mp3'
+      });
     }
 
     // Send initial game state to the new UI

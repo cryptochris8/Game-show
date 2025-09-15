@@ -370,23 +370,44 @@
   .answer-container {
     display: none;
     margin-top: 2rem;
+    width: 100%;
+    text-align: center;
+    background: rgba(255, 215, 0, 0.1);
+    border: 2px solid var(--primary-gold);
+    border-radius: 15px;
+    padding: 1.5rem;
   }
 
   .answer-container.active {
-    display: block;
-    animation: fadeIn 0.3s ease;
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    animation: slideInUp 0.5s ease;
+  }
+
+  @keyframes slideInUp {
+    from {
+      transform: translateY(50px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
   }
 
   .answer-input {
-    width: 100%;
-    padding: 1rem;
-    font-size: 1.3rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid var(--accent-blue);
+    width: 90%;
+    max-width: 500px;
+    padding: 1.2rem;
+    font-size: 1.5rem;
+    background: rgba(0, 0, 0, 0.7);
+    border: 3px solid var(--accent-blue);
     border-radius: 10px;
     color: var(--text-light);
     text-align: center;
-    margin-bottom: 1rem;
+    margin: 0 auto 1rem auto;
+    display: block;
   }
 
   .answer-input:focus {
@@ -405,6 +426,8 @@
     font-weight: 700;
     cursor: pointer;
     transition: all var(--animation-speed) ease;
+    display: inline-block;
+    margin: 0 auto;
   }
 
   .submit-button:hover:not(:disabled) {
@@ -478,15 +501,16 @@
   .message-overlay {
     display: none;
     position: fixed;
-    top: 50%;
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: var(--card-bg);
+    background: linear-gradient(135deg, rgba(20, 20, 30, 0.98), rgba(40, 40, 60, 0.98));
     border: 3px solid var(--primary-gold);
     border-radius: 20px;
-    padding: 2rem 3rem;
+    padding: 3rem 4rem;
     z-index: 2000;
     text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9), 0 0 40px rgba(255, 215, 0, 0.4);
   }
 
   .message-overlay.active {
@@ -501,17 +525,32 @@
   }
 
   .message-text {
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-size: 2.5rem;
+    font-weight: 900;
     color: var(--text-light);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+    font-family: 'Orbitron', monospace;
+    letter-spacing: 0.05em;
   }
 
   .message-overlay.correct .message-text {
     color: var(--success-green);
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
   }
 
   .message-overlay.incorrect .message-text {
     color: var(--error-red);
+    text-shadow: 0 0 20px rgba(255, 68, 68, 0.6);
+  }
+
+  .message-overlay.success .message-text {
+    color: var(--success-green);
+    text-shadow: 0 0 20px rgba(0, 255, 136, 0.6);
+  }
+
+  .message-overlay.warning .message-text {
+    color: var(--secondary-gold);
+    text-shadow: 0 0 20px rgba(255, 165, 0, 0.6);
   }
 
   /* Chat/Activity Feed */
@@ -628,8 +667,10 @@
     </div>
 
     <div class="answer-container" id="answerContainer">
-      <input type="text" class="answer-input" id="answerInput" placeholder="What is your answer?" />
+      <h3 style="color: var(--success-green); margin-bottom: 1rem; font-size: 1.2rem;">🎯 YOU BUZZED IN! TYPE YOUR ANSWER:</h3>
+      <input type="text" class="answer-input" id="answerInput" placeholder="What is your answer?" autocomplete="off" />
       <button class="submit-button" id="submitButton">Submit Answer</button>
+      <p style="color: var(--text-dim); font-size: 0.9rem; margin-top: 0.5rem;">Press Enter to submit</p>
     </div>
   </div>
 </div>
@@ -718,7 +759,7 @@ function handleServerMessage(data) {
       console.log('Received CLUE_REVEAL:', data.payload);
       showQuestion(data.payload);
       break;
-    case 'BUZZ_WINNER':
+    case 'BUZZ_RESULT':
       handleBuzzWinner(data.payload);
       break;
     case 'JUDGE':
@@ -860,6 +901,7 @@ function updatePlayers(playersData) {
       card.classList.add('buzzer-winner');
     }
 
+    card.dataset.playerId = player.id;
     card.innerHTML = `
       <div class="player-name">${player.name}</div>
       <div class="player-score ${player.score < 0 ? 'negative' : ''}">
@@ -879,6 +921,12 @@ function updatePlayers(playersData) {
 function selectClue(categoryIndex, clueIndex) {
   if (gameState.currentQuestion) return;
 
+  // Play clue selection sound
+  hytopia.sendData({
+    type: 'PLAY_SOUND',
+    payload: { sound: 'click' }
+  });
+
   hytopia.sendData({
     type: 'SELECT_CELL',
     payload: {
@@ -893,9 +941,15 @@ function showQuestion(questionData) {
   console.log('showQuestion called with data:', questionData);
   console.log('questionData.timeLimit:', questionData.timeLimit);
 
+  // Play question reveal sound
+  hytopia.sendData({
+    type: 'PLAY_SOUND',
+    payload: { sound: 'transition' }
+  });
+
   gameState.currentQuestion = questionData;
   gameState.questionStartTime = Date.now();
-  gameState.questionDuration = (questionData.timeLimit || 10) * 1000; // Convert to milliseconds
+  gameState.questionDuration = (questionData.timeLimit || 20) * 1000; // Convert to milliseconds
 
   const modal = document.getElementById('questionModal');
   const valueEl = document.getElementById('questionValue');
@@ -913,14 +967,16 @@ function showQuestion(questionData) {
   // Reset UI state
   buzzContainer.style.display = questionData.isDailyDouble ? 'none' : 'block';
   answerContainer.classList.remove('active');
+  answerContainer.style.display = 'none'; // Ensure it's hidden initially
   document.getElementById('buzzButton').disabled = false;
   document.getElementById('answerInput').value = '';
+  document.getElementById('submitButton').disabled = false;
 
   // Show modal
   modal.classList.add('active');
 
-  // Start timer (ensure minimum 10 seconds for human players)
-  const timerSeconds = Math.max(questionData.timeLimit || 10, 10);
+  // Start timer (ensure minimum 20 seconds for human players)
+  const timerSeconds = Math.max(questionData.timeLimit || 20, 20);
   console.log(`Using timer duration: ${timerSeconds} seconds`);
   startQuestionTimer(timerSeconds);
 
@@ -967,20 +1023,100 @@ function buzz() {
   if (gameState.buzzerActive) return;
 
   gameState.buzzerActive = true;
-  document.getElementById('buzzButton').disabled = true;
+  const buzzButton = document.getElementById('buzzButton');
+  buzzButton.disabled = true;
+  buzzButton.style.opacity = '0.3';
+
+  console.log('Buzzing in!');
 
   hytopia.sendData({
     type: 'BUZZ',
-    payload: {}
+    payload: {
+      timestamp: Date.now()
+    }
   });
+
+  // Fallback: If we don't get a response in 2 seconds, assume we won the buzz
+  setTimeout(() => {
+    const answerContainer = document.getElementById('answerContainer');
+    if (answerContainer && !answerContainer.classList.contains('active')) {
+      console.log('Fallback: Assuming buzz win, showing answer input');
+      answerContainer.classList.add('active');
+      answerContainer.style.display = 'block';
+      answerContainer.style.visibility = 'visible';
+      answerContainer.style.opacity = '1';
+
+      const answerInput = document.getElementById('answerInput');
+      if (answerInput) {
+        answerInput.focus();
+      }
+
+      showMessage('🎯 Answer input activated! (fallback)', 'success');
+    }
+  }, 2000);
 }
 
 // Handle buzz winner
 function handleBuzzWinner(data) {
+  console.log('🎯 Buzz winner received:', data);
+
+  if (!data || !data.winnerId) {
+    console.error('Invalid buzz winner data:', data);
+    return;
+  }
+
+  // Play appropriate sound effect
+  hytopia.sendData({
+    type: 'PLAY_SOUND',
+    payload: { sound: 'buzz' }
+  });
+
   if (data.winnerId === hytopia.playerId) {
     // Show answer input
-    document.getElementById('answerContainer').classList.add('active');
-    document.getElementById('answerInput').focus();
+    const answerContainer = document.getElementById('answerContainer');
+    const answerInput = document.getElementById('answerInput');
+
+    console.log('Showing answer container for player buzz win');
+
+    // Make sure container exists and is shown with multiple approaches
+    if (answerContainer) {
+      console.log('Answer container before activation:', {
+        display: window.getComputedStyle(answerContainer).display,
+        visibility: window.getComputedStyle(answerContainer).visibility,
+        opacity: window.getComputedStyle(answerContainer).opacity,
+        classList: answerContainer.classList.toString()
+      });
+
+      // Force show the container with multiple methods
+      answerContainer.classList.add('active');
+      answerContainer.style.display = 'block';
+      answerContainer.style.visibility = 'visible';
+      answerContainer.style.opacity = '1';
+      answerContainer.style.zIndex = '1001';
+
+      console.log('Answer container after activation:', {
+        display: window.getComputedStyle(answerContainer).display,
+        visibility: window.getComputedStyle(answerContainer).visibility,
+        opacity: window.getComputedStyle(answerContainer).opacity,
+        classList: answerContainer.classList.toString()
+      });
+    } else {
+      console.error('Answer container not found!');
+    }
+
+    // Focus on input
+    if (answerInput) {
+      console.log('Focusing on answer input:', answerInput);
+      setTimeout(() => {
+        answerInput.focus();
+        answerInput.style.border = '3px solid var(--success-green)';
+        answerInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        console.log('Input focused and styled');
+      }, 200);
+    } else {
+      console.error('Answer input not found!');
+    }
+
     showMessage('🎯 YOU BUZZED IN FIRST! Type your answer!', 'success');
 
     // Visual feedback - flash the screen green briefly
@@ -988,6 +1124,14 @@ function handleBuzzWinner(data) {
     setTimeout(() => {
       document.body.style.animation = '';
     }, 500);
+
+    // Update player card to show buzz winner
+    const playerCards = document.querySelectorAll('.player-card');
+    playerCards.forEach(card => {
+      if (card.dataset.playerId === data.winnerId) {
+        card.classList.add('buzzer-winner');
+      }
+    });
   } else {
     // Show who buzzed
     showMessage(`⚡ ${data.winnerName} buzzed in first!`, 'warning');
@@ -998,21 +1142,51 @@ function handleBuzzWinner(data) {
     setTimeout(() => {
       document.body.style.animation = '';
     }, 300);
+
+    // Update player card to show who buzzed
+    const playerCards = document.querySelectorAll('.player-card');
+    playerCards.forEach(card => {
+      if (card.dataset.playerId === data.winnerId) {
+        card.classList.add('buzzer-winner');
+      }
+    });
   }
+
+  // Add to activity feed
+  addActivity({
+    text: `${data.winnerName} buzzed in! (${Math.round(data.buzzTime)}ms)`,
+    type: 'buzz'
+  });
 }
 
 // Submit answer
 function submitAnswer() {
-  const answer = document.getElementById('answerInput').value.trim();
+  const answerInput = document.getElementById('answerInput');
+  const answer = answerInput ? answerInput.value.trim() : '';
 
-  if (!answer) return;
+  console.log('Submitting answer:', answer);
+
+  if (!answer) {
+    showMessage('Please type an answer!', 'warning');
+    return;
+  }
+
+  // Play answer submit sound
+  hytopia.sendData({
+    type: 'PLAY_SOUND',
+    payload: { sound: 'confirm' }
+  });
 
   hytopia.sendData({
     type: 'ANSWER_SUBMIT',
     payload: { answer }
   });
 
-  document.getElementById('submitButton').disabled = true;
+  const submitButton = document.getElementById('submitButton');
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Submitted...';
+  }
 }
 
 // Show answer result
@@ -1021,6 +1195,13 @@ function showAnswerResult(result) {
   const message = result.correct
     ? `✅ CORRECT! +$${result.scoreChange || result.points}`
     : `❌ INCORRECT! -$${Math.abs(result.scoreChange || result.points)}`;
+
+  // Play appropriate sound for correct/incorrect
+  const soundEffect = result.correct ? 'correct' : 'incorrect';
+  hytopia.sendData({
+    type: 'PLAY_SOUND',
+    payload: { sound: soundEffect }
+  });
 
   showMessage(message, messageClass);
 
@@ -1112,12 +1293,20 @@ function showMessage(text, type = 'info') {
   const overlay = document.getElementById('messageOverlay');
   const textEl = document.getElementById('messageText');
 
+  // Clear any existing timeout
+  if (window.messageTimeout) {
+    clearTimeout(window.messageTimeout);
+  }
+
   overlay.className = `message-overlay active ${type}`;
   textEl.textContent = text;
 
-  setTimeout(() => {
+  // Keep message visible longer for important notifications
+  const duration = (type === 'success' || type === 'warning') ? 4000 : 3000;
+
+  window.messageTimeout = setTimeout(() => {
     overlay.classList.remove('active');
-  }, 3000);
+  }, duration);
 }
 
 // Add activity to feed
@@ -1150,6 +1339,20 @@ function setupEventListeners() {
   document.getElementById('finalAnswer').addEventListener('keypress', (e) => {
     if (e.key === 'Enter') submitFinalAnswer();
   });
+
+  // Add hover sounds to interactive elements
+  setTimeout(() => {
+    document.querySelectorAll('.clue-cell, .buzz-button, .submit-button').forEach(element => {
+      element.addEventListener('mouseenter', () => {
+        if (!element.classList.contains('answered')) {
+          hytopia.sendData({
+            type: 'PLAY_SOUND',
+            payload: { sound: 'hover' }
+          });
+        }
+      });
+    });
+  }, 1000); // Wait for elements to be created
 }
 
 // Handle round change

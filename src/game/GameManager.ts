@@ -740,10 +740,10 @@ export class GameManager {
             // Start buzz window
             this.buzzManager.startBuzzWindow();
 
-            // Set timer for clue timeout (30 seconds for players to buzz in)
+            // Set timer for clue timeout (45 seconds for players to buzz in)
             this.clueTimer = setTimeout(() => {
                 this.handleClueTimeout();
-            }, 30000);
+            }, 45000);
         }
     }
 
@@ -894,13 +894,13 @@ export class GameManager {
             this.broadcastEvent(ClueboardEvent.FINAL_ROUND, {
                 phase: 'answer',
                 clue: this.finalRoundState.clue,
-                timeLimit: 30000
+                timeLimit: 45000
             });
             
             // Start answer timer
             this.wagerTimer = setTimeout(() => {
                 this.finalizeFinalRound();
-            }, 30000);
+            }, 45000);
         }
     }
 
@@ -1217,10 +1217,10 @@ export class GameManager {
         // Implementation depends on whether it's a buzz winner or Daily Double
         setTimeout(() => {
             if (playerId) {
-                // Time up for specific player
+                // Time up for specific player after buzzing in (20 seconds to answer)
                 this.handleClueTimeout();
             }
-        }, 30000);
+        }, 20000);
     }
 
     private async broadcastGameState(): Promise<void> {
