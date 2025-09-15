@@ -207,6 +207,17 @@
     50% { transform: scale(1.05); }
   }
 
+  /* Flash animations for buzz feedback */
+  @keyframes flashGreen {
+    0%, 100% { background-color: inherit; }
+    50% { background-color: rgba(0, 255, 136, 0.1); }
+  }
+
+  @keyframes flashRed {
+    0%, 100% { background-color: inherit; }
+    50% { background-color: rgba(255, 68, 68, 0.1); }
+  }
+
   .player-card.buzzer-winner {
     background: linear-gradient(135deg, rgba(0, 255, 136, 0.2), rgba(0, 191, 255, 0.2));
     border: 2px solid var(--success-green);
@@ -970,11 +981,23 @@ function handleBuzzWinner(data) {
     // Show answer input
     document.getElementById('answerContainer').classList.add('active');
     document.getElementById('answerInput').focus();
-    showMessage('You buzzed in!', 'info');
+    showMessage('🎯 YOU BUZZED IN FIRST! Type your answer!', 'success');
+
+    // Visual feedback - flash the screen green briefly
+    document.body.style.animation = 'flashGreen 0.5s ease';
+    setTimeout(() => {
+      document.body.style.animation = '';
+    }, 500);
   } else {
     // Show who buzzed
-    showMessage(`${data.winnerName} buzzed in!`, 'info');
+    showMessage(`⚡ ${data.winnerName} buzzed in first!`, 'warning');
     document.getElementById('buzzButton').disabled = true;
+
+    // Visual feedback - flash the screen red briefly
+    document.body.style.animation = 'flashRed 0.3s ease';
+    setTimeout(() => {
+      document.body.style.animation = '';
+    }, 300);
   }
 }
 

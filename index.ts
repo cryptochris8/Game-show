@@ -110,12 +110,12 @@ startServer(world => {
   // Initialize background music
   if (serverConfig.audioEnabled) {
     audioSystem.backgroundMusic = new Audio({
-      uri: 'audio/music/main-menu.wav',
+      uri: 'audio/music/hytopia-menu-theme.mp3',
       loop: true,
       volume: 0.3
     });
 
-    // Initialize sound effects
+    // Initialize sound effects with correct file paths
     const soundEffects = [
       { name: 'hover', uri: 'audio/sfx/hover.wav', volume: 0.2 },
       { name: 'click', uri: 'audio/sfx/click.wav', volume: 0.4 },
@@ -123,7 +123,10 @@ startServer(world => {
       { name: 'transition', uri: 'audio/sfx/transition.wav', volume: 0.6 },
       { name: 'buzz', uri: 'audio/sfx/buzz.wav', volume: 0.7 },
       { name: 'correct', uri: 'audio/sfx/correct.wav', volume: 0.6 },
-      { name: 'incorrect', uri: 'audio/sfx/incorrect.wav', volume: 0.5 }
+      { name: 'incorrect', uri: 'audio/sfx/incorrect.wav', volume: 0.5 },
+      // Backup sounds from available library
+      { name: 'button_click', uri: 'audio/sfx/ui/button-click.mp3', volume: 0.4 },
+      { name: 'notification', uri: 'audio/sfx/ui/notification-1.mp3', volume: 0.5 }
     ];
 
     soundEffects.forEach(sfx => {
@@ -430,8 +433,27 @@ startServer(world => {
     const sound = audioSystem.soundEffects.get(soundName);
     if (sound) {
       sound.play(world);
+      logger.debug(`Playing sound effect: ${soundName}`, { component: 'AudioSystem' });
     } else {
-      logger.warn(`Sound effect not found: ${soundName}`, { component: 'AudioSystem' });
+      // Try fallback sounds for common actions
+      let fallbackSound = null;
+      switch(soundName) {
+        case 'hover':
+        case 'click':
+          fallbackSound = audioSystem.soundEffects.get('button_click');
+          break;
+        case 'confirm':
+        case 'transition':
+          fallbackSound = audioSystem.soundEffects.get('notification');
+          break;
+      }
+
+      if (fallbackSound) {
+        fallbackSound.play(world);
+        logger.debug(`Playing fallback sound for: ${soundName}`, { component: 'AudioSystem' });
+      } else {
+        logger.warn(`Sound effect not found: ${soundName}`, { component: 'AudioSystem' });
+      }
     }
   }
 
@@ -450,9 +472,20 @@ startServer(world => {
     // Unlock pointer for UI interaction
     player.ui.lockPointer(false);
 
-    // Stop main menu music and start game music if available
+    // Stop main menu music and start game music
     if (audioSystem.backgroundMusic) {
       audioSystem.backgroundMusic.pause();
+    }
+
+    // Start game background music
+    if (serverConfig.audioEnabled) {
+      const gameMusic = new Audio({
+        uri: 'audio/music/hytopia-main-theme.mp3',
+        loop: true,
+        volume: 0.2
+      });
+      gameMusic.play(world);
+      audioSystem.soundEffects.set('gameMusic', gameMusic);
     }
 
     // Send initial game state to the new UI
