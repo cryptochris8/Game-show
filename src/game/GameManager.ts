@@ -116,7 +116,8 @@ export class GameManager {
     public handleUIEvent(player: Player, data: any): void {
         // Handle game-specific UI events
         logger.debug(`GameManager handling UI event from ${player.username}:`, data);
-        // Implementation will be added based on existing UI event handlers
+        // Forward to the existing UI data handler
+        this.handlePlayerUIData(player, data);
     }
 
     /**

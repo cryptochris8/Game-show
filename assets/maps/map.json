@@ -3016,60 +3016,6 @@
     "9,9,2": 8
   },
   "entities": {
-    "4.5,2.530033733643913,-11.468072169397876": {
-      "modelUri": "models/environment/park-bench.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "park-bench",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0,
-          "w": 1
-        }
-      }
-    },
-    "9.5,2.530033733643913,-11.468072169397876": {
-      "modelUri": "models/environment/park-bench.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "park-bench",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0,
-          "w": 1
-        }
-      }
-    },
-    "14.5,2.530033733643913,-11.468072169397876": {
-      "modelUri": "models/environment/park-bench.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "park-bench",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0,
-          "z": 0,
-          "w": 1
-        }
-      }
-    },
     "0.5,0.5625,0.5": {
       "modelUri": "models/environment/button.gltf",
       "modelPreferredShape": "trimesh",
@@ -3142,7 +3088,7 @@
         }
       }
     },
-    "-4.5,1.0625,10.5": {
+    "4.5,5.0625,-8.5": {
       "modelUri": "models/environment/button.gltf",
       "modelPreferredShape": "trimesh",
       "modelLoopedAnimations": [
@@ -3160,14 +3106,914 @@
         }
       }
     },
-    "-14.5,0.0625,40.5": {
-      "modelUri": "models/environment/button.gltf",
+    "-11.500000000745057,2.2803749992847444,14.500000000745057": {
+      "modelUri": "models/environment/lantern.gltf",
       "modelPreferredShape": "trimesh",
       "modelLoopedAnimations": [
         "idle"
       ],
       "modelScale": 1,
-      "name": "button",
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,11.500000000745057": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,8.500000000745057": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,5.500000000745058": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,2.500000000745058": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,-0.49999999925494204": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,-3.499999999254942": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,-27.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,-24.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,-21.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,-18.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,-15.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,-12.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,-9.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.500000000745057,2.2803749992847444,-6.499999999254942": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,-27.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,-24.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,-21.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,-18.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,-15.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,-12.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,-9.499999999254943": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,-6.499999999254942": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,14.500000000745057": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,11.500000000745057": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,8.500000000745057": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,5.500000000745058": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,2.500000000745058": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,-0.49999999925494204": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.499999999254943,2.2803749992847444,-3.499999999254942": {
+      "modelUri": "models/environment/lantern.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lantern",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-10.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-8.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-6.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-4.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-2.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-0.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "1.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "3.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "5.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "7.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "9.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "11.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "13.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "15.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "17.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "19.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "21.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "23.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "25.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "27.5,2.625,15.5": {
+      "modelUri": "models/environment/lamp-post.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "lamp-post",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "4.5,2.530033733643913,-11.468072169397876": {
+      "modelUri": "models/environment/park-bench.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "park-bench",
       "rigidBodyOptions": {
         "type": "fixed",
         "rotation": {
@@ -3175,6 +4021,762 @@
           "y": 0,
           "z": 0,
           "w": 1
+        }
+      }
+    },
+    "9.5,2.530033733643913,-11.468072169397876": {
+      "modelUri": "models/environment/park-bench.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "park-bench",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 1
+        }
+      }
+    },
+    "14.5,2.530033733643913,-11.468072169397876": {
+      "modelUri": "models/environment/park-bench.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "park-bench",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0,
+          "z": 0,
+          "w": 1
+        }
+      }
+    },
+    "-11.5,1.46875,-27.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,-24.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,-21.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,-18.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,-15.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,-12.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,-9.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,-6.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,-3.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,-0.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,2.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,5.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,8.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,11.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,1.46875,14.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,-27.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,-24.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,-21.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,-18.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,-15.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,-12.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,-9.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,-6.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,-3.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,-0.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,2.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,5.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,8.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,11.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,1.46875,14.5": {
+      "modelUri": "models/environment/stone-altar-3.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "stone-altar-3",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,6.387389289396448,-33.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,6.387389289396448,-33.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,5.387389289396448,-32.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,4.387389289396448,-31.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,3.387389289396448,-30.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,2.387389289396448,-29.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,5.387389289396448,-32.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,4.387389289396448,-31.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,3.387389289396448,-30.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,2.387389289396448,-29.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
         }
       }
     }

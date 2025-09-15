@@ -15,7 +15,7 @@
  * and proper server-authoritative game state management.
  */
 
-import { startServer, Audio, PlayerEvent, PlayerUIEvent } from 'hytopia';
+import { startServer, Audio, PlayerEvent, PlayerUIEvent, Entity, RigidBodyType } from 'hytopia';
 import worldMap from './assets/maps/map.json';
 import GameManager from './src/game/GameManager';
 import { PlayerLifecycleManager } from './src/util/PlayerManager';
@@ -66,6 +66,36 @@ startServer(world => {
     singlePlayerMode: process.env.SINGLE_PLAYER_MODE === 'true' || false,
     aiPlayersCount: 2  // Always 2 AI players for single player (3 total with human)
   });
+
+  /**
+   * Initialize Fixed Camera System
+   * Creates an elevated view showing the game area and podiums
+   */
+  let cameraMount: Entity | null = null;
+
+  // Create camera mount after world is ready
+  setTimeout(() => {
+    cameraMount = new Entity({
+      modelUri: 'models/misc/selection-indicator.gltf', // Use a simple indicator model
+      modelScale: 0.01, // Scale it down to be very small
+      name: 'CameraMount',
+      rigidBodyOptions: { type: RigidBodyType.FIXED }
+    });
+
+    // Position camera for optimal game show view based on screenshot
+    cameraMount.spawn(world,
+      { x: 15, y: 5, z: 2 },  // Adjusted camera position for perfect view
+      { x: -0.15, y: 0, z: 0, w: 0.989 }  // Slight downward angle
+    );
+
+    // Make it invisible
+    cameraMount.setOpacity(0);
+
+    logger.info('Fixed camera mount created for game show view', {
+      component: 'CameraSystem',
+      position: { x: 15, y: 5, z: 2 }
+    });
+  }, 1000);
 
   /**
    * Initialize Audio System for Buzzchain Experience
@@ -195,13 +225,52 @@ startServer(world => {
   ]);
 
   /**
-   * Player Join Event - Load Main Menu UI
+   * Setup Fixed Camera View for Player
+   * Attaches player camera to the fixed camera mount for consistent game show perspective
+   */
+  function setupFixedCameraView(player: any) {
+    // If camera mount is ready, attach to it; otherwise use position-based attachment
+    if (cameraMount && cameraMount.isSpawned) {
+      // Attach player camera to the fixed camera mount
+      player.camera.setAttachedToEntity(cameraMount);
+
+      logger.info(`Fixed camera view set for player: ${player.username}`, {
+        component: 'CameraSystem',
+        playerId: player.id,
+        cameraMount: 'attached to entity'
+      });
+    } else {
+      // Fallback to position-based attachment
+      player.camera.setAttachedToPosition({ x: 15, y: 5, z: 2 });
+
+      logger.info(`Fixed camera view set for player: ${player.username}`, {
+        component: 'CameraSystem',
+        playerId: player.id,
+        cameraMount: 'attached to position'
+      });
+    }
+
+    // Focus camera on the game area (center of the action)
+    player.camera.setTrackedPosition({ x: 9, y: 3, z: -5 });
+
+    // Set optimal FOV for game show viewing
+    player.camera.setFov(85);
+
+    // Slight zoom for better board visibility
+    player.camera.setZoom(1.2);
+  }
+
+  /**
+   * Player Join Event - Load Main Menu UI and Setup Camera
    */
   world.on(PlayerEvent.JOINED_WORLD, ({ player }) => {
     logger.info(`Player joined - loading main menu UI: ${player.username}`, {
       component: 'UISystem',
       playerId: player.id
     });
+
+    // Set up fixed camera view immediately
+    setupFixedCameraView(player);
 
     // Load the main menu for the player
     player.ui.load('ui/main-menu.html');
@@ -257,6 +326,13 @@ startServer(world => {
       case 'LOAD_GAME_BOARD':
         // Load the game board UI
         loadGameBoardUI(player);
+        break;
+
+      case 'GET_GAME_STATE':
+        // Send current game state to player
+        if (gameManager) {
+          gameManager.sendGameStateToPlayer(player);
+        }
         break;
 
       default:
