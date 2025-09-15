@@ -374,6 +374,7 @@ export class RoundManager {
             clue: clueData,
             isDailyDouble,
             pickerId: isDailyDouble ? pickerId : undefined,
+            maxWager: isDailyDouble ? 1000 : undefined, // Will be updated by GameManager
             revealTime: Date.now()
         };
 

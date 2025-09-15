@@ -28,6 +28,7 @@ import type { LoadResult } from './PackLoader';
 import { AnswerNormalizer } from './Normalize';
 import { logger } from '../util/Logger';
 import AIPlayer, { AI_PERSONALITIES, AIPersonality, AIGameActions } from './AIPlayer';
+import PodiumManager from './PodiumManager';
 
 export interface GameConfig {
     packName?: string;
@@ -60,6 +61,7 @@ export class GameManager {
     private scoreManager: ScoreManager;
     private buzzManager: BuzzManager;
     private roundManager: RoundManager | null = null;
+    private podiumManager: PodiumManager;
     private finalRoundState: FinalRoundState | null = null;
     
     private gameConfig: GameConfig;
@@ -83,10 +85,15 @@ export class GameManager {
 
         this.scoreManager = new ScoreManager();
         this.buzzManager = new BuzzManager();
+        this.podiumManager = new PodiumManager(world);
+
+        // Spawn the host NPC immediately
+        this.podiumManager.spawnHost();
 
         // Initialize AI players if in single player mode
         if (this.gameConfig.singlePlayerMode) {
-            this.initializeAIPlayers();
+            // Always create exactly 2 AI players for single player
+            this.initializeAIPlayers(2);
         }
 
         this.setupEventHandlers();
@@ -115,8 +122,9 @@ export class GameManager {
     /**
      * Initialize AI players for single player mode
      */
-    public initializeAIPlayers(): void {
-        const aiCount = Math.min(this.gameConfig.aiPlayersCount || 3, 5); // Max 5 AI players
+    public initializeAIPlayers(count?: number): void {
+        // Always use exactly 2 AI players for single player (3 total with human)
+        const aiCount = count || 2;
         const shuffledPersonalities = [...AI_PERSONALITIES].sort(() => Math.random() - 0.5);
 
         // Create game actions for AI players
@@ -140,11 +148,19 @@ export class GameManager {
             const aiPlayer = new AIPlayer(this.world, personality, gameActions);
 
             this.aiPlayers.set(aiPlayer.id, aiPlayer);
+            this.scoreManager.addPlayer(aiPlayer.id, aiPlayer.username);
+
+            // Assign AI to an available podium
+            const podiumNumber = this.podiumManager.getNextAvailablePodium();
+            if (podiumNumber && aiPlayer.entity) {
+                this.podiumManager.assignAIToPodium(aiPlayer.entity, podiumNumber);
+            }
 
             logger.info(`AI Player initialized: ${aiPlayer.username}`, {
                 component: 'GameManager',
                 aiPlayerId: aiPlayer.id,
-                difficulty: personality.difficulty
+                difficulty: personality.difficulty,
+                podiumNumber: podiumNumber
             });
         }
 
@@ -169,12 +185,34 @@ export class GameManager {
      */
     private async handlePlayerJoined(player: Player): Promise<void> {
         console.log(`Player ${player.username} joined the game`);
-        
+
+        // Check if we already have 3 players (max for Jeopardy format)
+        if (this.players.size >= MAX_PLAYERS) {
+            logger.warn(`Game full - cannot add player ${player.username}`, {
+                component: 'GameManager',
+                currentPlayers: this.players.size,
+                maxPlayers: MAX_PLAYERS
+            });
+            // TODO: Send message to player that game is full
+            return;
+        }
+
         // Add to players list
         this.players.set(player.id, player);
-        
+
         // Initialize player in score manager
         await this.scoreManager.initializePlayer(player);
+
+        // Assign player to next available podium
+        const podiumNumber = this.podiumManager.getNextAvailablePodium();
+        if (podiumNumber) {
+            this.podiumManager.assignPlayerToPodium(player, podiumNumber);
+            logger.info(`Player ${player.username} assigned to podium ${podiumNumber}`, {
+                component: 'GameManager',
+                playerId: player.id,
+                podiumNumber
+            });
+        }
         
         // UI loading is now handled by main server - don't load here
         
@@ -221,7 +259,10 @@ export class GameManager {
      */
     private async handlePlayerLeft(player: Player): Promise<void> {
         console.log(`Player ${player.username} left the game`);
-        
+
+        // Release player from their podium
+        this.podiumManager.releasePlayer(player);
+
         this.players.delete(player.id);
         
         // Handle host leaving
@@ -637,6 +678,11 @@ export class GameManager {
         const categoryName = this.roundManager.getCategoryName(clue.category);
         
         // Send clue reveal event
+        // Update maxWager on the current clue object for AI access
+        if (clue.isDailyDouble && clue.pickerId) {
+            clue.maxWager = this.scoreManager.calculateMaxWager(clue.pickerId, clue.clue.value);
+        }
+
         const clueRevealData = {
             category: categoryName,
             value: clue.clue.value,
@@ -647,7 +693,7 @@ export class GameManager {
             lockoutMs: 300,
             buzzWindowMs: 12000
         };
-        
+
         this.broadcastEvent(ClueboardEvent.CLUE_REVEAL, clueRevealData);
         
         if (clue.isDailyDouble) {
@@ -948,7 +994,10 @@ export class GameManager {
      */
     private async endGame(): Promise<void> {
         this.gamePhase = GamePhase.RESULTS;
-        
+
+        // Release all players from their podiums
+        this.podiumManager.releaseAllPlayers(this.players);
+
         // Get winners
         const winners = this.scoreManager.getWinners();
         const finalScores = this.scoreManager.getCurrentScores();

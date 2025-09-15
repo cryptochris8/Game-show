@@ -39,6 +39,48 @@ export class ScoreManager {
     }
 
     /**
+     * Add AI player to score tracking (simpler version for AI players)
+     */
+    addPlayer(playerId: string, playerName: string): PlayerData {
+        const playerData: PlayerData = {
+            id: playerId,
+            name: playerName,
+            score: 0,
+            stats: {
+                correctAnswers: 0,
+                incorrectAnswers: 0,
+                buzzWins: 0,
+                averageBuzzTime: 0,
+                currentStreak: 0
+            }
+        };
+
+        // Initialize game session
+        const gameSession: GameSession = {
+            playerId,
+            startTime: Date.now(),
+            score: 0,
+            correctAnswers: 0,
+            incorrectAnswers: 0,
+            buzzes: 0,
+            buzzWins: 0,
+            buzzTimes: [],
+            dailyDoubleAttempts: 0,
+            dailyDoubleWins: 0,
+            finalRoundWager: 0,
+            finalRoundCorrect: false,
+            won: false,
+            streak: 0
+        };
+
+        this.gameState.players.set(playerId, playerData);
+        this.gameState.gameSessions.set(playerId, gameSession);
+        this.buzzWinTimes.set(playerId, []);
+
+        return playerData;
+    }
+
+    /**
      * Initialize a player's score and session tracking
      */
     async initializePlayer(player: Player): Promise<PlayerData> {

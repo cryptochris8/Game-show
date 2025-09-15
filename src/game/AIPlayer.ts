@@ -172,6 +172,11 @@ export class AIPlayer {
             this.handleBuzzDecision(gameState);
         } else if (!gameState.currentClue) {
             this.handleClueSelection(gameState);
+        } else if (gameState.currentClue && gameState.currentPickerId === this.id) {
+            // Handle Daily Double wager if this AI is the picker
+            this.handleDailyDoubleWager(gameState);
+            // Also handle answering after the wager is submitted
+            this.handleDailyDoubleAnswer(gameState);
         }
     }
 
@@ -187,11 +192,18 @@ export class AIPlayer {
             const buzzDelay = this.personality.buzzDelay + (Math.random() * 500);
             setTimeout(() => {
                 this.simulateBuzz();
+                // After buzzing, schedule answer submission
+                this.scheduleAnswerSubmission(clue.clue.answer, knowsAnswer);
             }, buzzDelay);
         }
     }
 
     private handleClueSelection(gameState: GameStateData): void {
+        // Only select clue if this AI is the current picker
+        if (gameState.currentPickerId !== this.id) {
+            return;
+        }
+
         // AI selects clue based on strategy
         if (this.personality.cluePreference === 'highValue') {
             this.selectHighValueClue(gameState);
@@ -310,6 +322,41 @@ export class AIPlayer {
         }
     }
 
+    private scheduleAnswerSubmission(correctAnswer: string, knowsAnswer: boolean): void {
+        // Give AI some time to "think" after buzzing
+        const thinkingTime = 1000 + (Math.random() * 2000); // 1-3 seconds
+
+        setTimeout(() => {
+            const willAnswerCorrectly = knowsAnswer && Math.random() < this.personality.answerAccuracy;
+
+            let answer: string;
+            if (willAnswerCorrectly) {
+                answer = correctAnswer; // Give correct answer
+            } else {
+                answer = this.generateIncorrectAnswer(); // Generate plausible wrong answer
+            }
+
+            logger.info(`AI ${this.username} submitting answer`, {
+                component: 'AIPlayer',
+                playerId: this.id,
+                knowsAnswer: knowsAnswer,
+                willAnswerCorrectly: willAnswerCorrectly
+            });
+
+            if (this.gameActions) {
+                try {
+                    this.gameActions.submitAnswer(answer, this.id);
+                } catch (error) {
+                    logger.error('AI failed to submit answer', error as Error, {
+                        component: 'AIPlayer',
+                        playerId: this.id,
+                        answer: answer
+                    });
+                }
+            }
+        }, thinkingTime);
+    }
+
     private handleFinalRoundDecision(gameState: GameStateData): void {
         // AI makes final round wager and answer decisions
         const wager = this.calculateWager(this.score);
@@ -320,6 +367,109 @@ export class AIPlayer {
             wager,
             playerId: this.id
         });
+    }
+
+    private handleDailyDoubleWager(gameState: GameStateData): void {
+        const currentClue = gameState.currentClue;
+        if (!currentClue || !currentClue.isDailyDouble || currentClue.wager !== undefined) {
+            return; // Not a Daily Double or wager already submitted
+        }
+
+        // Calculate appropriate wager for Daily Double
+        const maxWager = currentClue.maxWager || 1000;
+        const wager = this.calculateDailyDoubleWager(this.score, maxWager, currentClue.clue.value);
+
+        logger.info(`AI ${this.username} making Daily Double wager`, {
+            component: 'AIPlayer',
+            playerId: this.id,
+            wager: wager,
+            maxWager: maxWager,
+            currentScore: this.score
+        });
+
+        // Submit the wager
+        if (this.gameActions) {
+            try {
+                this.gameActions.submitWager(wager, this.id);
+            } catch (error) {
+                logger.error('AI failed to submit Daily Double wager', error as Error, {
+                    component: 'AIPlayer',
+                    playerId: this.id,
+                    wager: wager
+                });
+            }
+        }
+    }
+
+    private handleDailyDoubleAnswer(gameState: GameStateData): void {
+        const currentClue = gameState.currentClue;
+        if (!currentClue || !currentClue.isDailyDouble || currentClue.wager === undefined) {
+            return; // Not ready to answer Daily Double yet
+        }
+
+        // Determine if AI knows the answer and generate response
+        const knowsAnswer = this.determineKnowledge(currentClue.clue.answer);
+        const willAnswerCorrectly = knowsAnswer && Math.random() < this.personality.answerAccuracy;
+
+        let answer: string;
+        if (willAnswerCorrectly) {
+            answer = currentClue.clue.answer; // Give correct answer
+        } else {
+            answer = this.generateIncorrectAnswer(); // Generate plausible wrong answer
+        }
+
+        logger.info(`AI ${this.username} answering Daily Double`, {
+            component: 'AIPlayer',
+            playerId: this.id,
+            knowsAnswer: knowsAnswer,
+            willAnswerCorrectly: willAnswerCorrectly,
+            wager: currentClue.wager
+        });
+
+        // Add realistic delay before answering
+        const answerDelay = this.personality.buzzDelay + (Math.random() * 1000);
+        setTimeout(() => {
+            if (this.gameActions) {
+                try {
+                    this.gameActions.submitAnswer(answer, this.id);
+                } catch (error) {
+                    logger.error('AI failed to submit Daily Double answer', error as Error, {
+                        component: 'AIPlayer',
+                        playerId: this.id,
+                        answer: answer
+                    });
+                }
+            }
+        }, answerDelay);
+    }
+
+    private calculateDailyDoubleWager(currentScore: number, maxWager: number, clueValue: number): number {
+        // Base the wager on AI personality and current score
+        let wager: number;
+
+        switch (this.personality.wagerStrategy) {
+            case 'conservative':
+                // Conservative: Wager the clue value or a small portion of score
+                wager = Math.min(clueValue, Math.max(clueValue, currentScore * 0.1));
+                break;
+            case 'aggressive':
+                // Aggressive: Go big, wager close to maximum
+                wager = Math.floor(maxWager * 0.8);
+                break;
+            case 'optimal':
+            default:
+                // Optimal: Balance risk vs reward
+                if (currentScore > 0) {
+                    wager = Math.min(maxWager, Math.max(clueValue * 2, currentScore * 0.3));
+                } else {
+                    wager = Math.min(maxWager, clueValue * 2);
+                }
+                break;
+        }
+
+        // Ensure wager is within valid range
+        wager = Math.max(clueValue, Math.min(maxWager, wager));
+        return Math.floor(wager);
     }
 
     private calculateWager(currentScore: number): number {
@@ -334,6 +484,24 @@ export class AIPlayer {
             default:
                 return Math.floor(baseWager);
         }
+    }
+
+    private generateIncorrectAnswer(): string {
+        // Generate plausible wrong answers in proper Jeopardy format
+        const wrongAnswers = [
+            "What is the wrong answer?",
+            "Who is someone else?",
+            "What is something different?",
+            "Where is another place?",
+            "When is a different time?",
+            "What is not correct?",
+            "Who is incorrect?",
+            "What is false?",
+            "What is mistaken?",
+            "Who is wrong?"
+        ];
+
+        return wrongAnswers[Math.floor(Math.random() * wrongAnswers.length)];
     }
 
     private generateFinalAnswer(): string {

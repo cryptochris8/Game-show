@@ -87,6 +87,7 @@ export interface CurrentClueData {
     isDailyDouble: boolean;
     pickerId?: string;
     wager?: number;
+    maxWager?: number;
     buzzWinnerId?: string;
     revealTime: number;
 }
@@ -274,8 +275,8 @@ export const CLUE_DISPLAY_MS = 3000;
 export const ANSWER_TIME_MS = 30000;
 export const FINAL_WAGER_TIME_MS = 30000;
 export const FINAL_ANSWER_TIME_MS = 30000;
-export const MIN_PLAYERS = 2;
-export const MAX_PLAYERS = 6;
+export const MIN_PLAYERS = 3;  // Exactly 3 players for Jeopardy format
+export const MAX_PLAYERS = 3;  // Exactly 3 players for Jeopardy format
 export const MIN_WAGER = 5;
 
 // Rate limiting constants

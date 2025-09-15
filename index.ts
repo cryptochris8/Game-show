@@ -64,7 +64,7 @@ startServer(world => {
     autoStart: gameConfig.autoStart,
     autoHostDelay: gameConfig.autoHostDelay,
     singlePlayerMode: process.env.SINGLE_PLAYER_MODE === 'true' || false,
-    aiPlayersCount: parseInt(process.env.AI_PLAYERS_COUNT || '3')
+    aiPlayersCount: 2  // Always 2 AI players for single player (3 total with human)
   });
 
   /**
@@ -80,20 +80,20 @@ startServer(world => {
   // Initialize background music
   if (serverConfig.audioEnabled) {
     audioSystem.backgroundMusic = new Audio({
-      uri: 'audio/music/main-menu.mp3',
+      uri: 'audio/music/main-menu.wav',
       loop: true,
       volume: 0.3
     });
 
     // Initialize sound effects
     const soundEffects = [
-      { name: 'hover', uri: 'audio/sfx/hover.mp3', volume: 0.2 },
-      { name: 'click', uri: 'audio/sfx/click.mp3', volume: 0.4 },
-      { name: 'confirm', uri: 'audio/sfx/confirm.mp3', volume: 0.5 },
-      { name: 'transition', uri: 'audio/sfx/transition.mp3', volume: 0.6 },
-      { name: 'buzz', uri: 'audio/sfx/buzz.mp3', volume: 0.7 },
-      { name: 'correct', uri: 'audio/sfx/correct.mp3', volume: 0.6 },
-      { name: 'incorrect', uri: 'audio/sfx/incorrect.mp3', volume: 0.5 }
+      { name: 'hover', uri: 'audio/sfx/hover.wav', volume: 0.2 },
+      { name: 'click', uri: 'audio/sfx/click.wav', volume: 0.4 },
+      { name: 'confirm', uri: 'audio/sfx/confirm.wav', volume: 0.5 },
+      { name: 'transition', uri: 'audio/sfx/transition.wav', volume: 0.6 },
+      { name: 'buzz', uri: 'audio/sfx/buzz.wav', volume: 0.7 },
+      { name: 'correct', uri: 'audio/sfx/correct.wav', volume: 0.6 },
+      { name: 'incorrect', uri: 'audio/sfx/incorrect.wav', volume: 0.5 }
     ];
 
     soundEffects.forEach(sfx => {
@@ -165,24 +165,21 @@ startServer(world => {
     {
       name: 'singleplayer',
       description: 'Start single player mode with AI opponents',
-      usage: '/singleplayer [count] - count is optional, defaults to 3 AI players',
+      usage: '/singleplayer - starts game with 2 AI opponents (3 total players)',
       handler: (player, args, world) => {
-        const aiCount = args.length > 0 ? parseInt(args[0]) : 3;
-        if (aiCount < 1 || aiCount > 5) {
-          world.chatManager.sendPlayerMessage(player, '❌ AI player count must be between 1 and 5.', 'FF6B6B');
-          return;
-        }
+        // Always use 2 AI opponents for Jeopardy format (3 total players)
+        const aiCount = 2;
 
         // Enable single player mode
         process.env.SINGLE_PLAYER_MODE = 'true';
         process.env.AI_PLAYERS_COUNT = aiCount.toString();
 
         world.chatManager.sendPlayerMessage(player,
-          `🎮 Single player mode activated! Starting game with ${aiCount} AI opponents.`, '00FF00');
+          `🎮 Single player mode activated! Starting Jeopardy-style game with ${aiCount} AI opponents.`, '00FF00');
 
         // The game will start automatically when the next player joins
         world.chatManager.sendPlayerMessage(player,
-          '💡 The game will start automatically when you join. Use /join to start playing!', '4A90E2');
+          '💡 The game will start automatically when you join. 3 players total at the podiums!', '4A90E2');
       }
     },
     {
@@ -275,25 +272,28 @@ startServer(world => {
    * Start Single Player Mode
    */
   function startSinglePlayerMode(player: any, config: any) {
+    // Always use 2 AI players for Jeopardy format
+    const aiCount = 2;
+
     logger.info(`Starting single player mode for ${player.username}`, {
       component: 'GameMode',
-      aiCount: config.aiCount,
+      aiCount: aiCount,
       playerId: player.id
     });
 
     // Update game config
     gameManager.updateConfig({
       singlePlayerMode: true,
-      aiPlayersCount: config.aiCount || 3
+      aiPlayersCount: aiCount
     });
 
     // Initialize AI players
-    gameManager.initializeAIPlayers();
+    gameManager.initializeAIPlayers(aiCount);
 
     // Send ready signal to player
     player.ui.sendData({
       type: 'GAME_READY',
-      payload: { mode: 'singleplayer', aiCount: config.aiCount }
+      payload: { mode: 'singleplayer', aiCount: aiCount }
     });
 
     // Actually start the game after a short delay

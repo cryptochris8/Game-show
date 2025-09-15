@@ -563,13 +563,11 @@
       <p class="mode-description">Challenge yourself against intelligent AI opponents with unique personalities and strategies.</p>
       
       <div class="ai-selector">
-        <label>Choose Number of AI Opponents:</label>
-        <div class="ai-buttons">
-          <button class="ai-btn" data-count="1">1</button>
-          <button class="ai-btn" data-count="2">2</button>
-          <button class="ai-btn active" data-count="3">3</button>
-          <button class="ai-btn" data-count="4">4</button>
-          <button class="ai-btn" data-count="5">5</button>
+        <label>Jeopardy Format: 3 Total Players</label>
+        <div class="features-list" style="text-align: center; margin-top: 1rem;">
+          <p style="margin: 0.5rem 0; color: var(--text-dim);">👤 You at podium #1</p>
+          <p style="margin: 0.5rem 0; color: var(--text-dim);">🤖 2 AI opponents at podiums #2 & #3</p>
+          <p style="margin: 0.5rem 0; color: var(--text-dim);">🎩 Random NPC host at center podium</p>
         </div>
       </div>
       
@@ -585,11 +583,11 @@
       <p class="mode-description">Compete with friends and players from around the world in real-time trivia battles.</p>
       
       <div class="ai-selector">
-        <label>Multiplayer Features:</label>
-        <div class="features-list" style="text-align: left; margin-top: 1rem;">
-          <p style="margin: 0.5rem 0; color: var(--text-dim);">• 2-6 players supported</p>
-          <p style="margin: 0.5rem 0; color: var(--text-dim);">• Real-time buzzing system</p>
-          <p style="margin: 0.5rem 0; color: var(--text-dim);">• Spectator mode available</p>
+        <label>Jeopardy Format: Exactly 3 Players</label>
+        <div class="features-list" style="text-align: center; margin-top: 1rem;">
+          <p style="margin: 0.5rem 0; color: var(--text-dim);">👥 3 human players at podiums</p>
+          <p style="margin: 0.5rem 0; color: var(--text-dim);">🎩 Random NPC host at center podium</p>
+          <p style="margin: 0.5rem 0; color: var(--text-dim);">⚡ Real-time buzzing system</p>
         </div>
       </div>
       
@@ -715,22 +713,7 @@
 
   // Setup event listeners
   function setupEventListeners() {
-    // AI opponent count selection
-    const aiBtns = document.querySelectorAll('.ai-btn');
-    aiBtns.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        playClickSound();
-        
-        // Remove active class from all buttons
-        aiBtns.forEach(b => b.classList.remove('active'));
-        
-        // Add active class to clicked button
-        btn.classList.add('active');
-        gameConfig.selectedAICount = parseInt(btn.dataset.count);
-        
-        console.log(`Selected ${gameConfig.selectedAICount} AI opponents`);
-      });
-    });
+    // No AI count selection needed - always 2 AI opponents for single player
 
     // Single Player Mode Button
     const singlePlayerBtn = document.getElementById('singlePlayerBtn');
@@ -862,13 +845,13 @@
     hytopia.sendData({
       type: 'START_SINGLE_PLAYER',
       payload: {
-        aiCount: gameConfig.selectedAICount,
+        aiCount: 2,  // Always 2 AI opponents for Jeopardy format
         musicEnabled: gameConfig.musicEnabled,
         sfxEnabled: gameConfig.sfxEnabled
       }
     });
 
-    console.log(`🤖 Starting Single Player with ${gameConfig.selectedAICount} AI opponents`);
+    console.log(`🤖 Starting Single Player with 2 AI opponents (3 total players)`);
 
     // Transition to game after delay
     setTimeout(() => {
