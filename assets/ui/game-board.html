@@ -983,7 +983,9 @@ function showQuestion(questionData) {
   // If Daily Double, show answer input immediately
   if (questionData.isDailyDouble) {
     answerContainer.classList.add('active');
-    document.getElementById('answerInput').focus();
+    const answerInput = document.getElementById('answerInput');
+    answerInput.focus();
+    setupAnswerInputFocusProtection(answerInput);
   }
 }
 
@@ -1049,6 +1051,7 @@ function buzz() {
       const answerInput = document.getElementById('answerInput');
       if (answerInput) {
         answerInput.focus();
+        setupAnswerInputFocusProtection(answerInput);
       }
 
       showMessage('🎯 Answer input activated! (fallback)', 'success');
@@ -1104,7 +1107,7 @@ function handleBuzzWinner(data) {
       console.error('Answer container not found!');
     }
 
-    // Focus on input
+    // Focus on input with enhanced focus management
     if (answerInput) {
       console.log('Focusing on answer input:', answerInput);
       setTimeout(() => {
@@ -1112,6 +1115,9 @@ function handleBuzzWinner(data) {
         answerInput.style.border = '3px solid var(--success-green)';
         answerInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
         console.log('Input focused and styled');
+
+        // Set up focus protection to prevent HYTOPIA chat from stealing focus
+        setupAnswerInputFocusProtection(answerInput);
       }, 200);
     } else {
       console.error('Answer input not found!');
@@ -1159,6 +1165,92 @@ function handleBuzzWinner(data) {
   });
 }
 
+// Focus protection for answer input to prevent HYTOPIA chat interference
+function setupAnswerInputFocusProtection(answerInput) {
+  console.log('Setting up focus protection for answer input');
+
+  // Remove any existing protection
+  if (window.answerInputFocusInterval) {
+    clearInterval(window.answerInputFocusInterval);
+  }
+
+  // Aggressive focus maintenance - check every 100ms
+  window.answerInputFocusInterval = setInterval(() => {
+    if (answerInput && document.activeElement !== answerInput) {
+      console.log('Refocusing answer input (stolen by:', document.activeElement, ')');
+      answerInput.focus();
+    }
+  }, 100);
+
+  // Prevent HYTOPIA chat from capturing keydown events
+  const keydownHandler = (e) => {
+    // Stop event from bubbling to HYTOPIA chat
+    e.stopImmediatePropagation();
+    console.log('Answer input keydown:', e.key);
+  };
+
+  const keypressHandler = (e) => {
+    // Stop event from bubbling to HYTOPIA chat
+    e.stopImmediatePropagation();
+    console.log('Answer input keypress:', e.key);
+  };
+
+  const inputHandler = (e) => {
+    // Stop event from bubbling to HYTOPIA chat
+    e.stopImmediatePropagation();
+    console.log('Answer input changed:', e.target.value);
+  };
+
+  // Add protected event listeners
+  answerInput.addEventListener('keydown', keydownHandler, true);
+  answerInput.addEventListener('keypress', keypressHandler, true);
+  answerInput.addEventListener('input', inputHandler, true);
+
+  // Store cleanup function
+  answerInput._cleanupFocusProtection = () => {
+    console.log('Cleaning up answer input focus protection');
+    if (window.answerInputFocusInterval) {
+      clearInterval(window.answerInputFocusInterval);
+      window.answerInputFocusInterval = null;
+    }
+    answerInput.removeEventListener('keydown', keydownHandler, true);
+    answerInput.removeEventListener('keypress', keypressHandler, true);
+    answerInput.removeEventListener('input', inputHandler, true);
+  };
+
+  // Also prevent document-level key events from reaching HYTOPIA chat
+  const documentKeyHandler = (e) => {
+    if (document.activeElement === answerInput) {
+      e.stopImmediatePropagation();
+      e.stopPropagation();
+    }
+  };
+
+  document.addEventListener('keydown', documentKeyHandler, true);
+  document.addEventListener('keypress', documentKeyHandler, true);
+
+  // Clean up document handlers when input is cleaned up
+  const originalCleanup = answerInput._cleanupFocusProtection;
+  answerInput._cleanupFocusProtection = () => {
+    originalCleanup();
+    document.removeEventListener('keydown', documentKeyHandler, true);
+    document.removeEventListener('keypress', documentKeyHandler, true);
+  };
+}
+
+// Clean up answer input focus protection
+function cleanupAnswerInputFocusProtection() {
+  const answerInput = document.getElementById('answerInput');
+  if (answerInput && answerInput._cleanupFocusProtection) {
+    answerInput._cleanupFocusProtection();
+  }
+
+  const finalAnswer = document.getElementById('finalAnswer');
+  if (finalAnswer && finalAnswer._cleanupFocusProtection) {
+    finalAnswer._cleanupFocusProtection();
+  }
+}
+
 // Submit answer
 function submitAnswer() {
   const answerInput = document.getElementById('answerInput');
@@ -1181,6 +1273,9 @@ function submitAnswer() {
     type: 'ANSWER_SUBMIT',
     payload: { answer }
   });
+
+  // Clean up focus protection after submitting answer
+  cleanupAnswerInputFocusProtection();
 
   const submitButton = document.getElementById('submitButton');
   if (submitButton) {
@@ -1248,6 +1343,9 @@ function closeQuestionModal() {
   document.getElementById('questionModal').classList.remove('active');
   gameState.currentQuestion = null;
   gameState.buzzerActive = false;
+
+  // Clean up focus protection when modal closes
+  cleanupAnswerInputFocusProtection();
 }
 
 // Show Final Jeopardy
@@ -1261,6 +1359,13 @@ function showFinalJeopardy(data) {
     document.getElementById('finalClue').textContent = data.clue;
     document.querySelector('.wager-container').style.display = 'none';
     document.getElementById('finalQuestion').style.display = 'block';
+
+    // Set up focus protection for Final Jeopardy answer input
+    const finalAnswer = document.getElementById('finalAnswer');
+    if (finalAnswer) {
+      finalAnswer.focus();
+      setupAnswerInputFocusProtection(finalAnswer);
+    }
   }
 }
 
@@ -1284,6 +1389,9 @@ function submitFinalAnswer() {
     type: 'FINAL_ANSWER',
     payload: { answer }
   });
+
+  // Clean up focus protection after submitting final answer
+  cleanupAnswerInputFocusProtection();
 
   document.getElementById('submitFinalAnswer').disabled = true;
 }

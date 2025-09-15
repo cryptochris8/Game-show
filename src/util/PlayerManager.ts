@@ -79,6 +79,17 @@ export class PlayerLifecycleManager {
       this.playerEntities.set(player.id, playerEntity);
       this.playerJoinTimes.set(player.id, joinTime);
 
+      // CRITICAL FIX: Link entity to player object for podium assignment
+      (player as any).entity = playerEntity;
+
+      logger.info(`Entity linked to player object for podium assignment`, {
+        component: 'PlayerLifecycleManager',
+        playerId: player.id,
+        username: player.username,
+        entityId: playerEntity.id,
+        entityLinked: !!(player as any).entity
+      });
+
       // Send welcome messages
       this.sendWelcomeMessages(player);
 
@@ -109,6 +120,7 @@ export class PlayerLifecycleManager {
       // Clean up on error
       this.playerEntities.delete(player.id);
       this.playerJoinTimes.delete(player.id);
+      delete (player as any).entity;
     }
   }
 
@@ -139,6 +151,9 @@ export class PlayerLifecycleManager {
 
       // Clean up join time
       this.playerJoinTimes.delete(player.id);
+
+      // Clean up entity reference from player object
+      delete (player as any).entity;
 
       // Create context for external handlers
       const context: PlayerLeaveContext = {

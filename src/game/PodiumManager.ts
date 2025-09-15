@@ -144,10 +144,29 @@ export class PodiumManager {
             if (player.entity) {
                 player.entity.setPosition(position);
 
+                logger.info(`Successfully positioned human player entity at podium`, {
+                    component: 'PodiumManager',
+                    playerId: player.id,
+                    playerName: player.username,
+                    podiumNumber,
+                    position,
+                    entityFound: true
+                });
+
                 // Lock player movement during game (if player entity supports it)
                 if (typeof player.entity.setIsMovementDisabled === 'function') {
                     player.entity.setIsMovementDisabled(true);
                 }
+            } else {
+                logger.error(`Player entity not found when assigning to podium`, {
+                    component: 'PodiumManager',
+                    playerId: player.id,
+                    playerName: player.username,
+                    podiumNumber,
+                    entityFound: false,
+                    playerObject: typeof player
+                });
+                return false;
             }
 
             // Store assignment
