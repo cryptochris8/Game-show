@@ -90,11 +90,7 @@ export class GameManager {
         // Spawn the host NPC immediately
         this.podiumManager.spawnHost();
 
-        // Initialize AI players if in single player mode
-        if (this.gameConfig.singlePlayerMode) {
-            // Always create exactly 2 AI players for single player
-            this.initializeAIPlayers(2);
-        }
+        // Don't initialize AI players in constructor - wait for explicit call
 
         this.setupEventHandlers();
     }
@@ -108,6 +104,29 @@ export class GameManager {
             component: 'GameManager',
             config: this.gameConfig
         });
+    }
+
+    /**
+     * Retry assigning a player to a podium (called when entity becomes available)
+     */
+    private retryPlayerPodiumAssignment(playerId: string, podiumNumber: number): void {
+        const player = this.players.get(playerId);
+        if (player) {
+            const assigned = this.podiumManager.assignPlayerToPodium(player, podiumNumber);
+            if (assigned) {
+                logger.info(`Player ${player.username} successfully assigned to podium ${podiumNumber} on retry`, {
+                    component: 'GameManager',
+                    playerId: player.id,
+                    podiumNumber
+                });
+            } else {
+                logger.warn(`Failed to assign player ${player.username} to podium ${podiumNumber} even on retry`, {
+                    component: 'GameManager',
+                    playerId: player.id,
+                    podiumNumber
+                });
+            }
+        }
     }
 
     /**
@@ -204,15 +223,28 @@ export class GameManager {
         // Initialize player in score manager
         await this.scoreManager.initializePlayer(player);
 
-        // Assign player to next available podium
+        // Assign player to next available podium (will try again later if entity not ready)
         const podiumNumber = this.podiumManager.getNextAvailablePodium();
         if (podiumNumber) {
-            this.podiumManager.assignPlayerToPodium(player, podiumNumber);
-            logger.info(`Player ${player.username} assigned to podium ${podiumNumber}`, {
-                component: 'GameManager',
-                playerId: player.id,
-                podiumNumber
-            });
+            const assigned = this.podiumManager.assignPlayerToPodium(player, podiumNumber);
+            if (assigned) {
+                logger.info(`Player ${player.username} assigned to podium ${podiumNumber}`, {
+                    component: 'GameManager',
+                    playerId: player.id,
+                    podiumNumber
+                });
+            } else {
+                // Store assignment for later when entity is ready
+                logger.info(`Player ${player.username} queued for podium ${podiumNumber} (entity not ready)`, {
+                    component: 'GameManager',
+                    playerId: player.id,
+                    podiumNumber
+                });
+                // Try again after a short delay
+                setTimeout(() => {
+                    this.retryPlayerPodiumAssignment(player.id, podiumNumber);
+                }, 1000);
+            }
         }
         
         // UI loading is now handled by main server - don't load here
@@ -348,7 +380,7 @@ export class GameManager {
 
         // Initialize AI players if not already done
         if (this.aiPlayers.size === 0) {
-            this.initializeAIPlayers();
+            this.initializeAIPlayers(aiCount);
         }
 
         // Send confirmation to player
@@ -453,12 +485,12 @@ export class GameManager {
                     component: 'GameManager'
                 });
             }
-        }, 2000); // Update every 2 seconds
+        }, 5000); // Update every 5 seconds (give humans more time)
 
         logger.info('AI player update loop started', {
             component: 'GameManager',
             aiPlayerCount: this.aiPlayers.size,
-            updateInterval: 2000
+            updateInterval: 5000
         });
     }
 
@@ -668,6 +700,9 @@ export class GameManager {
         
         // Reveal the clue
         await this.revealClue(result.clue!);
+
+        // Broadcast updated game state so UI knows which cells are used
+        await this.broadcastGameState();
     }
 
     /**
@@ -704,11 +739,11 @@ export class GameManager {
         } else {
             // Start buzz window
             this.buzzManager.startBuzzWindow();
-            
-            // Set timer for clue timeout
+
+            // Set timer for clue timeout (30 seconds for players to buzz in)
             this.clueTimer = setTimeout(() => {
                 this.handleClueTimeout();
-            }, 15000);
+            }, 30000);
         }
     }
 
@@ -1095,13 +1130,23 @@ export class GameManager {
     }
 
     private assignRandomPicker(): void {
-        const allPlayerIds = [
-            ...Array.from(this.players.keys()),
-            ...Array.from(this.aiPlayers.keys())
-        ];
-        if (allPlayerIds.length > 0) {
-            const randomIndex = Math.floor(Math.random() * allPlayerIds.length);
-            this.currentPickerId = allPlayerIds[randomIndex];
+        const humanPlayerIds = Array.from(this.players.keys());
+        const aiPlayerIds = Array.from(this.aiPlayers.keys());
+
+        // In single player mode, always start with the human player
+        if (this.gameConfig.singlePlayerMode && humanPlayerIds.length > 0) {
+            this.currentPickerId = humanPlayerIds[0];
+            logger.info('Assigned human player as initial picker in single player mode', {
+                component: 'GameManager',
+                pickerId: this.currentPickerId
+            });
+        } else {
+            // Otherwise, choose randomly from all players
+            const allPlayerIds = [...humanPlayerIds, ...aiPlayerIds];
+            if (allPlayerIds.length > 0) {
+                const randomIndex = Math.floor(Math.random() * allPlayerIds.length);
+                this.currentPickerId = allPlayerIds[randomIndex];
+            }
         }
     }
 
@@ -1147,7 +1192,7 @@ export class GameManager {
     private handleClueTimeout(): void {
         this.buzzManager.closeBuzzWindow();
         const currentClue = this.roundManager?.getCurrentClue();
-        
+
         if (currentClue) {
             this.broadcastEvent(ClueboardEvent.JUDGE, {
                 playerId: '',
@@ -1160,6 +1205,10 @@ export class GameManager {
             });
 
             this.roundManager?.clearCurrentClue();
+
+            // IMPORTANT: Assign next picker when no one answers
+            this.assignNextPicker();
+
             this.checkRoundComplete();
         }
     }
@@ -1175,8 +1224,8 @@ export class GameManager {
     }
 
     private async broadcastGameState(): Promise<void> {
-        // Get human player scores
-        const humanPlayers = this.scoreManager.getCurrentScores();
+        // Get only human player scores (filter out AI players to avoid duplicates)
+        const humanPlayers = this.scoreManager.getCurrentScores().filter(p => !p.id.startsWith('ai_'));
 
         // Add AI players to the player list
         const aiPlayerData: PlayerData[] = Array.from(this.aiPlayers.values()).map(ai => ({

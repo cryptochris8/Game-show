@@ -184,12 +184,22 @@ export class AIPlayer {
         const clue = gameState.currentClue;
         if (!clue) return;
 
+        // Don't buzz immediately - give human players time (15 seconds minimum)
+        setTimeout(() => {
+            this.considerBuzzing(gameState);
+        }, 15000);
+    }
+
+    private considerBuzzing(gameState: GameStateData): void {
+        const clue = gameState.currentClue;
+        if (!clue) return;
+
         // Determine if AI knows the answer
         const knowsAnswer = this.determineKnowledge(clue.clue.answer);
 
         if (knowsAnswer && Math.random() < this.personality.buzzAccuracy) {
             // Schedule buzz with personality-based delay
-            const buzzDelay = this.personality.buzzDelay + (Math.random() * 500);
+            const buzzDelay = this.personality.buzzDelay + (Math.random() * 2000); // More random delay
             setTimeout(() => {
                 this.simulateBuzz();
                 // After buzzing, schedule answer submission
@@ -323,8 +333,8 @@ export class AIPlayer {
     }
 
     private scheduleAnswerSubmission(correctAnswer: string, knowsAnswer: boolean): void {
-        // Give AI some time to "think" after buzzing
-        const thinkingTime = 1000 + (Math.random() * 2000); // 1-3 seconds
+        // Give AI much more time to "think" after buzzing - let humans have a real chance
+        const thinkingTime = 8000 + (Math.random() * 5000); // 8-13 seconds
 
         setTimeout(() => {
             const willAnswerCorrectly = knowsAnswer && Math.random() < this.personality.answerAccuracy;

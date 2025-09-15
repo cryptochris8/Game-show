@@ -693,12 +693,13 @@ function handleServerMessage(data) {
 
   switch(data.type) {
     case 'GAME_STATE':
-      updateGameState(data.payload);
+      updateGameState(data.payload.gameState || data.payload);
       break;
     case 'BOARD_UPDATE':
       updateBoard(data.payload);
       break;
     case 'QUESTION_START':
+    case 'CLUE_REVEAL':
       showQuestion(data.payload);
       break;
     case 'BUZZ_WINNER':
@@ -731,7 +732,21 @@ function updateGameState(state) {
 
   // Update UI based on state
   updateRoundDisplay();
-  updateBoard(state.board);
+
+  // Merge usedCells into board data before updating
+  if (state.board && state.usedCells) {
+    const boardWithUsedCells = JSON.parse(JSON.stringify(state.board)); // Deep copy
+    state.usedCells.forEach(cellStr => {
+      const [cat, idx] = cellStr.split('-').map(Number);
+      if (boardWithUsedCells.categories[cat] && boardWithUsedCells.categories[cat].clues[idx]) {
+        boardWithUsedCells.categories[cat].clues[idx].answered = true;
+      }
+    });
+    updateBoard(boardWithUsedCells);
+  } else if (state.board) {
+    updateBoard(state.board);
+  }
+
   updatePlayers(state.players);
 
   if (state.phase === 'FINAL') {
@@ -806,7 +821,7 @@ function updatePlayers(playersData) {
     const card = document.createElement('div');
     card.className = 'player-card';
 
-    if (player.id === gameState.currentPlayer) {
+    if (player.id === (gameState.currentPlayer || gameState.currentPickerId)) {
       card.classList.add('current-turn');
     }
 
@@ -857,7 +872,7 @@ function showQuestion(questionData) {
   // Set question content
   valueEl.textContent = questionData.isDailyDouble ? 'DAILY DOUBLE!' : `$${questionData.value}`;
   categoryEl.textContent = questionData.category;
-  textEl.textContent = questionData.clue;
+  textEl.textContent = questionData.clue || questionData.text; // Handle both field names
 
   // Reset UI state
   buzzContainer.style.display = questionData.isDailyDouble ? 'none' : 'block';
@@ -868,8 +883,8 @@ function showQuestion(questionData) {
   // Show modal
   modal.classList.add('active');
 
-  // Start timer
-  startQuestionTimer(questionData.timeLimit || 30);
+  // Start timer (10 seconds for answers)
+  startQuestionTimer(questionData.timeLimit || 10);
 
   // If Daily Double, show answer input immediately
   if (questionData.isDailyDouble) {
@@ -886,20 +901,21 @@ function startQuestionTimer(seconds) {
   clearInterval(gameState.timerInterval);
 
   gameState.timerInterval = setInterval(() => {
+    if (gameState.timeRemaining <= 0) {
+      clearInterval(gameState.timerInterval);
+      closeQuestionModal();
+      return;
+    }
+
     gameState.timeRemaining--;
     timerEl.textContent = gameState.timeRemaining;
 
     // Add warning classes
     timerEl.classList.remove('warning', 'danger');
-    if (gameState.timeRemaining <= 5) {
+    if (gameState.timeRemaining <= 3) {
       timerEl.classList.add('danger');
-    } else if (gameState.timeRemaining <= 10) {
+    } else if (gameState.timeRemaining <= 5) {
       timerEl.classList.add('warning');
-    }
-
-    if (gameState.timeRemaining <= 0) {
-      clearInterval(gameState.timerInterval);
-      closeQuestionModal();
     }
   }, 1000);
 }

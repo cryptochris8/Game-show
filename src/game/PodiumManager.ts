@@ -27,15 +27,15 @@ export class PodiumManager {
     private currentHost: HostPersonality | null = null;
 
     // Podium positions for 3 contestants and 1 host
-    // These match your actual map's podium locations
+    // These match your actual map's podium locations (raised one level higher)
     private readonly CONTESTANT_PODIUMS: PodiumPosition[] = [
-        { x: 4, y: 3, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } },     // Left podium
-        { x: 9, y: 3, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } },     // Center podium
-        { x: 14, y: 3, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } }     // Right podium
+        { x: 4, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } },     // Left podium
+        { x: 9, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } },     // Center podium
+        { x: 14, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } }     // Right podium
     ];
 
     private readonly HOST_PODIUM: PodiumPosition = {
-        x: 9, y: 3, z: -1,  // Host stands opposite contestants
+        x: 9, y: 4, z: -1,  // Host stands opposite contestants (raised to match contestants)
         rotation: { x: 0, y: 1, z: 0, w: 0 }  // Facing contestants
     };
 
