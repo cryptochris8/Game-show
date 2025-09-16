@@ -6,60 +6,204 @@
       "name": "SPORTS",
       "clues": [
         { "value": 100, "clue": "This sport uses a dimpled ball and 18-hole courses.", "answer": "What is golf?" },
+        { "value": 100, "clue": "In basketball, this is worth 3 points when shot from beyond the arc.", "answer": "What is a three-pointer?" },
+        { "value": 100, "clue": "This sport is known as 'America's pastime'.", "answer": "What is baseball?" },
+        { "value": 100, "clue": "In this sport, players try to get a 'strike' by knocking down pins.", "answer": "What is bowling?" },
+        { "value": 100, "clue": "This Olympic sport involves athletes jumping over a high bar.", "answer": "What is the high jump?" },
+
         { "value": 200, "clue": "In soccer, this player can use their hands inside the penalty area.", "answer": "Who is the goalkeeper?" },
+        { "value": 200, "clue": "This tennis tournament is held annually in New York.", "answer": "What is the US Open?" },
+        { "value": 200, "clue": "In American football, a touchdown is worth this many points.", "answer": "What is six?" },
+        { "value": 200, "clue": "This is the maximum score possible in a single frame of bowling.", "answer": "What is 30?" },
+        { "value": 200, "clue": "This swimming stroke is named after an insect.", "answer": "What is the butterfly?" },
+
         { "value": 300, "clue": "The NBA team from Chicago is called this.", "answer": "What are the Bulls?" },
+        { "value": 300, "clue": "This boxer was known as 'The Greatest' and 'The Louisville Lip'.", "answer": "Who is Muhammad Ali?" },
+        { "value": 300, "clue": "In hockey, this is the term for scoring three goals in one game.", "answer": "What is a hat trick?" },
+        { "value": 300, "clue": "This golfer has won the most Masters tournaments in history.", "answer": "Who is Jack Nicklaus?" },
+        { "value": 300, "clue": "This is the only sport to have been played on the moon.", "answer": "What is golf?" },
+
         { "value": 400, "clue": "This tennis event is played on grass courts in London.", "answer": "What is Wimbledon?" },
-        { "value": 500, "clue": "He has the most men's Grand Slam singles titles as of 2025.", "answer": "Who is Novak Djokovic?" }
+        { "value": 400, "clue": "This basketball player wore number 23 for the Chicago Bulls.", "answer": "Who is Michael Jordan?" },
+        { "value": 400, "clue": "The World Cup in soccer is held every this many years.", "answer": "What is four?" },
+        { "value": 400, "clue": "This racing event is known as 'The Greatest Spectacle in Racing'.", "answer": "What is the Indianapolis 500?" },
+        { "value": 400, "clue": "In baseball, this pitcher has the most career strikeouts.", "answer": "Who is Nolan Ryan?" },
+
+        { "value": 500, "clue": "He has the most men's Grand Slam singles titles as of 2025.", "answer": "Who is Novak Djokovic?" },
+        { "value": 500, "clue": "This is the oldest tennis tournament in the world.", "answer": "What is Wimbledon?" },
+        { "value": 500, "clue": "This NHL player holds the record for most career goals.", "answer": "Who is Wayne Gretzky?" },
+        { "value": 500, "clue": "This country has won the most FIFA World Cups.", "answer": "What is Brazil?" },
+        { "value": 500, "clue": "This marathon runner set a world record in Berlin in 2022.", "answer": "Who is Eliud Kipchoge?" }
       ]
     },
     {
       "name": "SCIENCE",
       "clues": [
         { "value": 100, "clue": "H2O is better known as this.", "answer": "What is water?" },
+        { "value": 100, "clue": "This gas makes up about 78% of Earth's atmosphere.", "answer": "What is nitrogen?" },
+        { "value": 100, "clue": "The study of earthquakes is called this.", "answer": "What is seismology?" },
+        { "value": 100, "clue": "This is the center of an atom.", "answer": "What is the nucleus?" },
+        { "value": 100, "clue": "This scientist developed the theory of evolution.", "answer": "Who is Charles Darwin?" },
+
         { "value": 200, "clue": "This planet is known as the Red Planet.", "answer": "What is Mars?" },
+        { "value": 200, "clue": "This element has the chemical symbol 'Au'.", "answer": "What is gold?" },
+        { "value": 200, "clue": "This is the largest organ in the human body.", "answer": "What is the skin?" },
+        { "value": 200, "clue": "This force keeps planets in orbit around the sun.", "answer": "What is gravity?" },
+        { "value": 200, "clue": "This is the hardest natural substance on Earth.", "answer": "What is diamond?" },
+
         { "value": 300, "clue": "The speed of light is approximately 3.0 × 10^8 in these units.", "answer": "What are meters per second?" },
+        { "value": 300, "clue": "This organ produces insulin in the human body.", "answer": "What is the pancreas?" },
+        { "value": 300, "clue": "This is the smallest unit of matter.", "answer": "What is an atom?" },
+        { "value": 300, "clue": "This type of blood cell fights infections.", "answer": "What are white blood cells?" },
+        { "value": 300, "clue": "This planet has the most moons in our solar system.", "answer": "What is Jupiter?" },
+
         { "value": 400, "clue": "DNA stands for deoxyribonucleic this.", "answer": "What is acid?" },
-        { "value": 500, "clue": "This scientist proposed the laws of motion and universal gravitation.", "answer": "Who is Isaac Newton?" }
+        { "value": 400, "clue": "This scientist discovered penicillin.", "answer": "Who is Alexander Fleming?" },
+        { "value": 400, "clue": "This is the process by which plants make their own food.", "answer": "What is photosynthesis?" },
+        { "value": 400, "clue": "This element has the atomic number 1.", "answer": "What is hydrogen?" },
+        { "value": 400, "clue": "This is the study of heredity and genes.", "answer": "What is genetics?" },
+
+        { "value": 500, "clue": "This scientist proposed the laws of motion and universal gravitation.", "answer": "Who is Isaac Newton?" },
+        { "value": 500, "clue": "This is the name for a baby kangaroo.", "answer": "What is a joey?" },
+        { "value": 500, "clue": "This physicist developed the theory of relativity.", "answer": "Who is Albert Einstein?" },
+        { "value": 500, "clue": "This is the powerhouse of the cell.", "answer": "What is the mitochondria?" },
+        { "value": 500, "clue": "This scale measures the acidity or alkalinity of a solution.", "answer": "What is the pH scale?" }
       ]
     },
     {
       "name": "MOVIES",
       "clues": [
         { "value": 100, "clue": "This galaxy far, far away franchise features Jedi and Sith.", "answer": "What is Star Wars?" },
+        { "value": 100, "clue": "This Disney movie features a lion named Simba.", "answer": "What is The Lion King?" },
+        { "value": 100, "clue": "This superhero is also known as the Dark Knight.", "answer": "Who is Batman?" },
+        { "value": 100, "clue": "This animated movie features toys that come to life.", "answer": "What is Toy Story?" },
+        { "value": 100, "clue": "This wizard attends Hogwarts School.", "answer": "Who is Harry Potter?" },
+
         { "value": 200, "clue": "He directed 'Jurassic Park' and 'E.T.'.", "answer": "Who is Steven Spielberg?" },
+        { "value": 200, "clue": "This movie features a shark terrorizing a beach town.", "answer": "What is Jaws?" },
+        { "value": 200, "clue": "This actor played Iron Man in the Marvel movies.", "answer": "Who is Robert Downey Jr.?" },
+        { "value": 200, "clue": "This movie won the Academy Award for Best Picture in 2020.", "answer": "What is Parasite?" },
+        { "value": 200, "clue": "This Disney princess has very long hair.", "answer": "Who is Rapunzel?" },
+
         { "value": 300, "clue": "This 1997 ship-sinking epic starred Leonardo DiCaprio and Kate Winslet.", "answer": "What is Titanic?" },
+        { "value": 300, "clue": "This movie features the quote 'May the Force be with you'.", "answer": "What is Star Wars?" },
+        { "value": 300, "clue": "This actor played the Joker in 'The Dark Knight'.", "answer": "Who is Heath Ledger?" },
+        { "value": 300, "clue": "This animated movie is about a robot left alone on Earth.", "answer": "What is WALL-E?" },
+        { "value": 300, "clue": "This movie features the song 'My Heart Will Go On'.", "answer": "What is Titanic?" },
+
         { "value": 400, "clue": "The Marvel hero also known as T'Challa is this feline monarch.", "answer": "Who is Black Panther?" },
-        { "value": 500, "clue": "This director is known for mind-bending films like 'Inception' and 'Tenet'.", "answer": "Who is Christopher Nolan?" }
+        { "value": 400, "clue": "This movie won 11 Academy Awards, including Best Picture.", "answer": "What is The Lord of the Rings: The Return of the King?" },
+        { "value": 400, "clue": "This actress played Hermione Granger in the Harry Potter films.", "answer": "Who is Emma Watson?" },
+        { "value": 400, "clue": "This movie features the quote 'I'll be back'.", "answer": "What is The Terminator?" },
+        { "value": 400, "clue": "This director is known for films like 'Pulp Fiction' and 'Kill Bill'.", "answer": "Who is Quentin Tarantino?" },
+
+        { "value": 500, "clue": "This director is known for mind-bending films like 'Inception' and 'Tenet'.", "answer": "Who is Christopher Nolan?" },
+        { "value": 500, "clue": "This movie holds the record for highest-grossing film of all time.", "answer": "What is Avatar?" },
+        { "value": 500, "clue": "This actor has won the most Academy Awards for Best Actor.", "answer": "Who is Katharine Hepburn?" },
+        { "value": 500, "clue": "This movie was the first to feature a computer-generated main character.", "answer": "What is The Abyss?" },
+        { "value": 500, "clue": "This film noir classic features Humphrey Bogart and Ingrid Bergman.", "answer": "What is Casablanca?" }
       ]
     },
     {
       "name": "GEOGRAPHY",
       "clues": [
         { "value": 100, "clue": "This is the largest country in the world by area.", "answer": "What is Russia?" },
+        { "value": 100, "clue": "This is the capital of France.", "answer": "What is Paris?" },
+        { "value": 100, "clue": "This ocean is the largest in the world.", "answer": "What is the Pacific?" },
+        { "value": 100, "clue": "This continent is home to penguins and polar bears.", "answer": "What is Antarctica?" },
+        { "value": 100, "clue": "This river flows through London.", "answer": "What is the Thames?" },
+
         { "value": 200, "clue": "The Nile River flows primarily through this continent.", "answer": "What is Africa?" },
+        { "value": 200, "clue": "This is the smallest country in the world.", "answer": "What is Vatican City?" },
+        { "value": 200, "clue": "This mountain range contains Mount Everest.", "answer": "What are the Himalayas?" },
+        { "value": 200, "clue": "This U.S. state is known for its shape like a boot.", "answer": "What is Louisiana?" },
+        { "value": 200, "clue": "This is the longest river in the world.", "answer": "What is the Nile?" },
+
         { "value": 300, "clue": "This U.S. state is known as the Sunshine State.", "answer": "What is Florida?" },
+        { "value": 300, "clue": "This desert spans across multiple countries in North Africa.", "answer": "What is the Sahara?" },
+        { "value": 300, "clue": "This city is the capital of Australia.", "answer": "What is Canberra?" },
+        { "value": 300, "clue": "This island country is known for its kangaroos.", "answer": "What is Australia?" },
+        { "value": 300, "clue": "This strait separates Europe and Africa.", "answer": "What is the Strait of Gibraltar?" },
+
         { "value": 400, "clue": "Mount Everest sits on the border of Nepal and this country.", "answer": "What is China?" },
-        { "value": 500, "clue": "This desert in northern Africa is the world's largest hot desert.", "answer": "What is the Sahara?" }
+        { "value": 400, "clue": "This lake is the largest freshwater lake in the world by surface area.", "answer": "What is Lake Superior?" },
+        { "value": 400, "clue": "This country has the most time zones.", "answer": "What is France?" },
+        { "value": 400, "clue": "This is the deepest point in the ocean.", "answer": "What is the Mariana Trench?" },
+        { "value": 400, "clue": "This African country is completely surrounded by South Africa.", "answer": "What is Lesotho?" },
+
+        { "value": 500, "clue": "This desert in northern Africa is the world's largest hot desert.", "answer": "What is the Sahara?" },
+        { "value": 500, "clue": "This is the only country that borders both the Atlantic and Indian Oceans.", "answer": "What is South Africa?" },
+        { "value": 500, "clue": "This city straddles two continents.", "answer": "What is Istanbul?" },
+        { "value": 500, "clue": "This is the highest capital city in the world.", "answer": "What is La Paz?" },
+        { "value": 500, "clue": "This country has the most islands in the world.", "answer": "What is Finland?" }
       ]
     },
     {
       "name": "HISTORY",
       "clues": [
         { "value": 100, "clue": "He was the first President of the United States.", "answer": "Who is George Washington?" },
+        { "value": 100, "clue": "This ancient wonder of the world was located in Alexandria.", "answer": "What is the Lighthouse of Alexandria?" },
+        { "value": 100, "clue": "This war ended in 1945.", "answer": "What is World War II?" },
+        { "value": 100, "clue": "This Egyptian queen was known for her relationships with Julius Caesar and Mark Antony.", "answer": "Who is Cleopatra?" },
+        { "value": 100, "clue": "This ship sank in 1912 after hitting an iceberg.", "answer": "What is the Titanic?" },
+
         { "value": 200, "clue": "This wall dividing Berlin fell in 1989.", "answer": "What is the Berlin Wall?" },
+        { "value": 200, "clue": "This explorer is credited with discovering America in 1492.", "answer": "Who is Christopher Columbus?" },
+        { "value": 200, "clue": "This war was fought between the North and South in America.", "answer": "What is the Civil War?" },
+        { "value": 200, "clue": "This ancient civilization built the pyramids.", "answer": "Who are the Egyptians?" },
+        { "value": 200, "clue": "This amendment gave women the right to vote.", "answer": "What is the 19th Amendment?" },
+
         { "value": 300, "clue": "This U.S. document begins with 'We the People'.", "answer": "What is the Constitution?" },
+        { "value": 300, "clue": "This emperor built a wall across northern England.", "answer": "Who is Hadrian?" },
+        { "value": 300, "clue": "This purchase doubled the size of the United States in 1803.", "answer": "What is the Louisiana Purchase?" },
+        { "value": 300, "clue": "This revolution began in 1789 in France.", "answer": "What is the French Revolution?" },
+        { "value": 300, "clue": "This president served for more than two terms.", "answer": "Who is Franklin D. Roosevelt?" },
+
         { "value": 400, "clue": "The Renaissance began on this European peninsula.", "answer": "What is the Italian Peninsula?" },
-        { "value": 500, "clue": "This empire was ruled by Genghis Khan and later Kublai Khan.", "answer": "What is the Mongol Empire?" }
+        { "value": 400, "clue": "This document was signed in 1215 and limited the power of the king.", "answer": "What is the Magna Carta?" },
+        { "value": 400, "clue": "This battle marked the end of Napoleon's career.", "answer": "What is Waterloo?" },
+        { "value": 400, "clue": "This ancient Greek philosopher taught Alexander the Great.", "answer": "Who is Aristotle?" },
+        { "value": 400, "clue": "This event triggered World War I.", "answer": "What is the assassination of Archduke Franz Ferdinand?" },
+
+        { "value": 500, "clue": "This empire was ruled by Genghis Khan and later Kublai Khan.", "answer": "What is the Mongol Empire?" },
+        { "value": 500, "clue": "This treaty ended World War I.", "answer": "What is the Treaty of Versailles?" },
+        { "value": 500, "clue": "This Roman emperor legalized Christianity.", "answer": "Who is Constantine?" },
+        { "value": 500, "clue": "This plague devastated Europe in the 14th century.", "answer": "What is the Black Death?" },
+        { "value": 500, "clue": "This ancient library was the largest in the world until its destruction.", "answer": "What is the Library of Alexandria?" }
       ]
     },
     {
       "name": "POP CULTURE",
       "clues": [
         { "value": 100, "clue": "This social app is known for short-form videos and viral dances.", "answer": "What is TikTok?" },
+        { "value": 100, "clue": "This reality show features people living in a house with cameras.", "answer": "What is Big Brother?" },
+        { "value": 100, "clue": "This singer is known as 'Queen B'.", "answer": "Who is Beyoncé?" },
+        { "value": 100, "clue": "This superhero team includes Iron Man, Captain America, and Thor.", "answer": "What are the Avengers?" },
+        { "value": 100, "clue": "This streaming service produced 'The Crown' and 'Stranger Things'.", "answer": "What is Netflix?" },
+
         { "value": 200, "clue": "This streaming platform's 'Stranger Things' became a cultural phenomenon.", "answer": "What is Netflix?" },
+        { "value": 200, "clue": "This pop star is known for songs like 'Shake It Off' and '22'.", "answer": "Who is Taylor Swift?" },
+        { "value": 200, "clue": "This show features dragons and the Iron Throne.", "answer": "What is Game of Thrones?" },
+        { "value": 200, "clue": "This social media platform uses a bird as its logo.", "answer": "What is Twitter?" },
+        { "value": 200, "clue": "This boy band includes Harry Styles as a former member.", "answer": "What is One Direction?" },
+
         { "value": 300, "clue": "BTS is a mega-popular group from this country.", "answer": "What is South Korea?" },
+        { "value": 300, "clue": "This rapper's real name is Marshall Mathers.", "answer": "Who is Eminem?" },
+        { "value": 300, "clue": "This TV show features a chemistry teacher turned meth cook.", "answer": "What is Breaking Bad?" },
+        { "value": 300, "clue": "This platform is known for 6-second videos.", "answer": "What is Vine?" },
+        { "value": 300, "clue": "This singer performed at the 2023 Super Bowl halftime show.", "answer": "Who is Rihanna?" },
+
         { "value": 400, "clue": "He's the entrepreneur behind SpaceX and Tesla.", "answer": "Who is Elon Musk?" },
-        { "value": 500, "clue": "This phrase describes fans hunting for references across a connected film universe.", "answer": "What are Easter eggs?" }
+        { "value": 400, "clue": "This show about a paper company was filmed documentary-style.", "answer": "What is The Office?" },
+        { "value": 400, "clue": "This rapper interrupted Taylor Swift at the 2009 VMAs.", "answer": "Who is Kanye West?" },
+        { "value": 400, "clue": "This social media app was acquired by Facebook in 2012.", "answer": "What is Instagram?" },
+        { "value": 400, "clue": "This celebrity chef is known for saying 'Where's the lamb sauce?'", "answer": "Who is Gordon Ramsay?" },
+
+        { "value": 500, "clue": "This phrase describes fans hunting for references across a connected film universe.", "answer": "What are Easter eggs?" },
+        { "value": 500, "clue": "This podcast became famous for investigating a murder case.", "answer": "What is Serial?" },
+        { "value": 500, "clue": "This YouTuber was the most subscribed individual creator for many years.", "answer": "Who is PewDiePie?" },
+        { "value": 500, "clue": "This app allows users to create short music videos with special effects.", "answer": "What is TikTok?" },
+        { "value": 500, "clue": "This meme involves a frog and the phrase 'feels good man'.", "answer": "What is Pepe?" }
       ]
     }
   ],
