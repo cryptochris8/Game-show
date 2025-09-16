@@ -18,6 +18,7 @@
 import { startServer, Audio, PlayerEvent, PlayerUIEvent, Entity, RigidBodyType } from 'hytopia';
 import worldMap from './assets/maps/map.json';
 import GameManager from './src/game/GameManager';
+import { GamePhase } from './src/net/Events';
 import { PlayerLifecycleManager } from './src/util/PlayerManager';
 import { ChatCommandManager, registerCommands } from './src/util/ChatCommandManager';
 import { config, getServerConfig } from './src/util/Config';
@@ -352,8 +353,24 @@ startServer(world => {
         break;
 
       case 'LOAD_GAME_BOARD':
-        // Load the game board UI
-        loadGameBoardUI(player);
+        // Only load game board UI if not in INTRO phase
+        const currentPhase = gameManager?.getCurrentGamePhase();
+        logger.info(`LOAD_GAME_BOARD event received`, {
+          component: 'UISystem',
+          playerId: player.id,
+          currentPhase: currentPhase,
+          willLoad: currentPhase !== GamePhase.INTRO
+        });
+
+        if (gameManager && currentPhase !== GamePhase.INTRO) {
+          loadGameBoardUI(player);
+        } else {
+          logger.info(`Delaying game board load - currently in intro sequence`, {
+            component: 'UISystem',
+            playerId: player.id,
+            currentPhase: currentPhase
+          });
+        }
         break;
 
       case 'GET_GAME_STATE':

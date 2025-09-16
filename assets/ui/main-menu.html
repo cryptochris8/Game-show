@@ -990,7 +990,13 @@
           updateGameDisplay(data.payload.gameState);
         }
         break;
-        
+
+      case 'LOAD_GAME_BOARD':
+        // Server is telling us to load the game board (intro completed)
+        console.log('🎯 Server requesting game board load after intro completion');
+        transitionToGame();
+        break;
+
       case 'ERROR':
         // Handle errors and reset buttons
         resetButtonStates();

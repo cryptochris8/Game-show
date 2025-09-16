@@ -29,6 +29,7 @@ import { AnswerNormalizer } from './Normalize';
 import { logger } from '../util/Logger';
 import AIPlayer, { AI_PERSONALITIES, AIPersonality, AIGameActions } from './AIPlayer';
 import PodiumManager from './PodiumManager';
+import TalkShowIntroManager from './TalkShowIntroManager';
 
 export interface GameConfig {
     packName?: string;
@@ -37,6 +38,7 @@ export interface GameConfig {
     autoHostDelay: number; // ms to wait before auto-hosting
     singlePlayerMode?: boolean;
     aiPlayersCount?: number;
+    skipIntro?: boolean; // Skip the talk show introduction
 }
 
 export interface FinalRoundState {
@@ -62,6 +64,7 @@ export class GameManager {
     private buzzManager: BuzzManager;
     private roundManager: RoundManager | null = null;
     private podiumManager: PodiumManager;
+    private talkShowIntroManager: TalkShowIntroManager;
     private finalRoundState: FinalRoundState | null = null;
     
     private gameConfig: GameConfig;
@@ -80,12 +83,14 @@ export class GameManager {
             autoHostDelay: 10000,
             singlePlayerMode: false,
             aiPlayersCount: 3,
+            skipIntro: false, // Set to true to skip talk show intro for debugging
             ...config
         };
 
         this.scoreManager = new ScoreManager();
         this.buzzManager = new BuzzManager();
         this.podiumManager = new PodiumManager(world);
+        this.talkShowIntroManager = new TalkShowIntroManager(world, this.podiumManager);
 
         // Spawn the host NPC immediately
         this.podiumManager.spawnHost();
@@ -104,6 +109,37 @@ export class GameManager {
             component: 'GameManager',
             config: this.gameConfig
         });
+    }
+
+    /**
+     * Get current game phase
+     */
+    public getCurrentGamePhase(): GamePhase {
+        return this.gamePhase;
+    }
+
+    /**
+     * Signal all players to load the game board UI
+     */
+    private loadGameBoardForAllPlayers(): void {
+        logger.info('Signaling all players to load game board after intro completion', {
+            component: 'GameManager',
+            playerCount: this.players.size
+        });
+
+        for (const player of this.players.values()) {
+            try {
+                player.ui.sendData({
+                    type: 'LOAD_GAME_BOARD',
+                    payload: {}
+                });
+            } catch (error) {
+                logger.error('Failed to signal game board load to player', error as Error, {
+                    component: 'GameManager',
+                    playerId: player.id
+                });
+            }
+        }
     }
 
     /**
@@ -433,23 +469,66 @@ export class GameManager {
         // Initialize game systems
         this.roundManager = new RoundManager(packResult.boardData);
         this.gameStartTime = Date.now();
+
+        // Give a short delay to ensure all players are properly positioned at podiums
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        // Transition to INTRO phase to prevent game board loading during intro
+        this.gamePhase = GamePhase.INTRO;
+        await this.broadcastGameState();
+
+        // Start with talk show introduction sequence
+        logger.info('Starting talk show introduction sequence', {
+            component: 'GameManager',
+            totalPlayers,
+            humanPlayers: this.players.size,
+            aiPlayers: this.aiPlayers.size
+        });
+
+        try {
+            // Start the introduction sequence (can be skipped via config)
+            if (this.gameConfig.skipIntro) {
+                logger.info('Skipping introduction sequence per config', {
+                    component: 'GameManager'
+                });
+            } else {
+                await this.talkShowIntroManager.startIntroSequence(
+                    this.players,
+                    Array.from(this.aiPlayers.values()),
+                    { skipIntro: this.gameConfig.skipIntro }
+                );
+            }
+        } catch (error) {
+            logger.error('Introduction sequence failed, continuing to game', error as Error, {
+                component: 'GameManager',
+                errorMessage: error.message,
+                errorStack: error.stack
+            });
+        }
+
+        // After intro completes, transition to game
         this.gamePhase = GamePhase.ROUND1;
-        
+
         // Pick random starting player
         this.assignRandomPicker();
-        
+
         // Reset buzz manager for new game
         this.buzzManager.reset();
-        
+
         await this.broadcastGameState();
-        this.broadcastMessage('Game started! Round 1 begins now.');
+        this.broadcastMessage('📺 And now... let the trivia begin!', 'FFD700');
+
+        // Now that intro is complete, signal players to load game board
+        this.loadGameBoardForAllPlayers();
 
         // Start AI player update loop if in single player mode
         if (this.gameConfig.singlePlayerMode && this.aiPlayers.size > 0) {
             this.startAIUpdateLoop();
         }
 
-        console.log('Game started successfully');
+        logger.info('Game started successfully with introduction sequence', {
+            component: 'GameManager'
+        });
     }
 
     /**
@@ -1264,6 +1343,8 @@ export class GameManager {
         switch (this.gamePhase) {
             case GamePhase.LOBBY:
                 return `Waiting for players... (${this.players.size}/${MIN_PLAYERS} minimum)`;
+            case GamePhase.INTRO:
+                return 'Welcome to BUZZCHAIN! Introducing contestants...';
             case GamePhase.ROUND1:
                 return 'Round 1 in progress';
             case GamePhase.ROUND2:

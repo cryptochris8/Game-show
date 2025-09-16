@@ -24,7 +24,8 @@ export enum ClueboardEvent {
 
 export enum GamePhase {
     LOBBY = 'LOBBY',
-    ROUND1 = 'ROUND1', 
+    INTRO = 'INTRO',
+    ROUND1 = 'ROUND1',
     ROUND2 = 'ROUND2',
     FINAL = 'FINAL',
     RESULTS = 'RESULTS'
