@@ -110,6 +110,11 @@
       "name": "water-still",
       "textureUri": "blocks/water-still.png",
       "isLiquid": true
+    },
+    {
+      "id": 23,
+      "name": "jeopardy2",
+      "textureUri": "blocks/jeopardy2"
     }
   ],
   "blocks": {

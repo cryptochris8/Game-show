@@ -1,7 +1,7 @@
 {
-  "name": "clueboard-trivia",
+  "name": "buzzchain-trivia",
   "version": "1.0.0",
-  "description": "Jeopardy-style multiplayer trivia game for HYTOPIA",
+  "description": "Buzzchain - Multiplayer trivia game for HYTOPIA",
   "main": "index.js",
   "scripts": {
     "dev": "hytopia start",

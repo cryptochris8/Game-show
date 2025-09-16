@@ -1,5 +1,5 @@
 {
-  "packId": "demo-clueboard-001",
+  "packId": "demo-buzzchain-001",
   "title": "General Knowledge Demo Pack",
   "categories": [
     {
@@ -33,7 +33,7 @@
         { "value": 500, "clue": "This is the oldest tennis tournament in the world.", "answer": "What is Wimbledon?" },
         { "value": 500, "clue": "This NHL player holds the record for most career goals.", "answer": "Who is Wayne Gretzky?" },
         { "value": 500, "clue": "This country has won the most FIFA World Cups.", "answer": "What is Brazil?" },
-        { "value": 500, "clue": "This marathon runner set a world record in Berlin in 2022.", "answer": "Who is Eliud Kipchoge?" }
+        { "value": 500, "clue": "This marathon runner broke the 2-hour barrier in an unofficial race.", "answer": "Who is Eliud Kipchoge?" }
       ]
     },
     {
@@ -51,9 +51,9 @@
         { "value": 200, "clue": "This force keeps planets in orbit around the sun.", "answer": "What is gravity?" },
         { "value": 200, "clue": "This is the hardest natural substance on Earth.", "answer": "What is diamond?" },
 
-        { "value": 300, "clue": "The speed of light is approximately 3.0 × 10^8 in these units.", "answer": "What are meters per second?" },
+        { "value": 300, "clue": "The speed of light is approximately 300,000 kilometers per this.", "answer": "What is second?" },
         { "value": 300, "clue": "This organ produces insulin in the human body.", "answer": "What is the pancreas?" },
-        { "value": 300, "clue": "This is the smallest unit of matter.", "answer": "What is an atom?" },
+        { "value": 300, "clue": "This is the smallest unit of matter that retains chemical properties.", "answer": "What is an atom?" },
         { "value": 300, "clue": "This type of blood cell fights infections.", "answer": "What are white blood cells?" },
         { "value": 300, "clue": "This planet has the most moons in our solar system.", "answer": "What is Jupiter?" },
 
@@ -99,8 +99,8 @@
 
         { "value": 500, "clue": "This director is known for mind-bending films like 'Inception' and 'Tenet'.", "answer": "Who is Christopher Nolan?" },
         { "value": 500, "clue": "This movie holds the record for highest-grossing film of all time.", "answer": "What is Avatar?" },
-        { "value": 500, "clue": "This actor has won the most Academy Awards for Best Actor.", "answer": "Who is Katharine Hepburn?" },
-        { "value": 500, "clue": "This movie was the first to feature a computer-generated main character.", "answer": "What is The Abyss?" },
+        { "value": 500, "clue": "This actress has won the most Academy Awards for Best Actress.", "answer": "Who is Katharine Hepburn?" },
+        { "value": 500, "clue": "This movie was the first animated film nominated for Best Picture.", "answer": "What is Beauty and the Beast?" },
         { "value": 500, "clue": "This film noir classic features Humphrey Bogart and Ingrid Bergman.", "answer": "What is Casablanca?" }
       ]
     },
@@ -110,19 +110,19 @@
         { "value": 100, "clue": "This is the largest country in the world by area.", "answer": "What is Russia?" },
         { "value": 100, "clue": "This is the capital of France.", "answer": "What is Paris?" },
         { "value": 100, "clue": "This ocean is the largest in the world.", "answer": "What is the Pacific?" },
-        { "value": 100, "clue": "This continent is home to penguins and polar bears.", "answer": "What is Antarctica?" },
+        { "value": 100, "clue": "This continent is home to penguins.", "answer": "What is Antarctica?" },
         { "value": 100, "clue": "This river flows through London.", "answer": "What is the Thames?" },
 
         { "value": 200, "clue": "The Nile River flows primarily through this continent.", "answer": "What is Africa?" },
         { "value": 200, "clue": "This is the smallest country in the world.", "answer": "What is Vatican City?" },
         { "value": 200, "clue": "This mountain range contains Mount Everest.", "answer": "What are the Himalayas?" },
-        { "value": 200, "clue": "This U.S. state is known for its shape like a boot.", "answer": "What is Louisiana?" },
+        { "value": 200, "clue": "This U.S. state is known as the Aloha State.", "answer": "What is Hawaii?" },
         { "value": 200, "clue": "This is the longest river in the world.", "answer": "What is the Nile?" },
 
         { "value": 300, "clue": "This U.S. state is known as the Sunshine State.", "answer": "What is Florida?" },
         { "value": 300, "clue": "This desert spans across multiple countries in North Africa.", "answer": "What is the Sahara?" },
         { "value": 300, "clue": "This city is the capital of Australia.", "answer": "What is Canberra?" },
-        { "value": 300, "clue": "This island country is known for its kangaroos.", "answer": "What is Australia?" },
+        { "value": 300, "clue": "This European country is shaped like a boot.", "answer": "What is Italy?" },
         { "value": 300, "clue": "This strait separates Europe and Africa.", "answer": "What is the Strait of Gibraltar?" },
 
         { "value": 400, "clue": "Mount Everest sits on the border of Nepal and this country.", "answer": "What is China?" },
@@ -131,11 +131,11 @@
         { "value": 400, "clue": "This is the deepest point in the ocean.", "answer": "What is the Mariana Trench?" },
         { "value": 400, "clue": "This African country is completely surrounded by South Africa.", "answer": "What is Lesotho?" },
 
-        { "value": 500, "clue": "This desert in northern Africa is the world's largest hot desert.", "answer": "What is the Sahara?" },
+        { "value": 500, "clue": "This desert is the world's largest hot desert.", "answer": "What is the Sahara?" },
         { "value": 500, "clue": "This is the only country that borders both the Atlantic and Indian Oceans.", "answer": "What is South Africa?" },
         { "value": 500, "clue": "This city straddles two continents.", "answer": "What is Istanbul?" },
         { "value": 500, "clue": "This is the highest capital city in the world.", "answer": "What is La Paz?" },
-        { "value": 500, "clue": "This country has the most islands in the world.", "answer": "What is Finland?" }
+        { "value": 500, "clue": "This country has the most islands in the world.", "answer": "What is Sweden?" }
       ]
     },
     {
@@ -181,32 +181,39 @@
         { "value": 100, "clue": "This superhero team includes Iron Man, Captain America, and Thor.", "answer": "What are the Avengers?" },
         { "value": 100, "clue": "This streaming service produced 'The Crown' and 'Stranger Things'.", "answer": "What is Netflix?" },
 
-        { "value": 200, "clue": "This streaming platform's 'Stranger Things' became a cultural phenomenon.", "answer": "What is Netflix?" },
-        { "value": 200, "clue": "This pop star is known for songs like 'Shake It Off' and '22'.", "answer": "Who is Taylor Swift?" },
+        { "value": 200, "clue": "This video game features building and survival in a blocky world.", "answer": "What is Minecraft?" },
+        { "value": 200, "clue": "This pop star is known for songs like 'Shake It Off' and 'Blank Space'.", "answer": "Who is Taylor Swift?" },
         { "value": 200, "clue": "This show features dragons and the Iron Throne.", "answer": "What is Game of Thrones?" },
-        { "value": 200, "clue": "This social media platform uses a bird as its logo.", "answer": "What is Twitter?" },
+        { "value": 200, "clue": "This social media platform was formerly known as Twitter.", "answer": "What is X?" },
         { "value": 200, "clue": "This boy band includes Harry Styles as a former member.", "answer": "What is One Direction?" },
 
         { "value": 300, "clue": "BTS is a mega-popular group from this country.", "answer": "What is South Korea?" },
         { "value": 300, "clue": "This rapper's real name is Marshall Mathers.", "answer": "Who is Eminem?" },
         { "value": 300, "clue": "This TV show features a chemistry teacher turned meth cook.", "answer": "What is Breaking Bad?" },
-        { "value": 300, "clue": "This platform is known for 6-second videos.", "answer": "What is Vine?" },
+        { "value": 300, "clue": "This platform was known for 6-second videos before shutting down.", "answer": "What is Vine?" },
         { "value": 300, "clue": "This singer performed at the 2023 Super Bowl halftime show.", "answer": "Who is Rihanna?" },
 
         { "value": 400, "clue": "He's the entrepreneur behind SpaceX and Tesla.", "answer": "Who is Elon Musk?" },
         { "value": 400, "clue": "This show about a paper company was filmed documentary-style.", "answer": "What is The Office?" },
-        { "value": 400, "clue": "This rapper interrupted Taylor Swift at the 2009 VMAs.", "answer": "Who is Kanye West?" },
+        { "value": 400, "clue": "This rapper's album 'The College Dropout' launched his career.", "answer": "Who is Kanye West?" },
         { "value": 400, "clue": "This social media app was acquired by Facebook in 2012.", "answer": "What is Instagram?" },
-        { "value": 400, "clue": "This celebrity chef is known for saying 'Where's the lamb sauce?'", "answer": "Who is Gordon Ramsay?" },
+        { "value": 400, "clue": "This celebrity chef is known for saying 'It's raw!'", "answer": "Who is Gordon Ramsay?" },
 
-        { "value": 500, "clue": "This phrase describes fans hunting for references across a connected film universe.", "answer": "What are Easter eggs?" },
-        { "value": 500, "clue": "This podcast became famous for investigating a murder case.", "answer": "What is Serial?" },
-        { "value": 500, "clue": "This YouTuber was the most subscribed individual creator for many years.", "answer": "Who is PewDiePie?" },
-        { "value": 500, "clue": "This app allows users to create short music videos with special effects.", "answer": "What is TikTok?" },
-        { "value": 500, "clue": "This meme involves a frog and the phrase 'feels good man'.", "answer": "What is Pepe?" }
+        { "value": 500, "clue": "This video game became a phenomenon in 2020 with 'sus' memes.", "answer": "What is Among Us?" },
+        { "value": 500, "clue": "This podcast by Joe Rogan is one of the most popular in the world.", "answer": "What is The Joe Rogan Experience?" },
+        { "value": 500, "clue": "This YouTuber was the first to reach 100 million subscribers.", "answer": "Who is PewDiePie?" },
+        { "value": 500, "clue": "This Korean film won Best Picture at the 2020 Academy Awards.", "answer": "What is Parasite?" },
+        { "value": 500, "clue": "This dance craze took over TikTok in 2019.", "answer": "What is the Renegade?" }
       ]
     }
   ],
-  "dailyDoubles": [ { "category": 0, "index": 3 }, { "category": 3, "index": 2 } ],
-  "finalRound": { "category": "WORLD FLAGS", "clue": "This country's flag features a red maple leaf.", "answer": "What is Canada?" }
+  "dailyDoubles": [
+    { "category": 0, "index": 3 },
+    { "category": 3, "index": 2 }
+  ],
+  "finalRound": {
+    "category": "WORLD FLAGS",
+    "clue": "This country's flag features a red maple leaf on a red and white background.",
+    "answer": "What is Canada?"
+  }
 }

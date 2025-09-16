@@ -1,4 +1,4 @@
-// PackLoader - Loads and validates question packs for Clueboard
+// PackLoader - Loads and validates question packs for Buzzchain
 // Ensures trivia packs meet game requirements and are properly formatted
 
 import { promises as fs } from 'fs';
@@ -53,6 +53,7 @@ export interface LoadResult {
 export class PackLoader {
     private static readonly REQUIRED_CATEGORIES = 6;
     private static readonly REQUIRED_CLUES_PER_CATEGORY = 5;
+    private static readonly MIN_CLUES_IN_POOL = 5; // Minimum clues needed in the question pool
     private static readonly EXPECTED_VALUES = [100, 200, 300, 400, 500];
     private static readonly MIN_DAILY_DOUBLES = 1;
     private static readonly MAX_DAILY_DOUBLES = 3;
@@ -240,12 +241,32 @@ export class PackLoader {
             return;
         }
 
-        if (category.clues.length !== this.REQUIRED_CLUES_PER_CATEGORY) {
-            errors.push({
-                field: `${field}.clues`,
-                message: `Must have exactly ${this.REQUIRED_CLUES_PER_CATEGORY} clues, found ${category.clues.length}`,
-                severity: 'error'
-            });
+        // Support question pools - require at least MIN_CLUES_IN_POOL clues per value
+        const cluesByValue = new Map<number, any[]>();
+        for (const value of this.EXPECTED_VALUES) {
+            cluesByValue.set(value, category.clues.filter((c: any) => c?.value === value));
+        }
+
+        // Check each value has at least one clue
+        for (const [value, clues] of cluesByValue.entries()) {
+            if (clues.length === 0) {
+                errors.push({
+                    field: `${field}.clues`,
+                    message: `Missing clues for value ${value}`,
+                    severity: 'error'
+                });
+            }
+        }
+
+        // Warn if there are less than 5 clues per value (less variety)
+        for (const [value, clues] of cluesByValue.entries()) {
+            if (clues.length > 0 && clues.length < 3) {
+                warnings.push({
+                    field: `${field}.clues`,
+                    message: `Only ${clues.length} clue(s) for value ${value} - consider adding more for variety`,
+                    severity: 'warning'
+                });
+            }
         }
 
         // Validate category name
@@ -262,18 +283,9 @@ export class PackLoader {
             this.validateClue(clue, index, clueIndex, errors, warnings);
         });
 
-        // Check clue values are in expected sequence
-        if (category.clues.length === this.REQUIRED_CLUES_PER_CATEGORY) {
-            const values = category.clues.map((clue: any) => clue?.value).sort((a: number, b: number) => a - b);
-            const expectedValues = [...this.EXPECTED_VALUES].sort((a, b) => a - b);
-            
-            if (!this.arraysEqual(values, expectedValues)) {
-                warnings.push({
-                    field: `${field}.clues`,
-                    message: `Expected values ${expectedValues.join(', ')}, found ${values.join(', ')}`,
-                    severity: 'warning'
-                });
-            }
+        // Info message about question pool size
+        if (category.clues.length > this.REQUIRED_CLUES_PER_CATEGORY) {
+            console.log(`Category '${category.name}' has ${category.clues.length} clues in pool (${this.REQUIRED_CLUES_PER_CATEGORY} will be selected randomly)`);
         }
     }
 
@@ -393,6 +405,7 @@ export class PackLoader {
                     });
                 }
 
+                // Daily Double index should be 0-4 (for the 5 value positions)
                 if (dd.index < 0 || dd.index >= this.REQUIRED_CLUES_PER_CATEGORY) {
                     errors.push({
                         field: `${field}.index`,
@@ -493,14 +506,44 @@ export class PackLoader {
     }
 
     /**
-     * Convert pack data to board format
+     * Convert pack data to board format with random selection from question pools
      */
     private static convertToBoard(packData: TriviaPackData): BoardData {
         return {
-            categories: packData.categories.map(category => ({
-                name: category.name.toUpperCase(),
-                clues: [...category.clues] // Copy clues
-            })),
+            categories: packData.categories.map(category => {
+                // Group clues by value
+                const cluesByValue = new Map<number, ClueData[]>();
+                for (const value of this.EXPECTED_VALUES) {
+                    const cluesForValue = category.clues.filter(c => c.value === value);
+                    cluesByValue.set(value, cluesForValue);
+                }
+
+                // Randomly select one clue per value
+                const selectedClues: ClueData[] = [];
+                for (const value of this.EXPECTED_VALUES) {
+                    const availableClues = cluesByValue.get(value) || [];
+                    if (availableClues.length > 0) {
+                        // Random selection from the pool
+                        const randomIndex = Math.floor(Math.random() * availableClues.length);
+                        selectedClues.push({ ...availableClues[randomIndex] });
+                    } else {
+                        // Fallback if no clue for this value (should not happen with validation)
+                        selectedClues.push({
+                            value,
+                            clue: `Placeholder clue for ${value}`,
+                            answer: 'What is a placeholder?'
+                        });
+                    }
+                }
+
+                // Sort clues by value for proper board display
+                selectedClues.sort((a, b) => a.value - b.value);
+
+                return {
+                    name: category.name.toUpperCase(),
+                    clues: selectedClues
+                };
+            }),
             dailyDoubles: [...packData.dailyDoubles] // Copy Daily Doubles
         };
     }

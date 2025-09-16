@@ -1,5 +1,5 @@
 /**
- * Player Manager for Clueboard Trivia Game
+ * Player Manager for Buzzchain Trivia Game
  * Handles player lifecycle events and entity management
  */
 
@@ -28,10 +28,11 @@ export class PlayerLifecycleManager {
   private playerEntities: Map<string, DefaultPlayerEntity> = new Map();
   private playerJoinTimes: Map<string, number> = new Map();
   private welcomeMessages: string[] = [
-    '🎯 Welcome to CLUEBOARD!',
-    'A Jeopardy-style trivia game',
-    'Use WASD to move around the lobby while playing',
-    'Game will start automatically when enough players join!'
+    '🐝 Welcome to BUZZCHAIN! 🔗',
+    'Where Buzzy Bee guards the Golden Knowledge Chain!',
+    'Every correct answer forges a new link in our chain of wisdom',
+    'Buzz in fast, think smart, and build your legacy on the blockchain of knowledge!',
+    'Use WASD to move • Game starts when players join!'
   ];
 
   constructor(world: World) {

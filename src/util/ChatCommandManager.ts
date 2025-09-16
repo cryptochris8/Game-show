@@ -1,5 +1,5 @@
 /**
- * Chat Command Manager for Clueboard Trivia Game
+ * Chat Command Manager for Buzzchain Trivia Game
  * Handles registration and execution of chat commands
  */
 

@@ -1,5 +1,5 @@
 /**
- * Configuration management for Clueboard Trivia Game
+ * Configuration management for Buzzchain Trivia Game
  * Centralized configuration with validation and type safety
  */
 
@@ -92,39 +92,39 @@ export class ConfigManager {
    */
   public loadFromEnvironment(): void {
     // Game config from env
-    if (process.env.CLUEBOARD_PACK_NAME) {
-      this.gameConfig.packName = process.env.CLUEBOARD_PACK_NAME;
+    if (process.env.BUZZCHAIN_PACK_NAME) {
+      this.gameConfig.packName = process.env.BUZZCHAIN_PACK_NAME;
     }
 
-    if (process.env.CLUEBOARD_AUTO_START) {
-      this.gameConfig.autoStart = process.env.CLUEBOARD_AUTO_START === 'true';
+    if (process.env.BUZZCHAIN_AUTO_START) {
+      this.gameConfig.autoStart = process.env.BUZZCHAIN_AUTO_START === 'true';
     }
 
-    if (process.env.CLUEBOARD_AUTO_HOST_DELAY) {
-      const delay = parseInt(process.env.CLUEBOARD_AUTO_HOST_DELAY, 10);
+    if (process.env.BUZZCHAIN_AUTO_HOST_DELAY) {
+      const delay = parseInt(process.env.BUZZCHAIN_AUTO_HOST_DELAY, 10);
       if (!isNaN(delay) && delay >= 1000) {
         this.gameConfig.autoHostDelay = delay;
       }
     }
 
     // Server config from env
-    if (process.env.CLUEBOARD_DEBUG_MODE) {
-      this.serverConfig.debugMode = process.env.CLUEBOARD_DEBUG_MODE === 'true';
+    if (process.env.BUZZCHAIN_DEBUG_MODE) {
+      this.serverConfig.debugMode = process.env.BUZZCHAIN_DEBUG_MODE === 'true';
     }
 
-    if (process.env.CLUEBOARD_LOG_LEVEL) {
-      const logLevel = process.env.CLUEBOARD_LOG_LEVEL as ServerConfig['logLevel'];
+    if (process.env.BUZZCHAIN_LOG_LEVEL) {
+      const logLevel = process.env.BUZZCHAIN_LOG_LEVEL as ServerConfig['logLevel'];
       if (['debug', 'info', 'warn', 'error'].includes(logLevel)) {
         this.serverConfig.logLevel = logLevel;
       }
     }
 
-    if (process.env.CLUEBOARD_AUDIO_ENABLED) {
-      this.serverConfig.audioEnabled = process.env.CLUEBOARD_AUDIO_ENABLED === 'true';
+    if (process.env.BUZZCHAIN_AUDIO_ENABLED) {
+      this.serverConfig.audioEnabled = process.env.BUZZCHAIN_AUDIO_ENABLED === 'true';
     }
 
-    if (process.env.CLUEBOARD_AUDIO_VOLUME) {
-      const volume = parseFloat(process.env.CLUEBOARD_AUDIO_VOLUME);
+    if (process.env.BUZZCHAIN_AUDIO_VOLUME) {
+      const volume = parseFloat(process.env.BUZZCHAIN_AUDIO_VOLUME);
       if (!isNaN(volume) && volume >= 0 && volume <= 1) {
         this.serverConfig.audioVolume = volume;
       }

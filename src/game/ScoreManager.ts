@@ -1,9 +1,9 @@
-// ScoreManager - Handles scoring logic and persistence hooks for Clueboard
+// ScoreManager - Handles scoring logic and persistence hooks for Buzzchain
 // Integrates with HYTOPIA player persistence and manages game scoring
 
 import { Player } from 'hytopia';
 import type { PlayerData, GameStateData } from '../net/Events';
-import { PersistenceManager_Clueboard } from '../util/Persistence';
+import { PersistenceManager_Buzzchain } from '../util/Persistence';
 import type { GameSession, PlayerStats } from '../util/Persistence';
 
 export interface ScoreChangeEvent {
@@ -85,7 +85,7 @@ export class ScoreManager {
      */
     async initializePlayer(player: Player): Promise<PlayerData> {
         // Get player's historical stats for context
-        const stats = await PersistenceManager_Clueboard.getPlayerStats(player);
+        const stats = await PersistenceManager_Buzzchain.getPlayerStats(player);
         
         const playerData: PlayerData = {
             id: player.id,
@@ -415,7 +415,7 @@ export class ScoreManager {
      */
     async savePlayerSessionWithPlayerObject(player: Player, session: GameSession): Promise<void> {
         try {
-            await PersistenceManager_Clueboard.updatePlayerStats(player, session);
+            await PersistenceManager_Buzzchain.updatePlayerStats(player, session);
         } catch (error) {
             console.error(`Failed to save session for player ${player.username}:`, error);
         }
@@ -466,7 +466,7 @@ export class ScoreManager {
         const player = this.gameState.players.get(playerId);
         if (!player) return clueValue;
         
-        // Standard Jeopardy rule: wager up to max(clue value, player's score)
+        // Standard trivia rule: wager up to max(clue value, player's score)
         return Math.max(clueValue, player.score, 5); // Minimum wager of $5
     }
 

@@ -1,7 +1,7 @@
-// Networking Events and Payloads for Clueboard Trivia Game
+// Networking Events and Payloads for Buzzchain Trivia Game
 // Following HYTOPIA SDK event-driven architecture patterns
 
-export enum ClueboardEvent {
+export enum BuzzchainEvent {
     // Server -> Client Events
     GAME_STATE = 'GAME_STATE',
     CLUE_REVEAL = 'CLUE_REVEAL', 
@@ -225,7 +225,7 @@ export type ClientEventPayload =
 
 // Event data structure for HYTOPIA UI communication
 export interface EventData<T = any> {
-    type: ClueboardEvent;
+    type: BuzzchainEvent;
     payload: T;
     timestamp: number;
     playerId?: string;
@@ -233,7 +233,7 @@ export interface EventData<T = any> {
 
 // Helper functions for creating event data
 export function createServerEvent<T extends ServerEventPayload>(
-    type: ClueboardEvent, 
+    type: BuzzchainEvent, 
     payload: T
 ): EventData<T> {
     return {
@@ -244,7 +244,7 @@ export function createServerEvent<T extends ServerEventPayload>(
 }
 
 export function createClientEvent<T extends ClientEventPayload>(
-    type: ClueboardEvent, 
+    type: BuzzchainEvent, 
     payload: T,
     playerId: string
 ): EventData<T> {
@@ -276,8 +276,8 @@ export const CLUE_DISPLAY_MS = 3000;
 export const ANSWER_TIME_MS = 30000;
 export const FINAL_WAGER_TIME_MS = 30000;
 export const FINAL_ANSWER_TIME_MS = 30000;
-export const MIN_PLAYERS = 3;  // Exactly 3 players for Jeopardy format
-export const MAX_PLAYERS = 3;  // Exactly 3 players for Jeopardy format
+export const MIN_PLAYERS = 3;  // Exactly 3 players for Buzzchain format
+export const MAX_PLAYERS = 3;  // Exactly 3 players for Buzzchain format
 export const MIN_WAGER = 5;
 
 // Rate limiting constants

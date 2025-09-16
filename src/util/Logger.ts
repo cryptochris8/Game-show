@@ -1,5 +1,5 @@
 /**
- * Logging utility for Clueboard Trivia Game
+ * Logging utility for Buzzchain Trivia Game
  * Provides structured logging with levels, colors, and context
  */
 

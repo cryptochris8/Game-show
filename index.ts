@@ -1,5 +1,9 @@
 /**
- * CLUEBOARD - Jeopardy-style Trivia Game for HYTOPIA
+ * BUZZCHAIN - The Golden Knowledge Chain Game for HYTOPIA
+ *
+ * Hosted by Buzzy Bee, keeper of the Golden Knowledge Chain!
+ * Every correct answer adds a link to our eternal chain of wisdom.
+ * Built on blockchain principles where knowledge is power!
  *
  * A production-ready, server-authoritative multiplayer trivia game
  * featuring:
@@ -25,7 +29,7 @@ import { config, getServerConfig } from './src/util/Config';
 import { logger } from './src/util/Logger';
 
 /**
- * Clueboard Game Server Entry Point
+ * Buzzchain Game Server Entry Point
  *
  * Initializes the trivia game world with GameManager and sets up
  * player entities for movement around the game lobby while playing.
@@ -39,7 +43,7 @@ startServer(world => {
   const serverConfig = getServerConfig();
   const gameConfig = config.getGameConfig();
 
-  logger.info('Starting Clueboard Trivia Game Server', {
+  logger.info('🐝 Starting Buzzchain - The Golden Knowledge Chain Game', {
     component: 'Server',
     debugMode: serverConfig.debugMode,
     audioEnabled: serverConfig.audioEnabled,
@@ -57,7 +61,7 @@ startServer(world => {
   }
 
   /**
-   * Initialize the Clueboard Game Manager
+   * Initialize the Buzzchain Game Manager
    * This handles all trivia game logic, player management, and UI coordination
    */
   const gameManager = new GameManager(world, {
@@ -206,7 +210,7 @@ startServer(world => {
       description: 'Start single player mode with AI opponents',
       usage: '/singleplayer - starts game with 2 AI opponents (3 total players)',
       handler: (player, args, world) => {
-        // Always use 2 AI opponents for Jeopardy format (3 total players)
+        // Always use 2 AI opponents for Buzzchain format (3 total players)
         const aiCount = 2;
 
         // Enable single player mode
@@ -214,7 +218,7 @@ startServer(world => {
         process.env.AI_PLAYERS_COUNT = aiCount.toString();
 
         world.chatManager.sendPlayerMessage(player,
-          `🎮 Single player mode activated! Starting Jeopardy-style game with ${aiCount} AI opponents.`, '00FF00');
+          `🎮 Single player mode activated! Starting Buzzchain trivia game with ${aiCount} AI opponents.`, '00FF00');
 
         // The game will start automatically when the next player joins
         world.chatManager.sendPlayerMessage(player,
@@ -393,7 +397,7 @@ startServer(world => {
    * Start Single Player Mode
    */
   function startSinglePlayerMode(player: any, config: any) {
-    // Always use 2 AI players for Jeopardy format
+    // Always use 2 AI players for Buzzchain format
     const aiCount = 2;
 
     logger.info(`Starting single player mode for ${player.username}`, {
@@ -611,7 +615,7 @@ startServer(world => {
   /**
    * Server startup complete!
    */
-  logger.info('🎯 Clueboard trivia game server started successfully!', {
+  logger.info('🐝 Buzzchain server started! Buzzy Bee is ready to host!', {
     component: 'Server',
     features: [
       '6-category board',
@@ -628,7 +632,7 @@ startServer(world => {
   });
 
   // Legacy console logging for compatibility
-  console.log('🎯 Clueboard trivia game server started successfully!');
+  console.log('🐝 Buzzchain server started! The Golden Knowledge Chain awaits!');
   console.log('   Features: 6-category board, Daily Doubles, Final Round');
   console.log('   Players: 2-6 supported with server-authoritative gameplay');
   console.log('   UI: Mobile-responsive overlay with buzz system');

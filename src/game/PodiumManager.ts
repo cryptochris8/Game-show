@@ -1,4 +1,4 @@
-// PodiumManager - Manages player positioning at podiums for Jeopardy-style gameplay
+// PodiumManager - Manages player positioning at podiums for Buzzchain trivia gameplay
 // Handles 3 contestant podiums and 1 host podium using HYTOPIA SDK
 
 import { Player, World, Entity, RigidBodyType } from 'hytopia';
@@ -27,45 +27,27 @@ export class PodiumManager {
     private currentHost: HostPersonality | null = null;
 
     // Podium positions for 3 contestants and 1 host
-    // These match your actual map's podium locations (raised one level higher)
+    // These match your actual map's podium locations with proper rotations
+    // All contestants face toward the host (positive Z direction)
     private readonly CONTESTANT_PODIUMS: PodiumPosition[] = [
-        { x: 4, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } },     // Left podium
-        { x: 9, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } },     // Center podium
-        { x: 14, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } }     // Right podium
+        { x: 4, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } },     // Left podium - facing host
+        { x: 9, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } },     // Center podium - facing host
+        { x: 14, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } }     // Right podium - facing host
     ];
 
     private readonly HOST_PODIUM: PodiumPosition = {
-        x: 9, y: 4, z: -1,  // Host stands opposite contestants (raised to match contestants)
-        rotation: { x: 0, y: 1, z: 0, w: 0 }  // Facing contestants
+        x: 9, y: 4, z: -1,  // Host stands opposite contestants
+        rotation: { x: 0, y: 1, z: 0, w: 0 }  // Facing contestants (180 degrees)
     };
 
-    // Available host personalities - using standard HYTOPIA NPC models
-    private readonly HOST_PERSONALITIES: HostPersonality[] = [
-        {
-            name: "Professor Buzzy",
-            model: "bee-adult",
-            greeting: "Welcome to Clueboard! I'm Professor Buzzy, your buzzing host!",
-            style: 'formal'
-        },
-        {
-            name: "Quiz Master Ocelot",
-            model: "ocelot",
-            greeting: "Greetings contestants! Quiz Master Ocelot at your service!",
-            style: 'casual'
-        },
-        {
-            name: "Trivia Rabbit",
-            model: "rabbit",
-            greeting: "Hop hop! Trivia Rabbit here to test your knowledge!",
-            style: 'comedic'
-        },
-        {
-            name: "Knowledge Spider",
-            model: "spider",
-            greeting: "Welcome to my web of questions! I'm Knowledge Spider!",
-            style: 'formal'
-        }
-    ];
+    // Buzzy Bee - The legendary host of Buzzchain
+    // His golden chain represents the unbreakable bond of knowledge linking all players
+    private readonly BUZZY_BEE_HOST: HostPersonality = {
+        name: "Buzzy Bee",
+        model: "bee-adult",
+        greeting: "Welcome to Buzzchain! I'm Buzzy Bee, keeper of the Golden Knowledge Chain! Each correct answer adds a new link to our chain of wisdom. Are you ready to forge your legacy?",
+        style: 'formal'
+    };
 
     constructor(world: World) {
         this.world = world;
@@ -78,14 +60,12 @@ export class PodiumManager {
     }
 
     /**
-     * Initialize the host NPC with a random personality
+     * Initialize Buzzy Bee as the permanent host
      */
     public spawnHost(): Entity | null {
         try {
-            // Select random host personality
-            this.currentHost = this.HOST_PERSONALITIES[
-                Math.floor(Math.random() * this.HOST_PERSONALITIES.length)
-            ];
+            // Always use Buzzy Bee as the host
+            this.currentHost = this.BUZZY_BEE_HOST;
 
             // Create host NPC entity
             this.hostEntity = new Entity({
@@ -140,16 +120,22 @@ export class PodiumManager {
         }
 
         try {
-            // Teleport player to podium by setting entity position
+            // Teleport player to podium and set rotation
             if (player.entity) {
                 player.entity.setPosition(position);
 
-                logger.info(`Successfully positioned human player entity at podium`, {
+                // Set player rotation to face the host
+                if (position.rotation) {
+                    player.entity.setRotation(position.rotation);
+                }
+
+                logger.info(`Successfully positioned and rotated human player entity at podium`, {
                     component: 'PodiumManager',
                     playerId: player.id,
                     playerName: player.username,
                     podiumNumber,
                     position,
+                    rotation: position.rotation,
                     entityFound: true
                 });
 
@@ -213,8 +199,8 @@ export class PodiumManager {
                 aiEntity.setRotation(position.rotation);
             }
 
-            // Store assignment using entity ID as key
-            this.podiumAssignments.set(aiEntity.id, podiumNumber);
+            // Store assignment using entity ID as key (convert to string for consistency)
+            this.podiumAssignments.set(aiEntity.id?.toString() || aiEntity.name || 'unknown', podiumNumber);
 
             logger.info(`AI assigned to podium ${podiumNumber}`, {
                 component: 'PodiumManager',
@@ -275,6 +261,50 @@ export class PodiumManager {
         players.forEach((player) => {
             this.releasePlayer(player);
         });
+    }
+
+    /**
+     * Ensure all players are facing the correct direction
+     */
+    public ensureProperOrientation(): void {
+        this.podiumAssignments.forEach((podiumNumber, playerId) => {
+            const position = this.playerPodiums.get(podiumNumber);
+            if (!position || !position.rotation) return;
+
+            // Try to find the player entity and correct their rotation
+            const connectedPlayers = this.world.entityManager.getAllPlayerEntities();
+            const playerEntity = connectedPlayers.find(p => p.player?.id === playerId);
+
+            if (playerEntity) {
+                try {
+                    playerEntity.setRotation(position.rotation);
+                    logger.debug('Corrected player orientation', {
+                        component: 'PodiumManager',
+                        playerId,
+                        podiumNumber,
+                        rotation: position.rotation
+                    });
+                } catch (error) {
+                    logger.warn('Failed to correct player orientation', {
+                        component: 'PodiumManager',
+                        playerId,
+                        error: error.message
+                    });
+                }
+            }
+        });
+
+        // Also ensure host is facing contestants
+        if (this.hostEntity && this.hostEntity.isSpawned && this.hostPodium.rotation) {
+            try {
+                this.hostEntity.setRotation(this.hostPodium.rotation);
+            } catch (error) {
+                logger.warn('Failed to correct host orientation', {
+                    component: 'PodiumManager',
+                    error: error.message
+                });
+            }
+        }
     }
 
     /**

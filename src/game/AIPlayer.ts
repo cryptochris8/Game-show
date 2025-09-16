@@ -507,7 +507,7 @@ export class AIPlayer {
     }
 
     private generateIncorrectAnswer(): string {
-        // Generate plausible wrong answers in proper Jeopardy format
+        // Generate plausible wrong answers in proper trivia format
         const wrongAnswers = [
             "What is the wrong answer?",
             "Who is someone else?",
@@ -592,56 +592,234 @@ export class AIPlayer {
 }
 
 // Predefined AI personalities with different play styles using actual HYTOPIA NPC models
+// Buzzy Bee is now the host, so he's not included as a player
 export const AI_PERSONALITIES: AIPersonality[] = [
+    // EXPERT DIFFICULTY (Top Tier Players)
     {
         name: "Professor Mindflayer",
-        avatar: "mindflayer", // Intelligent-looking creature for the scholar
-        difficulty: AIDifficulty.HARD,
-        buzzDelay: 800,  // Additional delay after 10-second minimum
-        buzzAccuracy: 0.9,
-        answerAccuracy: 0.85,
+        avatar: "mindflayer",
+        difficulty: AIDifficulty.EXPERT,
+        buzzDelay: 500,
+        buzzAccuracy: 0.95,
+        answerAccuracy: 0.95,
         wagerStrategy: 'optimal',
         cluePreference: 'highValue'
     },
     {
-        name: "Buzzy Bee",
-        avatar: "bee-adult", // Fast, nimble bee for the speedster
-        difficulty: AIDifficulty.MEDIUM,
-        buzzDelay: 300,  // Additional delay after 10-second minimum
-        buzzAccuracy: 0.95,
-        answerAccuracy: 0.75,
+        name: "Wise Ocelot",
+        avatar: "ocelot",
+        difficulty: AIDifficulty.EXPERT,
+        buzzDelay: 700,
+        buzzAccuracy: 0.9,
+        answerAccuracy: 0.93,
+        wagerStrategy: 'optimal',
+        cluePreference: 'categories'
+    },
+    {
+        name: "Prima Donna",
+        avatar: "ballerinacapuchina",
+        difficulty: AIDifficulty.EXPERT,
+        buzzDelay: 600,
+        buzzAccuracy: 0.92,
+        answerAccuracy: 0.94,
+        wagerStrategy: 'aggressive',
+        cluePreference: 'highValue'
+    },
+    {
+        name: "Croc Champion",
+        avatar: "bombardinococodrilo",
+        difficulty: AIDifficulty.EXPERT,
+        buzzDelay: 800,
+        buzzAccuracy: 0.88,
+        answerAccuracy: 0.92,
         wagerStrategy: 'aggressive',
         cluePreference: 'random'
     },
     {
-        name: "Wise Ocelot",
-        avatar: "ocelot", // Thoughtful, calculating feline
+        name: "Bombastic Bob",
+        avatar: "payload-bomb",
         difficulty: AIDifficulty.EXPERT,
-        buzzDelay: 1200,  // Additional delay after 10-second minimum
+        buzzDelay: 400,
+        buzzAccuracy: 0.93,
+        answerAccuracy: 0.9,
+        wagerStrategy: 'aggressive',
+        cluePreference: 'highValue'
+    },
+
+    // HARD DIFFICULTY (Skilled Players)
+    {
+        name: "Captain Spider",
+        avatar: "spider",
+        difficulty: AIDifficulty.HARD,
+        buzzDelay: 1000,
+        buzzAccuracy: 0.85,
+        answerAccuracy: 0.88,
+        wagerStrategy: 'optimal',
+        cluePreference: 'highValue'
+    },
+    {
+        name: "Zombie Scholar",
+        avatar: "zombie",
+        difficulty: AIDifficulty.HARD,
+        buzzDelay: 1200,
         buzzAccuracy: 0.8,
-        answerAccuracy: 0.95,
+        answerAccuracy: 0.85,
         wagerStrategy: 'conservative',
         cluePreference: 'categories'
     },
     {
+        name: "Skeletal Sage",
+        avatar: "skeleton",
+        difficulty: AIDifficulty.HARD,
+        buzzDelay: 900,
+        buzzAccuracy: 0.83,
+        answerAccuracy: 0.87,
+        wagerStrategy: 'optimal',
+        cluePreference: 'random'
+    },
+    {
+        name: "Shadow Stalker",
+        avatar: "stalker",
+        difficulty: AIDifficulty.HARD,
+        buzzDelay: 700,
+        buzzAccuracy: 0.87,
+        answerAccuracy: 0.84,
+        wagerStrategy: 'aggressive',
+        cluePreference: 'highValue'
+    },
+    {
+        name: "Tentacle Tactician",
+        avatar: "squid",
+        difficulty: AIDifficulty.HARD,
+        buzzDelay: 1100,
+        buzzAccuracy: 0.82,
+        answerAccuracy: 0.86,
+        wagerStrategy: 'conservative',
+        cluePreference: 'categories'
+    },
+
+    // MEDIUM DIFFICULTY (Average Players)
+    {
+        name: "Moo-nificent Mike",
+        avatar: "cow",
+        difficulty: AIDifficulty.MEDIUM,
+        buzzDelay: 1500,
+        buzzAccuracy: 0.75,
+        answerAccuracy: 0.75,
+        wagerStrategy: 'conservative',
+        cluePreference: 'random'
+    },
+    {
+        name: "Galloping Genius",
+        avatar: "horse",
+        difficulty: AIDifficulty.MEDIUM,
+        buzzDelay: 1000,
+        buzzAccuracy: 0.78,
+        answerAccuracy: 0.77,
+        wagerStrategy: 'optimal',
+        cluePreference: 'categories'
+    },
+    {
+        name: "Determined Donkey",
+        avatar: "donkey",
+        difficulty: AIDifficulty.MEDIUM,
+        buzzDelay: 1800,
+        buzzAccuracy: 0.7,
+        answerAccuracy: 0.78,
+        wagerStrategy: 'conservative',
+        cluePreference: 'lowValue'
+    },
+    {
+        name: "Batty Brainiac",
+        avatar: "bat",
+        difficulty: AIDifficulty.MEDIUM,
+        buzzDelay: 800,
+        buzzAccuracy: 0.8,
+        answerAccuracy: 0.73,
+        wagerStrategy: 'aggressive',
+        cluePreference: 'random'
+    },
+    {
+        name: "Carnival King",
+        avatar: "bonecaambalabu",
+        difficulty: AIDifficulty.MEDIUM,
+        buzzDelay: 1300,
+        buzzAccuracy: 0.72,
+        answerAccuracy: 0.76,
+        wagerStrategy: 'aggressive',
+        cluePreference: 'highValue'
+    },
+    {
+        name: "Melody Master",
+        avatar: "tralalerotralala",
+        difficulty: AIDifficulty.MEDIUM,
+        buzzDelay: 1400,
+        buzzAccuracy: 0.73,
+        answerAccuracy: 0.74,
+        wagerStrategy: 'optimal',
+        cluePreference: 'categories'
+    },
+    {
+        name: "Rhythm Rival",
+        avatar: "tungtungtungsahur",
+        difficulty: AIDifficulty.MEDIUM,
+        buzzDelay: 1200,
+        buzzAccuracy: 0.76,
+        answerAccuracy: 0.72,
+        wagerStrategy: 'aggressive',
+        cluePreference: 'random'
+    },
+
+    // EASY DIFFICULTY (Beginner Players)
+    {
         name: "Rookie Rabbit",
-        avatar: "rabbit", // Cute, inexperienced bunny for the newbie
+        avatar: "rabbit",
         difficulty: AIDifficulty.EASY,
-        buzzDelay: 2000,  // Additional delay after 10-second minimum
+        buzzDelay: 2000,
         buzzAccuracy: 0.6,
         answerAccuracy: 0.6,
         wagerStrategy: 'conservative',
         cluePreference: 'lowValue'
     },
     {
-        name: "Captain Spider",
-        avatar: "spider", // Strategic, web-weaving planner
-        difficulty: AIDifficulty.HARD,
-        buzzDelay: 1000,  // Additional delay after 10-second minimum
-        buzzAccuracy: 0.85,
-        answerAccuracy: 0.9,
-        wagerStrategy: 'optimal',
-        cluePreference: 'highValue'
+        name: "Clucky Champion",
+        avatar: "chicken",
+        difficulty: AIDifficulty.EASY,
+        buzzDelay: 2200,
+        buzzAccuracy: 0.55,
+        answerAccuracy: 0.58,
+        wagerStrategy: 'conservative',
+        cluePreference: 'lowValue'
+    },
+    {
+        name: "Peppa Player",
+        avatar: "pig",
+        difficulty: AIDifficulty.EASY,
+        buzzDelay: 2500,
+        buzzAccuracy: 0.5,
+        answerAccuracy: 0.62,
+        wagerStrategy: 'conservative',
+        cluePreference: 'lowValue'
+    },
+    {
+        name: "Woolly Wizard",
+        avatar: "sheep",
+        difficulty: AIDifficulty.EASY,
+        buzzDelay: 2300,
+        buzzAccuracy: 0.58,
+        answerAccuracy: 0.55,
+        wagerStrategy: 'conservative',
+        cluePreference: 'lowValue'
+    },
+    {
+        name: "Baby Buzz",
+        avatar: "bee-baby",
+        difficulty: AIDifficulty.EASY,
+        buzzDelay: 1800,
+        buzzAccuracy: 0.65,
+        answerAccuracy: 0.5,
+        wagerStrategy: 'aggressive', // Baby bee tries to be like Buzzy!
+        cluePreference: 'random'
     }
 ];
 

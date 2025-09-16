@@ -441,8 +441,8 @@
     opacity: 0.5;
   }
 
-  /* Final Jeopardy */
-  .final-jeopardy-modal {
+  /* Final Round */
+  .final-round-modal {
     display: none;
     position: fixed;
     top: 0;
@@ -453,7 +453,7 @@
     z-index: 1000;
   }
 
-  .final-jeopardy-modal.active {
+  .final-round-modal.active {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -675,9 +675,9 @@
   </div>
 </div>
 
-<!-- Final Jeopardy Modal -->
-<div class="final-jeopardy-modal" id="finalModal">
-  <h1 class="final-title">FINAL JEOPARDY</h1>
+<!-- Final Round Modal -->
+<div class="final-round-modal" id="finalModal">
+  <h1 class="final-title">FINAL ROUND</h1>
   <div class="wager-container">
     <h2 style="color: var(--text-dim); margin-bottom: 1rem;">Enter Your Wager</h2>
     <input type="number" class="wager-input" id="wagerInput" placeholder="$0" min="0" />
@@ -685,7 +685,7 @@
   </div>
   <div class="question-content" id="finalQuestion" style="display: none;">
     <div class="question-category" id="finalCategory">CATEGORY</div>
-    <div class="question-text" id="finalClue">Final Jeopardy clue will appear here</div>
+    <div class="question-text" id="finalClue">Final Round clue will appear here</div>
     <div class="answer-container active">
       <input type="text" class="answer-input" id="finalAnswer" placeholder="What is your answer?" />
       <button class="submit-button" id="submitFinalAnswer">Submit Final Answer</button>
@@ -771,8 +771,8 @@ function handleServerMessage(data) {
     case 'ROUND_CHANGE':
       handleRoundChange(data.payload);
       break;
-    case 'FINAL_JEOPARDY':
-      showFinalJeopardy(data.payload);
+    case 'FINAL_ROUND':
+      showFinalRound(data.payload);
       break;
     case 'GAME_END':
       showGameEnd(data.payload);
@@ -822,7 +822,7 @@ function updateGameState(state) {
   updatePlayers(state.players);
 
   if (state.phase === 'FINAL') {
-    showFinalJeopardy();
+    showFinalRound();
   }
 }
 
@@ -830,7 +830,7 @@ function updateGameState(state) {
 function updateRoundDisplay() {
   const roundName = document.getElementById('roundName');
   if (gameState.phase === 'FINAL') {
-    roundName.textContent = 'FINAL JEOPARDY';
+    roundName.textContent = 'FINAL ROUND';
   } else {
     roundName.textContent = `ROUND ${gameState.round}`;
   }
@@ -1348,8 +1348,8 @@ function closeQuestionModal() {
   cleanupAnswerInputFocusProtection();
 }
 
-// Show Final Jeopardy
-function showFinalJeopardy(data) {
+// Show Final Round
+function showFinalRound(data) {
   const modal = document.getElementById('finalModal');
   modal.classList.add('active');
 
@@ -1360,7 +1360,7 @@ function showFinalJeopardy(data) {
     document.querySelector('.wager-container').style.display = 'none';
     document.getElementById('finalQuestion').style.display = 'block';
 
-    // Set up focus protection for Final Jeopardy answer input
+    // Set up focus protection for Final Round answer input
     const finalAnswer = document.getElementById('finalAnswer');
     if (finalAnswer) {
       finalAnswer.focus();

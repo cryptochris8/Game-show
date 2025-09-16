@@ -1,4 +1,4 @@
-// Persistence utilities for Clueboard - Player stats and global leaderboards
+// Persistence utilities for Buzzchain - Player stats and global leaderboards
 // Using HYTOPIA SDK PersistenceManager and Player persistence methods
 
 import { Player, PersistenceManager } from 'hytopia';
@@ -60,7 +60,7 @@ export interface GameSession {
     streak: number;
 }
 
-export class PersistenceManager_Clueboard {
+export class PersistenceManager_Buzzchain {
     private static readonly DEFAULT_PLAYER_STATS: PlayerStats = {
         gamesPlayed: 0,
         gamesWon: 0,
@@ -352,8 +352,8 @@ export class PersistenceManager_Clueboard {
 }
 
 // Export commonly used functions
-export const getPlayerStats = PersistenceManager_Clueboard.getPlayerStats;
-export const updatePlayerStats = PersistenceManager_Clueboard.updatePlayerStats;
-export const getGlobalLeaderboard = PersistenceManager_Clueboard.getGlobalLeaderboard;
-export const getPlayerRanking = PersistenceManager_Clueboard.getPlayerRanking;
-export const formatPlayerStats = PersistenceManager_Clueboard.formatPlayerStats;
+export const getPlayerStats = PersistenceManager_Buzzchain.getPlayerStats;
+export const updatePlayerStats = PersistenceManager_Buzzchain.updatePlayerStats;
+export const getGlobalLeaderboard = PersistenceManager_Buzzchain.getGlobalLeaderboard;
+export const getPlayerRanking = PersistenceManager_Buzzchain.getPlayerRanking;
+export const formatPlayerStats = PersistenceManager_Buzzchain.formatPlayerStats;

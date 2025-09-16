@@ -1,4 +1,4 @@
-// RoundManager - Manages game rounds, Daily Doubles, and Final Round for Clueboard
+// RoundManager - Manages game rounds, Daily Doubles, and Final Round for Buzzchain
 // Handles board state, clue selection, and round progression
 
 import { GamePhase } from '../net/Events';

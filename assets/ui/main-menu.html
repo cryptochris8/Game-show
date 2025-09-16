@@ -551,7 +551,7 @@
     </div>
     <h1 class="game-title">BUZZCHAIN</h1>
     <p class="game-subtitle">Trivia Redefined</p>
-    <p class="tagline">The Ultimate Jeopardy Experience</p>
+    <p class="tagline">The Ultimate Trivia Challenge</p>
   </div>
 
   <!-- Game Mode Selection -->
@@ -563,7 +563,7 @@
       <p class="mode-description">Challenge yourself against intelligent AI opponents with unique personalities and strategies.</p>
       
       <div class="ai-selector">
-        <label>Jeopardy Format: 3 Total Players</label>
+        <label>Buzzchain Format: 3 Total Players</label>
         <div class="features-list" style="text-align: center; margin-top: 1rem;">
           <p style="margin: 0.5rem 0; color: var(--text-dim);">👤 You at podium #1</p>
           <p style="margin: 0.5rem 0; color: var(--text-dim);">🤖 2 AI opponents at podiums #2 & #3</p>
@@ -583,7 +583,7 @@
       <p class="mode-description">Compete with friends and players from around the world in real-time trivia battles.</p>
       
       <div class="ai-selector">
-        <label>Jeopardy Format: Exactly 3 Players</label>
+        <label>Buzzchain Format: Exactly 3 Players</label>
         <div class="features-list" style="text-align: center; margin-top: 1rem;">
           <p style="margin: 0.5rem 0; color: var(--text-dim);">👥 3 human players at podiums</p>
           <p style="margin: 0.5rem 0; color: var(--text-dim);">🎩 Random NPC host at center podium</p>
@@ -845,7 +845,7 @@
     hytopia.sendData({
       type: 'START_SINGLE_PLAYER',
       payload: {
-        aiCount: 2,  // Always 2 AI opponents for Jeopardy format
+        aiCount: 2,  // Always 2 AI opponents for Buzzchain format
         musicEnabled: gameConfig.musicEnabled,
         sfxEnabled: gameConfig.sfxEnabled
       }

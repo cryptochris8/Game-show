@@ -1,9 +1,9 @@
-// GameManager - Main server state machine for Clueboard trivia game
+// GameManager - Main server state machine for Buzzchain trivia game
 // Coordinates all systems and manages game flow using HYTOPIA SDK
 
 import { Player, PlayerManager, World, PlayerUIEvent } from 'hytopia';
 import {
-    ClueboardEvent,
+    BuzzchainEvent,
     GamePhase,
     createServerEvent,
     MIN_PLAYERS,
@@ -242,7 +242,7 @@ export class GameManager {
     private async handlePlayerJoined(player: Player): Promise<void> {
         console.log(`Player ${player.username} joined the game`);
 
-        // Check if we already have 3 players (max for Jeopardy format)
+        // Check if we already have 3 players (max for Buzzchain format)
         if (this.players.size >= MAX_PLAYERS) {
             logger.warn(`Game full - cannot add player ${player.username}`, {
                 component: 'GameManager',
@@ -286,7 +286,7 @@ export class GameManager {
         // UI loading is now handled by main server - don't load here
         
         // Send player their ID for client-side identification
-        player.ui.sendData(createServerEvent(ClueboardEvent.GAME_STATE, {
+        player.ui.sendData(createServerEvent(BuzzchainEvent.GAME_STATE, {
             gameState: {
                 phase: this.gamePhase,
                 board: null,
@@ -296,7 +296,7 @@ export class GameManager {
                 currentClue: null,
                 lockoutUntil: 0,
                 buzzWindowEnd: 0,
-                message: 'Welcome to Clueboard!',
+                message: 'Welcome to Buzzchain - Where knowledge links together!',
                 round: 1,
                 timeRemaining: 0,
                 playerId: player.id // Add player ID to game state
@@ -320,7 +320,7 @@ export class GameManager {
         await this.broadcastGameState();
         
         // Send welcome message
-        this.sendPlayerMessage(player, 'Welcome to Clueboard! Waiting for more players...', '#00FF00');
+        this.sendPlayerMessage(player, '🐝 Welcome to Buzzchain! The Golden Knowledge Chain awaits...', '#FFD700');
     }
 
     /**
@@ -362,27 +362,27 @@ export class GameManager {
         
         try {
             switch (data.type) {
-                case ClueboardEvent.SELECT_CELL:
+                case BuzzchainEvent.SELECT_CELL:
                     await this.handleCellSelection(player, data.payload as SelectCellPayload);
                     break;
                     
-                case ClueboardEvent.BUZZ:
+                case BuzzchainEvent.BUZZ:
                     await this.handleBuzz(player, data.payload as BuzzPayload);
                     break;
                     
-                case ClueboardEvent.ANSWER_SUBMIT:
+                case BuzzchainEvent.ANSWER_SUBMIT:
                     await this.handleAnswerSubmit(player, data.payload as AnswerSubmitPayload);
                     break;
                     
-                case ClueboardEvent.DAILY_DOUBLE_WAGER:
+                case BuzzchainEvent.DAILY_DOUBLE_WAGER:
                     await this.handleDailyDoubleWager(player, data.payload as DailyDoubleWagerPayload);
                     break;
                     
-                case ClueboardEvent.FINAL_WAGER:
+                case BuzzchainEvent.FINAL_WAGER:
                     await this.handleFinalWager(player, data.payload as FinalWagerPayload);
                     break;
                     
-                case ClueboardEvent.FINAL_ANSWER:
+                case BuzzchainEvent.FINAL_ANSWER:
                     await this.handleFinalAnswer(player, data.payload as FinalAnswerPayload);
                     break;
 
@@ -456,7 +456,7 @@ export class GameManager {
             return;
         }
         
-        console.log('Starting Clueboard game...');
+        console.log('🐝 Starting Buzzchain - Buzzy Bee is ready to host!');
         
         // Load the trivia pack
         const packResult = await PackLoader.loadDefaultPack();
@@ -809,7 +809,7 @@ export class GameManager {
             buzzWindowMs: 12000
         };
 
-        this.broadcastEvent(ClueboardEvent.CLUE_REVEAL, clueRevealData);
+        this.broadcastEvent(BuzzchainEvent.CLUE_REVEAL, clueRevealData);
         
         if (clue.isDailyDouble) {
             // Handle Daily Double - only picker can answer
@@ -846,7 +846,7 @@ export class GameManager {
             }
             
             // Send buzz result
-            this.broadcastEvent(ClueboardEvent.BUZZ_RESULT, {
+            this.broadcastEvent(BuzzchainEvent.BUZZ_RESULT, {
                 winnerId: result.winnerId,
                 winnerName: result.winnerName!,
                 buzzTime: result.buzzTime!,
@@ -887,7 +887,7 @@ export class GameManager {
         }
         
         // Send judge result
-        this.broadcastEvent(ClueboardEvent.JUDGE, {
+        this.broadcastEvent(BuzzchainEvent.JUDGE, {
             playerId: player.id,
             playerName: player.username,
             answer: payload.answer,
@@ -970,7 +970,7 @@ export class GameManager {
             this.finalRoundState.phase = 'answer';
             
             // Reveal Final Round clue
-            this.broadcastEvent(ClueboardEvent.FINAL_ROUND, {
+            this.broadcastEvent(BuzzchainEvent.FINAL_ROUND, {
                 phase: 'answer',
                 clue: this.finalRoundState.clue,
                 timeLimit: 45000
@@ -1044,7 +1044,7 @@ export class GameManager {
         };
         
         // Send Final Round start event
-        this.broadcastEvent(ClueboardEvent.FINAL_ROUND, {
+        this.broadcastEvent(BuzzchainEvent.FINAL_ROUND, {
             phase: 'wager',
             category: this.finalRoundState.category,
             maxWager: 1000 // Will be calculated per player
@@ -1098,7 +1098,7 @@ export class GameManager {
         }).sort((a, b) => b.finalScore - a.finalScore);
         
         // Send Final Round results
-        this.broadcastEvent(ClueboardEvent.FINAL_REVEAL, { results });
+        this.broadcastEvent(BuzzchainEvent.FINAL_REVEAL, { results });
         
         // End game
         await this.endGame();
@@ -1126,7 +1126,7 @@ export class GameManager {
         }
         
         // Send game complete event
-        this.broadcastEvent(ClueboardEvent.GAME_COMPLETE, {
+        this.broadcastEvent(BuzzchainEvent.GAME_COMPLETE, {
             winner: winners[0],
             finalScores,
             gameStats: this.scoreManager.getGameStatistics()
@@ -1273,7 +1273,7 @@ export class GameManager {
         const currentClue = this.roundManager?.getCurrentClue();
 
         if (currentClue) {
-            this.broadcastEvent(ClueboardEvent.JUDGE, {
+            this.broadcastEvent(BuzzchainEvent.JUDGE, {
                 playerId: '',
                 playerName: '',
                 answer: '',
@@ -1336,7 +1336,7 @@ export class GameManager {
             timeRemaining: 0
         };
 
-        this.broadcastEvent(ClueboardEvent.GAME_STATE, { gameState });
+        this.broadcastEvent(BuzzchainEvent.GAME_STATE, { gameState });
     }
 
     private getStatusMessage(): string {
@@ -1358,7 +1358,7 @@ export class GameManager {
         }
     }
 
-    private broadcastEvent(type: ClueboardEvent, payload: any): void {
+    private broadcastEvent(type: BuzzchainEvent, payload: any): void {
         const eventData = createServerEvent(type, payload);
         
         for (const player of this.players.values()) {

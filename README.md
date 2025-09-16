@@ -1,6 +1,6 @@
-# 🎯 CLUEBOARD - Jeopardy-Style Trivia Game
+# 🎯 BUZZCHAIN - Ultimate Trivia Game
 
-A production-ready, server-authoritative multiplayer trivia game built for HYTOPIA. Features complete Jeopardy-style gameplay with modern web UI and persistent player statistics.
+A production-ready, server-authoritative multiplayer trivia game built for HYTOPIA. Features complete trivia gameplay with modern web UI and persistent player statistics.
 
 ## 🎮 Game Features
 

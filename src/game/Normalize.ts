@@ -1,4 +1,4 @@
-// Answer Normalization System for Clueboard
+// Answer Normalization System for Buzzchain
 // Handles case-insensitive matching, article stripping, and fuzzy matching
 
 import { logger } from '../util/Logger';
@@ -29,7 +29,7 @@ export interface NormalizationConfig {
 // Normalization constants
 const NORMALIZATION_CONSTANTS = {
     ARTICLES: ['a', 'an', 'the'],
-    JEOPARDY_PREFIXES: [
+    TRIVIA_PREFIXES: [
         'what is', 'what are', 'what was', 'what were',
         'who is', 'who are', 'who was', 'who were',
         'where is', 'where are', 'where was', 'where were',
@@ -86,8 +86,8 @@ export class AnswerNormalizer {
             // Collapse multiple whitespace
             normalized = normalized.replace(NORMALIZATION_CONSTANTS.WHITESPACE_REGEX, ' ').trim();
 
-            // Remove Jeopardy-style prefixes
-            normalized = this.removeJeopardyPrefixes(normalized);
+            // Remove trivia-style prefixes
+            normalized = this.removeTriviaPrefix(normalized);
 
             // Remove leading articles
             normalized = this.removeLeadingArticles(normalized);
@@ -216,12 +216,12 @@ export class AnswerNormalizer {
     }
 
     /**
-     * Remove Jeopardy-style question prefixes
+     * Remove trivia-style question prefixes
      */
-    private static removeJeopardyPrefixes(text: string): string {
+    private static removeTriviaPrefix(text: string): string {
         const words = text.split(' ');
 
-        for (const prefix of NORMALIZATION_CONSTANTS.JEOPARDY_PREFIXES) {
+        for (const prefix of NORMALIZATION_CONSTANTS.TRIVIA_PREFIXES) {
             const prefixWords = prefix.split(' ');
 
             if (words.length >= prefixWords.length) {
@@ -421,7 +421,7 @@ export class AnswerNormalizer {
         config: NormalizationConfig;
     } {
         return {
-            supportedPrefixes: NORMALIZATION_CONSTANTS.JEOPARDY_PREFIXES.length,
+            supportedPrefixes: NORMALIZATION_CONSTANTS.TRIVIA_PREFIXES.length,
             supportedArticles: NORMALIZATION_CONSTANTS.ARTICLES.length,
             config: NORMALIZATION_CONSTANTS.DEFAULT_CONFIG
         };

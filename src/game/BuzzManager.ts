@@ -1,4 +1,4 @@
-// BuzzManager - Handles buzz timing, lockout, and anti-spam for Clueboard
+// BuzzManager - Handles buzz timing, lockout, and anti-spam for Buzzchain
 // Following HYTOPIA SDK patterns for server-authoritative gameplay
 
 import { Player } from 'hytopia';

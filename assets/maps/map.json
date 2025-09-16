@@ -80,9 +80,9 @@
     {
       "id": 12,
       "name": "jeopardy2",
-      "textureUri": "blocks/jeopardy2",
+      "textureUri": "blocks/jeopardy2.png",
       "isCustom": true,
-      "isMultiTexture": true
+      "isMultiTexture": false
     }
   ],
   "blocks": {
@@ -1014,11 +1014,9 @@
     "10,2,-32": 9,
     "10,2,-33": 9,
     "10,2,-34": 9,
-    "10,2,-9": 6,
     "10,2,2": 11,
     "10,3,-33": 9,
     "10,3,-34": 9,
-    "10,3,-9": 6,
     "10,3,2": 4,
     "10,4,-34": 9,
     "10,4,2": 5,
@@ -1266,11 +1264,9 @@
     "13,2,-32": 9,
     "13,2,-33": 9,
     "13,2,-34": 9,
-    "13,2,-9": 8,
     "13,2,2": 11,
     "13,3,-33": 9,
     "13,3,-34": 9,
-    "13,3,-9": 8,
     "13,3,2": 4,
     "13,4,-34": 9,
     "14,0,-1": 1,
@@ -1342,6 +1338,7 @@
     "14,1,1": 9,
     "14,1,2": 9,
     "14,11,2": 5,
+    "14,2,-10": 8,
     "14,2,-32": 9,
     "14,2,-33": 9,
     "14,2,-34": 9,
@@ -1425,11 +1422,9 @@
     "15,2,-32": 9,
     "15,2,-33": 9,
     "15,2,-34": 9,
-    "15,2,-9": 8,
     "15,2,2": 11,
     "15,3,-33": 9,
     "15,3,-34": 9,
-    "15,3,-9": 8,
     "15,3,2": 4,
     "15,4,-34": 9,
     "16,0,-1": 1,
@@ -2465,11 +2460,9 @@
     "3,2,-32": 9,
     "3,2,-33": 9,
     "3,2,-34": 9,
-    "3,2,-9": 3,
     "3,2,2": 11,
     "3,3,-33": 9,
     "3,3,-34": 9,
-    "3,3,-9": 3,
     "3,3,2": 4,
     "3,4,-34": 9,
     "4,0,-1": 1,
@@ -2625,11 +2618,9 @@
     "5,2,-32": 9,
     "5,2,-33": 9,
     "5,2,-34": 9,
-    "5,2,-9": 3,
     "5,2,2": 11,
     "5,3,-33": 9,
     "5,3,-34": 9,
-    "5,3,-9": 3,
     "5,3,2": 4,
     "5,4,-34": 9,
     "6,0,-1": 1,
@@ -2864,11 +2855,9 @@
     "8,2,-32": 9,
     "8,2,-33": 9,
     "8,2,-34": 9,
-    "8,2,-9": 6,
     "8,2,2": 11,
     "8,3,-33": 9,
     "8,3,-34": 9,
-    "8,3,-9": 6,
     "8,3,2": 4,
     "8,4,-34": 9,
     "8,4,2": 5,
@@ -2947,11 +2936,15 @@
     "9,1,1": 9,
     "9,1,2": 9,
     "9,11,2": 5,
+    "9,2,-1": 10,
+    "9,2,-10": 7,
+    "9,2,-2": 10,
     "9,2,-32": 9,
     "9,2,-33": 9,
     "9,2,-34": 9,
     "9,2,-9": 6,
     "9,2,2": 11,
+    "9,3,-2": 10,
     "9,3,-33": 9,
     "9,3,-34": 9,
     "9,3,-9": 6,
@@ -2963,23 +2956,22 @@
     "9,7,2": 5,
     "9,8,2": 5,
     "9,9,2": 5,
-    "15,2,-10": 8,
-    "14,2,-10": 8,
-    "13,2,-10": 8,
-    "10,2,-10": 7,
-    "9,2,-10": 7,
-    "8,2,-10": 7,
-    "5,2,-10": 3,
-    "3,2,-10": 3,
-    "10,3,-2": 10,
-    "9,3,-2": 10,
-    "8,3,-2": 10,
+    "15,2,-9": 8,
+    "13,2,-9": 8,
+    "15,3,-9": 8,
+    "13,3,-9": 8,
+    "10,3,-9": 7,
+    "10,2,-9": 7,
+    "8,2,-9": 7,
+    "8,3,-9": 7,
+    "5,2,-9": 3,
+    "5,3,-9": 3,
+    "3,2,-9": 3,
+    "3,3,-9": 3,
     "10,2,-2": 10,
-    "9,2,-2": 10,
+    "10,3,-2": 10,
     "8,2,-2": 10,
-    "10,2,-1": 10,
-    "8,2,-1": 10,
-    "9,2,-1": 10
+    "8,3,-2": 10
   },
   "entities": {
     "-10.5,2.625,15.5": {
@@ -3429,6 +3421,186 @@
           "y": 0,
           "z": 0,
           "w": 1
+        }
+      }
+    },
+    "-11.5,6.387389289396448,-33.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,6.387389289396448,-33.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,5.387389289396448,-32.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,4.387389289396448,-31.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,3.387389289396448,-30.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "29.5,2.387389289396448,-29.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,5.387389289396448,-32.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,4.387389289396448,-31.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,3.387389289396448,-30.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
+        }
+      }
+    },
+    "-11.5,2.387389289396448,-29.5": {
+      "modelUri": "models/environment/warrior-statue.gltf",
+      "modelPreferredShape": "trimesh",
+      "modelLoopedAnimations": [
+        "idle"
+      ],
+      "modelScale": 1,
+      "name": "warrior-statue",
+      "rigidBodyOptions": {
+        "type": "fixed",
+        "rotation": {
+          "x": 0,
+          "y": 0.7071067811865475,
+          "z": 0,
+          "w": 0.7071067811865476
         }
       }
     },
@@ -3962,186 +4134,6 @@
       ],
       "modelScale": 1,
       "name": "stone-altar-3",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7071067811865475,
-          "z": 0,
-          "w": 0.7071067811865476
-        }
-      }
-    },
-    "-11.5,6.387389289396448,-33.5": {
-      "modelUri": "models/environment/warrior-statue.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "warrior-statue",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7071067811865475,
-          "z": 0,
-          "w": 0.7071067811865476
-        }
-      }
-    },
-    "29.5,6.387389289396448,-33.5": {
-      "modelUri": "models/environment/warrior-statue.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "warrior-statue",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7071067811865475,
-          "z": 0,
-          "w": 0.7071067811865476
-        }
-      }
-    },
-    "29.5,5.387389289396448,-32.5": {
-      "modelUri": "models/environment/warrior-statue.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "warrior-statue",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7071067811865475,
-          "z": 0,
-          "w": 0.7071067811865476
-        }
-      }
-    },
-    "29.5,4.387389289396448,-31.5": {
-      "modelUri": "models/environment/warrior-statue.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "warrior-statue",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7071067811865475,
-          "z": 0,
-          "w": 0.7071067811865476
-        }
-      }
-    },
-    "29.5,3.387389289396448,-30.5": {
-      "modelUri": "models/environment/warrior-statue.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "warrior-statue",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7071067811865475,
-          "z": 0,
-          "w": 0.7071067811865476
-        }
-      }
-    },
-    "29.5,2.387389289396448,-29.5": {
-      "modelUri": "models/environment/warrior-statue.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "warrior-statue",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7071067811865475,
-          "z": 0,
-          "w": 0.7071067811865476
-        }
-      }
-    },
-    "-11.5,5.387389289396448,-32.5": {
-      "modelUri": "models/environment/warrior-statue.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "warrior-statue",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7071067811865475,
-          "z": 0,
-          "w": 0.7071067811865476
-        }
-      }
-    },
-    "-11.5,4.387389289396448,-31.5": {
-      "modelUri": "models/environment/warrior-statue.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "warrior-statue",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7071067811865475,
-          "z": 0,
-          "w": 0.7071067811865476
-        }
-      }
-    },
-    "-11.5,3.387389289396448,-30.5": {
-      "modelUri": "models/environment/warrior-statue.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "warrior-statue",
-      "rigidBodyOptions": {
-        "type": "fixed",
-        "rotation": {
-          "x": 0,
-          "y": 0.7071067811865475,
-          "z": 0,
-          "w": 0.7071067811865476
-        }
-      }
-    },
-    "-11.5,2.387389289396448,-29.5": {
-      "modelUri": "models/environment/warrior-statue.gltf",
-      "modelPreferredShape": "trimesh",
-      "modelLoopedAnimations": [
-        "idle"
-      ],
-      "modelScale": 1,
-      "name": "warrior-statue",
       "rigidBodyOptions": {
         "type": "fixed",
         "rotation": {

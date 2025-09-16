@@ -66,7 +66,7 @@ export class TalkShowIntroManager {
         opponent: ['a dictionary', 'Siri', 'a magic 8-ball', 'their own reflection', 'a fortune cookie'],
         items: ['calculator watches', 'encyclopedias', 'flash cards', 'expired coupons', 'instruction manuals'],
         format: ['multiple choice', 'spreadsheets', 'PowerPoint', 'binary code', 'haikus'],
-        content: ['the alphabet', 'pi to 100 digits', 'every Jeopardy question', 'the phone book'],
+        content: ['the alphabet', 'pi to 100 digits', 'every trivia question', 'the phone book'],
         theory: ['butterfly effect', 'six degrees of separation', 'Murphy\'s Law', 'Occam\'s Razor'],
         subject: ['Overthinking', 'Procrastination', 'Memeology', 'Googleology', 'Snackology']
     };
@@ -100,6 +100,9 @@ export class TalkShowIntroManager {
 
         this.isIntroActive = true;
         this.currentPlayers = players;
+
+        // Ensure all players are facing the correct direction before intro
+        this.podiumManager.ensureProperOrientation();
 
         try {
             logger.info('Starting talk show introduction sequence', {
@@ -356,7 +359,13 @@ export class TalkShowIntroManager {
 
             await this.delay(2500);
             this.broadcastMessage(
-                `Welcome to BUZZCHAIN! Where knowledge meets the blockchain of wisdom!`,
+                `I am the keeper of the Golden Knowledge Chain! Each link represents wisdom earned through trivia mastery!`,
+                'FFD700'
+            );
+
+            await this.delay(3000);
+            this.broadcastMessage(
+                `Answer correctly to forge new links! Build the longest chain and become a Buzzchain legend!`,
                 'FFD700'
             );
         }
@@ -366,11 +375,11 @@ export class TalkShowIntroManager {
      * Set cameras to specific positions for contestant introductions using invisible camera mount entities
      */
     private setCamerasToContestantView(podiumNumber: number, players?: Map<string, Player>): void {
-        // Camera positions for each podium
+        // Camera positions for each podium based on screenshot references
         const cameraPositions = {
-            1: { x: 4, y: 4, z: -4 },   // Podium 1 (left)
-            2: { x: 9, y: 4, z: -4 },   // Podium 2 (center)
-            3: { x: 14, y: 4, z: -4 }   // Podium 3 (right)
+            1: { x: 2, y: 5, z: -6 },   // Podium 1 - angled view from front-left
+            2: { x: 9, y: 4.5, z: -15 },   // Podium 2 - frontal view showing all podiums
+            3: { x: 16, y: 5, z: -8 }   // Podium 3 - angled view from front-right
         };
 
         const cameraPosition = cameraPositions[podiumNumber as keyof typeof cameraPositions];
@@ -425,11 +434,28 @@ export class TalkShowIntroManager {
                     // Attach camera to the invisible mount entity (preserves HYTOPIA UI)
                     player.camera.setAttachedToEntity(cameraMount);
 
-                    // Set zoom for good view of contestant
-                    player.camera.setZoom(1.2);
+                    // Set zoom based on podium for optimal framing
+                    const zoomSettings = {
+                        1: 1.8,  // Closer for individual player focus
+                        2: 0.8,  // Wider to show all podiums
+                        3: 1.6   // Medium for angled view
+                    };
+                    const zoom = zoomSettings[podiumNumber as keyof typeof zoomSettings] || 1.2;
+                    player.camera.setZoom(zoom);
 
-                    // Clear any entity tracking
-                    player.camera.setTrackedEntity(undefined);
+                    // Set tracking target based on podium view
+                    if (podiumNumber === 2) {
+                        // For center podium view, don't track specific entity (wide shot)
+                        player.camera.setTrackedEntity(undefined);
+                    } else {
+                        // For individual podium views, track the podium entity if available
+                        const podiumEntity = this.getPodiumEntity(podiumNumber);
+                        if (podiumEntity && podiumEntity.isSpawned) {
+                            player.camera.setTrackedEntity(podiumEntity);
+                        } else {
+                            player.camera.setTrackedEntity(undefined);
+                        }
+                    }
 
                     // Ensure UI remains visible during intro
                     if (player.ui) {
@@ -452,7 +478,8 @@ export class TalkShowIntroManager {
      * Set cameras to host view position using invisible camera mount entity
      */
     private setCamerasToHostView(players?: Map<string, Player>): void {
-        const hostCameraPosition = { x: 9, y: 5, z: -10 };
+        // Host camera position - looking toward host from behind podiums area
+        const hostCameraPosition = { x: 9, y: 6, z: 2 };
 
         // Create or get camera mount entity for host position
         const mountKey = 'host';
@@ -495,11 +522,16 @@ export class TalkShowIntroManager {
                     // Attach camera to the invisible mount entity (preserves HYTOPIA UI)
                     player.camera.setAttachedToEntity(cameraMount);
 
-                    // Set zoom for good view of host
-                    player.camera.setZoom(1.5);
+                    // Set zoom for good view of host area
+                    player.camera.setZoom(1.3);
 
-                    // Clear any entity tracking
-                    player.camera.setTrackedEntity(undefined);
+                    // Track the host entity if available
+                    const hostEntity = this.podiumManager['hostEntity'];
+                    if (hostEntity && hostEntity.isSpawned) {
+                        player.camera.setTrackedEntity(hostEntity);
+                    } else {
+                        player.camera.setTrackedEntity(undefined);
+                    }
 
                     // Ensure UI remains visible during intro
                     if (player.ui) {
@@ -698,6 +730,29 @@ export class TalkShowIntroManager {
             const timer = setTimeout(resolve, ms);
             this.cameraTimers.push(timer);
         });
+    }
+
+    /**
+     * Get podium entity for camera tracking
+     */
+    private getPodiumEntity(podiumNumber: number): Entity | undefined {
+        try {
+            // Try to get the player entity at this podium
+            const podiumAssignments = this.podiumManager.getPodiumAssignments();
+            for (const [playerId, assignment] of podiumAssignments) {
+                if (assignment.podiumNumber === podiumNumber && assignment.entity) {
+                    return assignment.entity;
+                }
+            }
+            return undefined;
+        } catch (error) {
+            logger.warn('Failed to get podium entity', {
+                component: 'TalkShowIntroManager',
+                podiumNumber,
+                error: error.message
+            });
+            return undefined;
+        }
     }
 
     /**

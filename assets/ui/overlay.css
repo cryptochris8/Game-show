@@ -730,7 +730,7 @@ body {
 
 /* Glowing effect behind title */
 .landing-header h1::before {
-    content: 'CLUEBOARD';
+    content: 'BUZZCHAIN';
     position: absolute;
     top: 0;
     left: 0;
@@ -1308,7 +1308,7 @@ body {
     }
 
     .landing-header h1::before {
-        content: 'CLUEBOARD';
+        content: 'BUZZCHAIN';
         filter: blur(8px);
     }
 
