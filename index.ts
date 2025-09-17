@@ -27,6 +27,9 @@ import { PlayerLifecycleManager } from './src/util/PlayerManager';
 import { ChatCommandManager, registerCommands } from './src/util/ChatCommandManager';
 import { config, getServerConfig } from './src/util/Config';
 import { logger } from './src/util/Logger';
+import { TimerManager } from './src/util/TimerManager';
+import { InputValidator } from './src/util/InputValidator';
+import { TIMING, CAMERA, AUDIO, GAME_CONSTANTS } from './src/util/GameConstants';
 
 /**
  * Buzzchain Game Server Entry Point
@@ -51,6 +54,11 @@ startServer(world => {
     singlePlayerMode: process.env.SINGLE_PLAYER_MODE === 'true',
     aiPlayersCount: parseInt(process.env.AI_PLAYERS_COUNT || '3')
   });
+
+  /**
+   * Initialize Timer Manager for proper cleanup
+   */
+  const timerManager = new TimerManager('Server');
 
   /**
    * Debug rendering for development
@@ -98,9 +106,9 @@ startServer(world => {
 
     logger.info('Fixed camera mount created for game show view', {
       component: 'CameraSystem',
-      position: { x: 15, y: 5, z: 2 }
+      position: CAMERA.GAME_VIEW_POSITION
     });
-  }, 1000);
+  }, TIMING.UI_UPDATE_DELAY_MS * 2);
 
   /**
    * Initialize Audio System for Buzzchain Experience
@@ -242,35 +250,43 @@ startServer(world => {
    * Attaches player camera to the fixed camera mount for consistent game show perspective
    */
   function setupFixedCameraView(player: any) {
-    // If camera mount is ready, attach to it; otherwise use position-based attachment
-    if (cameraMount && cameraMount.isSpawned) {
-      // Attach player camera to the fixed camera mount
-      player.camera.setAttachedToEntity(cameraMount);
+    try {
+      // If camera mount is ready, attach to it; otherwise use position-based attachment
+      if (cameraMount && cameraMount.isSpawned) {
+        // Attach player camera to the fixed camera mount
+        player.camera.setAttachedToEntity(cameraMount);
 
-      logger.info(`Fixed camera view set for player: ${player.username}`, {
-        component: 'CameraSystem',
-        playerId: player.id,
-        cameraMount: 'attached to entity'
-      });
-    } else {
-      // Fallback to position-based attachment
-      player.camera.setAttachedToPosition({ x: 15, y: 5, z: 2 });
+        logger.info(`Fixed camera view set for player: ${player.username}`, {
+          component: 'CameraSystem',
+          playerId: player.id,
+          cameraMount: 'attached to entity'
+        });
+      } else {
+        // Fallback to position-based attachment
+        player.camera.setAttachedToPosition(CAMERA.GAME_VIEW_POSITION);
 
-      logger.info(`Fixed camera view set for player: ${player.username}`, {
+        logger.info(`Fixed camera view set for player: ${player.username}`, {
+          component: 'CameraSystem',
+          playerId: player.id,
+          cameraMount: 'attached to position'
+        });
+      }
+
+      // Focus camera on the game area (center of the action)
+      player.camera.setTrackedPosition(CAMERA.GAME_VIEW_TARGET);
+
+      // Set optimal FOV for game show viewing
+      player.camera.setFov(CAMERA.DEFAULT_FOV);
+
+      // Slight zoom for better board visibility
+      player.camera.setZoom(CAMERA.DEFAULT_ZOOM);
+    } catch (error) {
+      logger.error(`Failed to set up camera for player: ${player.username}`, error as Error, {
         component: 'CameraSystem',
-        playerId: player.id,
-        cameraMount: 'attached to position'
+        playerId: player.id
       });
+      // Camera will use default HYTOPIA settings if setup fails
     }
-
-    // Focus camera on the game area (center of the action)
-    player.camera.setTrackedPosition({ x: 9, y: 3, z: -5 });
-
-    // Set optimal FOV for game show viewing
-    player.camera.setFov(85);
-
-    // Slight zoom for better board visibility
-    player.camera.setZoom(1.2);
   }
 
   /**
@@ -328,68 +344,92 @@ startServer(world => {
    * Handle UI Events from Players
    */
   function handlePlayerUIEvent(player: any, data: any) {
-    console.log(`Received ${data.type} from ${player.username}:`, data.payload);
-
-    switch (data.type) {
-      case 'START_SINGLE_PLAYER':
-        startSinglePlayerMode(player, data.payload);
-        break;
-
-      case 'START_MULTIPLAYER':
-        startMultiplayerMode(player, data.payload);
-        break;
-
-      case 'TOGGLE_MUSIC':
-        togglePlayerMusic(player, data.payload.enabled);
-        break;
-
-      case 'TOGGLE_SFX':
-        audioSystem.sfxEnabled = data.payload.enabled;
-        logger.info(`SFX ${data.payload.enabled ? 'enabled' : 'disabled'} for ${player.username}`);
-        break;
-
-      case 'PLAY_SOUND':
-        playSound(data.payload.sound);
-        break;
-
-      case 'PLAY_FINAL_MUSIC':
-        playFinalRoundMusic();
-        break;
-
-      case 'LOAD_GAME_BOARD':
-        // Only load game board UI if not in INTRO phase
-        const currentPhase = gameManager?.getCurrentGamePhase();
-        logger.info(`LOAD_GAME_BOARD event received`, {
+    try {
+      // Validate UI event data
+      const validation = InputValidator.validateUIEvent(data.type, data.payload);
+      if (!validation.valid) {
+        logger.warn('Invalid UI event received', {
           component: 'UISystem',
           playerId: player.id,
-          currentPhase: currentPhase,
-          willLoad: currentPhase !== GamePhase.INTRO
+          eventType: data.type,
+          error: validation.error
         });
+        return;
+      }
 
-        if (gameManager && currentPhase !== GamePhase.INTRO) {
-          loadGameBoardUI(player);
-        } else {
-          logger.info(`Delaying game board load - currently in intro sequence`, {
+      const sanitizedPayload = validation.sanitizedPayload;
+      logger.debug(`Received ${data.type} from ${player.username}`, {
+        component: 'UISystem',
+        playerId: player.id,
+        eventType: data.type
+      });
+
+      switch (data.type) {
+        case 'START_SINGLE_PLAYER':
+          startSinglePlayerMode(player, sanitizedPayload);
+          break;
+
+        case 'START_MULTIPLAYER':
+          startMultiplayerMode(player, sanitizedPayload);
+          break;
+
+        case 'TOGGLE_MUSIC':
+          togglePlayerMusic(player, sanitizedPayload.enabled);
+          break;
+
+        case 'TOGGLE_SFX':
+          audioSystem.sfxEnabled = sanitizedPayload.enabled;
+          logger.info(`SFX ${sanitizedPayload.enabled ? 'enabled' : 'disabled'} for ${player.username}`);
+          break;
+
+        case 'PLAY_SOUND':
+          playSound(sanitizedPayload.sound);
+          break;
+
+        case 'PLAY_FINAL_MUSIC':
+          playFinalRoundMusic();
+          break;
+
+        case 'LOAD_GAME_BOARD':
+          // Only load game board UI if not in INTRO phase
+          const currentPhase = gameManager?.getCurrentGamePhase();
+          logger.info(`LOAD_GAME_BOARD event received`, {
             component: 'UISystem',
             playerId: player.id,
-            currentPhase: currentPhase
+            currentPhase: currentPhase,
+            willLoad: currentPhase !== GamePhase.INTRO
           });
-        }
-        break;
 
-      case 'GET_GAME_STATE':
-        // Send current game state to player
-        if (gameManager) {
-          gameManager.sendGameStateToPlayer(player);
-        }
-        break;
+          if (gameManager && currentPhase !== GamePhase.INTRO) {
+            loadGameBoardUI(player);
+          } else {
+            logger.info(`Delaying game board load - currently in intro sequence`, {
+              component: 'UISystem',
+              playerId: player.id,
+              currentPhase: currentPhase
+            });
+          }
+          break;
 
-      default:
-        console.log(`Unknown event type: ${data.type}`);
-        // Forward other events to GameManager
-        if (gameManager) {
-          gameManager.handleUIEvent(player, data);
-        }
+        case 'GET_GAME_STATE':
+          // Send current game state to player
+          if (gameManager) {
+            gameManager.sendGameStateToPlayer(player);
+          }
+          break;
+
+        default:
+          // Forward other events to GameManager
+          if (gameManager) {
+            gameManager.handleUIEvent(player, data);
+          }
+      }
+    } catch (error) {
+      logger.error('Error handling UI event', error as Error, {
+        component: 'UISystem',
+        playerId: player.id,
+        eventType: data?.type
+      });
     }
   }
 
@@ -397,38 +437,49 @@ startServer(world => {
    * Start Single Player Mode
    */
   function startSinglePlayerMode(player: any, config: any) {
-    // Always use 2 AI players for Buzzchain format
-    const aiCount = 2;
+    try {
+      // Always use configured AI count for Buzzchain format
+      const aiCount = GAME_CONSTANTS.SINGLE_PLAYER_AI_COUNT;
 
-    logger.info(`Starting single player mode for ${player.username}`, {
-      component: 'GameMode',
-      aiCount: aiCount,
-      playerId: player.id
-    });
+      logger.info(`Starting single player mode for ${player.username}`, {
+        component: 'GameMode',
+        aiCount: aiCount,
+        playerId: player.id
+      });
 
-    // Update game config
-    gameManager.updateConfig({
-      singlePlayerMode: true,
-      aiPlayersCount: aiCount
-    });
+      // Update game config
+      gameManager.updateConfig({
+        singlePlayerMode: true,
+        aiPlayersCount: aiCount
+      });
 
-    // Initialize AI players
-    gameManager.initializeAIPlayers(aiCount);
+      // Initialize AI players
+      gameManager.initializeAIPlayers(aiCount);
 
-    // Send ready signal to player
-    player.ui.sendData({
-      type: 'GAME_READY',
-      payload: { mode: 'singleplayer', aiCount: aiCount }
-    });
+      // Send ready signal to player
+      player.ui.sendData({
+        type: 'GAME_READY',
+        payload: { mode: 'singleplayer', aiCount: aiCount }
+      });
 
-    // Actually start the game after a short delay
-    setTimeout(() => {
-      logger.info('Starting single player game after AI initialization', {
+      // Actually start the game after a short delay
+      timerManager.setTimeout('start-single-player', () => {
+        logger.info('Starting single player game after AI initialization', {
+          component: 'GameMode',
+          playerId: player.id
+        });
+        gameManager.startGame();
+      }, TIMING.UI_UPDATE_DELAY_MS * 2);
+    } catch (error) {
+      logger.error('Failed to start single player mode', error as Error, {
         component: 'GameMode',
         playerId: player.id
       });
-      gameManager.startGame();
-    }, 1000);
+      player.ui.sendData({
+        type: 'ERROR',
+        payload: { message: 'Failed to start single player mode. Please try again.' }
+      });
+    }
   }
 
   /**
@@ -608,9 +659,9 @@ startServer(world => {
   /**
    * Setup periodic cleanup tasks
    */
-  setInterval(() => {
+  timerManager.setInterval('cleanup-cooldowns', () => {
     chatCommandManager.cleanupExpiredCooldowns();
-  }, 60000); // Clean up every minute
+  }, TIMING.CLEANUP_INTERVAL_MS);
 
   /**
    * Server startup complete!

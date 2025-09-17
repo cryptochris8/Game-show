@@ -3,7 +3,7 @@
 
 import { Player, World, Entity, PlayerCameraMode, PlayerManager, RigidBodyType } from 'hytopia';
 import { logger } from '../util/Logger';
-import { PodiumManager } from './PodiumManager';
+import { PodiumManager, PodiumPosition } from './PodiumManager';
 
 export interface IntroSequenceOptions {
     skipIntro?: boolean;
@@ -56,6 +56,19 @@ export class TalkShowIntroManager {
         'believes {theory} explains everything',
         'has a PhD in {subject}'
     ];
+
+    // Define podium positions to match PodiumManager
+    private get playerPodiums(): Map<number, PodiumPosition> {
+        const podiums = new Map<number, PodiumPosition>();
+        podiums.set(1, { x: 4, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } });
+        podiums.set(2, { x: 9, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } });
+        podiums.set(3, { x: 14, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } });
+        return podiums;
+    }
+
+    private get HOST_PODIUM(): PodiumPosition {
+        return { x: 9, y: 4, z: -1, rotation: { x: 0, y: 1, z: 0, w: 0 } };
+    }
 
     // Topics for fun fact generation
     private readonly TOPICS = {
@@ -375,11 +388,12 @@ export class TalkShowIntroManager {
      * Set cameras to specific positions for contestant introductions using invisible camera mount entities
      */
     private setCamerasToContestantView(podiumNumber: number, players?: Map<string, Player>): void {
-        // Camera positions for each podium based on screenshot references
+        // Camera positions properly offset from each podium for direct character shots
+        // Podiums are at y:4, z:-10, so camera needs to be in front (higher z value) at eye level
         const cameraPositions = {
-            1: { x: 2, y: 5, z: -6 },   // Podium 1 - angled view from front-left
-            2: { x: 9, y: 4.5, z: -15 },   // Podium 2 - frontal view showing all podiums
-            3: { x: 16, y: 5, z: -8 }   // Podium 3 - angled view from front-right
+            1: { x: 4, y: 5.5, z: -7 },   // Podium 1 (x:4) - camera 3 units in front, slightly above
+            2: { x: 9, y: 5.5, z: -7 },   // Podium 2 (x:9) - camera 3 units in front, slightly above
+            3: { x: 14, y: 5.5, z: -7 }   // Podium 3 (x:14) - camera 3 units in front, slightly above
         };
 
         const cameraPosition = cameraPositions[podiumNumber as keyof typeof cameraPositions];
@@ -404,13 +418,19 @@ export class TalkShowIntroManager {
             });
 
             cameraMount.spawn(this.world, cameraPosition);
+
+            // Add slight downward tilt to properly frame characters
+            // Quaternion for ~10 degree downward tilt around X axis
+            cameraMount.setRotation({ x: -0.087, y: 0, z: 0, w: 0.996 });
+
             cameraMount.setOpacity(0); // Make it invisible
             this.cameraMounts.set(mountKey, cameraMount);
 
             logger.debug('Created camera mount for contestant view', {
                 component: 'TalkShowIntroManager',
                 podiumNumber,
-                cameraPosition
+                cameraPosition,
+                rotation: 'slight downward tilt'
             });
         }
 
@@ -434,27 +454,24 @@ export class TalkShowIntroManager {
                     // Attach camera to the invisible mount entity (preserves HYTOPIA UI)
                     player.camera.setAttachedToEntity(cameraMount);
 
-                    // Set zoom based on podium for optimal framing
+                    // Set zoom for proper character framing
                     const zoomSettings = {
-                        1: 1.8,  // Closer for individual player focus
-                        2: 0.8,  // Wider to show all podiums
-                        3: 1.6   // Medium for angled view
+                        1: 1.8,  // Medium shot to show full character
+                        2: 1.8,  // Medium shot to show full character
+                        3: 1.8   // Medium shot to show full character
                     };
-                    const zoom = zoomSettings[podiumNumber as keyof typeof zoomSettings] || 1.2;
+                    const zoom = zoomSettings[podiumNumber as keyof typeof zoomSettings] || 1.8;
                     player.camera.setZoom(zoom);
 
-                    // Set tracking target based on podium view
-                    if (podiumNumber === 2) {
-                        // For center podium view, don't track specific entity (wide shot)
-                        player.camera.setTrackedEntity(undefined);
-                    } else {
-                        // For individual podium views, track the podium entity if available
-                        const podiumEntity = this.getPodiumEntity(podiumNumber);
-                        if (podiumEntity && podiumEntity.isSpawned) {
-                            player.camera.setTrackedEntity(podiumEntity);
-                        } else {
-                            player.camera.setTrackedEntity(undefined);
-                        }
+                    // Look at the podium position directly (where the player/AI is standing)
+                    const podiumPos = this.playerPodiums.get(podiumNumber);
+                    if (podiumPos) {
+                        // Track position slightly above podium center for better character framing
+                        player.camera.setTrackedPosition({
+                            x: podiumPos.x,
+                            y: podiumPos.y + 1.5,  // Look at chest/head level
+                            z: podiumPos.z
+                        });
                     }
 
                     // Ensure UI remains visible during intro
@@ -478,8 +495,9 @@ export class TalkShowIntroManager {
      * Set cameras to host view position using invisible camera mount entity
      */
     private setCamerasToHostView(players?: Map<string, Player>): void {
-        // Host camera position - looking toward host from behind podiums area
-        const hostCameraPosition = { x: 9, y: 6, z: 2 };
+        // Host camera position - in front of host for proper framing
+        // Host is at x:9, y:4, z:-1, so camera should be further out (higher z value)
+        const hostCameraPosition = { x: 9, y: 5.5, z: 2 };
 
         // Create or get camera mount entity for host position
         const mountKey = 'host';
@@ -494,12 +512,18 @@ export class TalkShowIntroManager {
             });
 
             cameraMount.spawn(this.world, hostCameraPosition);
+
+            // Add slight downward tilt to properly frame Buzzy Bee
+            // Quaternion for ~10 degree downward tilt around X axis
+            cameraMount.setRotation({ x: -0.087, y: 0, z: 0, w: 0.996 });
+
             cameraMount.setOpacity(0); // Make it invisible
             this.cameraMounts.set(mountKey, cameraMount);
 
             logger.debug('Created camera mount for host view', {
                 component: 'TalkShowIntroManager',
-                cameraPosition: hostCameraPosition
+                cameraPosition: hostCameraPosition,
+                rotation: 'slight downward tilt'
             });
         }
 
@@ -522,16 +546,16 @@ export class TalkShowIntroManager {
                     // Attach camera to the invisible mount entity (preserves HYTOPIA UI)
                     player.camera.setAttachedToEntity(cameraMount);
 
-                    // Set zoom for good view of host area
-                    player.camera.setZoom(1.3);
+                    // Set zoom for proper host framing
+                    player.camera.setZoom(1.8);
 
-                    // Track the host entity if available
-                    const hostEntity = this.podiumManager['hostEntity'];
-                    if (hostEntity && hostEntity.isSpawned) {
-                        player.camera.setTrackedEntity(hostEntity);
-                    } else {
-                        player.camera.setTrackedEntity(undefined);
-                    }
+                    // Track the host position directly
+                    const hostPodium = this.HOST_PODIUM;
+                    player.camera.setTrackedPosition({
+                        x: hostPodium.x,
+                        y: hostPodium.y + 1.5,  // Look at chest/head level
+                        z: hostPodium.z
+                    });
 
                     // Ensure UI remains visible during intro
                     if (player.ui) {

@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "mcp__hytopia-mcp__listProjects",
-      "mcp__hytopia-mcp__getDocumentation"
+      "mcp__hytopia-mcp__getDocumentation",
+      "Bash(npm run build:*)",
+      "Bash(git add:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

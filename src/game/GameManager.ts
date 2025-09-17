@@ -27,6 +27,9 @@ import PackLoader from './PackLoader';
 import type { LoadResult } from './PackLoader';
 import { AnswerNormalizer } from './Normalize';
 import { logger } from '../util/Logger';
+import { TimerManager } from '../util/TimerManager';
+import { InputValidator, rateLimit } from '../util/InputValidator';
+import { TIMING, GAME_CONSTANTS, SCORES, BOARD, ERROR_MESSAGES, SUCCESS_MESSAGES } from '../util/GameConstants';
 import AIPlayer, { AI_PERSONALITIES, AIPersonality, AIGameActions } from './AIPlayer';
 import PodiumManager from './PodiumManager';
 import TalkShowIntroManager from './TalkShowIntroManager';
@@ -58,35 +61,31 @@ export class GameManager {
     private aiPlayers: Map<string, AIPlayer> = new Map();
     private hostPlayerId: string | null = null;
     private currentPickerId: string | null = null;
-    private gameStateUpdateTimer: NodeJS.Timeout | null = null;
-    
+
     private scoreManager: ScoreManager;
     private buzzManager: BuzzManager;
     private roundManager: RoundManager | null = null;
     private podiumManager: PodiumManager;
     private talkShowIntroManager: TalkShowIntroManager;
+    private timerManager: TimerManager;
     private finalRoundState: FinalRoundState | null = null;
-    
+
     private gameConfig: GameConfig;
     private gameStartTime: number = 0;
-    private autoHostTimeout: NodeJS.Timeout | null = null;
-    
-    // Game timers
-    private clueTimer: NodeJS.Timeout | null = null;
-    private wagerTimer: NodeJS.Timeout | null = null;
     
     constructor(world: World, config: Partial<GameConfig> = {}) {
         this.world = world;
         this.gameConfig = {
             packName: 'trivia_pack',
             autoStart: true,
-            autoHostDelay: 10000,
+            autoHostDelay: TIMING.AUTO_HOST_DELAY_MS,
             singlePlayerMode: false,
-            aiPlayersCount: 3,
+            aiPlayersCount: GAME_CONSTANTS.SINGLE_PLAYER_AI_COUNT,
             skipIntro: false, // Set to true to skip talk show intro for debugging
             ...config
         };
 
+        this.timerManager = new TimerManager('GameManager');
         this.scoreManager = new ScoreManager();
         this.buzzManager = new BuzzManager();
         this.podiumManager = new PodiumManager(world);
@@ -827,9 +826,18 @@ export class GameManager {
     }
 
     /**
-     * Handle buzz attempts
+     * Handle buzz attempts with rate limiting
      */
     private async handleBuzz(player: Player, payload: BuzzPayload): Promise<void> {
+        // Validate player ID
+        if (!InputValidator.validatePlayerId(player.id)) {
+            logger.warn('Invalid player ID in buzz attempt', {
+                component: 'GameManager',
+                playerId: player.id
+            });
+            return;
+        }
+
         const result = this.buzzManager.processBuzz(player, payload.timestamp);
         
         // Record the buzz attempt
@@ -859,19 +867,34 @@ export class GameManager {
     }
 
     /**
-     * Handle answer submission
+     * Handle answer submission with validation
      */
     private async handleAnswerSubmit(player: Player, payload: AnswerSubmitPayload): Promise<void> {
+        // Validate and sanitize answer
+        const answerValidation = InputValidator.validateAnswer(payload.answer);
+        if (!answerValidation.valid) {
+            logger.warn('Invalid answer submission', {
+                component: 'GameManager',
+                playerId: player.id,
+                error: answerValidation.error
+            });
+            this.broadcastEventToPlayer(player, createServerEvent(BuzzchainEvent.ERROR, {
+                message: answerValidation.error || ERROR_MESSAGES.INVALID_ANSWER
+            }));
+            return;
+        }
+
         const currentClue = this.roundManager?.getCurrentClue();
         if (!currentClue) return;
-        
+
         // Validate player can answer
         const currentWinner = this.buzzManager.getCurrentWinner();
         if (currentClue.isDailyDouble && currentClue.pickerId !== player.id) return;
         if (!currentClue.isDailyDouble && currentWinner !== player.id) return;
         
-        // Check answer
-        const matchResult = AnswerNormalizer.checkMatch(payload.answer, currentClue.clue.answer);
+        // Check answer using sanitized version
+        const sanitizedAnswer = answerValidation.sanitized;
+        const matchResult = AnswerNormalizer.checkMatch(sanitizedAnswer, currentClue.clue.answer);
         const isCorrect = matchResult.isMatch;
         
         // Apply scoring

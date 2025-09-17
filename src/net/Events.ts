@@ -4,7 +4,7 @@
 export enum BuzzchainEvent {
     // Server -> Client Events
     GAME_STATE = 'GAME_STATE',
-    CLUE_REVEAL = 'CLUE_REVEAL', 
+    CLUE_REVEAL = 'CLUE_REVEAL',
     BUZZ_RESULT = 'BUZZ_RESULT',
     JUDGE = 'JUDGE',
     DAILY_DOUBLE_REVEAL = 'DAILY_DOUBLE_REVEAL',
@@ -12,8 +12,9 @@ export enum BuzzchainEvent {
     FINAL_REVEAL = 'FINAL_REVEAL',
     ROUND_COMPLETE = 'ROUND_COMPLETE',
     GAME_COMPLETE = 'GAME_COMPLETE',
-    
-    // Client -> Server Events  
+    ERROR = 'ERROR',
+
+    // Client -> Server Events
     SELECT_CELL = 'SELECT_CELL',
     BUZZ = 'BUZZ',
     ANSWER_SUBMIT = 'ANSWER_SUBMIT',
@@ -177,8 +178,11 @@ export interface GameStatsData {
 
 // Client -> Server Event Payloads  
 export interface SelectCellPayload {
-    category: number;
-    index: number;
+    categoryIndex: number;
+    clueIndex: number;
+    // Legacy support
+    category?: number;
+    index?: number;
 }
 
 export interface BuzzPayload {
@@ -204,16 +208,23 @@ export interface FinalAnswerPayload {
     submitTime: number;
 }
 
+// Add Error payload interface
+export interface ErrorPayload {
+    message: string;
+    code?: string;
+}
+
 // Event payload union types for type safety
-export type ServerEventPayload = 
+export type ServerEventPayload =
     | GameStatePayload
-    | ClueRevealPayload  
+    | ClueRevealPayload
     | BuzzResultPayload
     | JudgePayload
     | DailyDoubleRevealPayload
     | FinalRoundPayload
     | RoundCompletePayload
-    | GameCompletePayload;
+    | GameCompletePayload
+    | ErrorPayload;
 
 export type ClientEventPayload = 
     | SelectCellPayload

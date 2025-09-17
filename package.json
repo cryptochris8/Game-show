@@ -6,11 +6,15 @@
   "scripts": {
     "dev": "hytopia start",
     "build": "hytopia build",
+    "build:optimize": "webpack --config webpack.config.js",
+    "analyze": "webpack-bundle-analyzer dist/stats.json",
     "start": "hytopia start",
     "package": "hytopia package",
     "test": "echo \"Run 'npm run dev' to start the development server\"",
     "install:clean": "rm -rf node_modules package-lock.json && npm install",
-    "verify": "node verify-setup.js"
+    "verify": "node verify-setup.js",
+    "lint": "tsc --noEmit",
+    "typecheck": "tsc --noEmit --skipLibCheck"
   },
   "keywords": [],
   "author": "HYTOPIA Game Developer",
