@@ -169,6 +169,9 @@ export class TalkShowIntroManager {
                 options.introDurationMs || 30000
             );
 
+            // Start the camera sequence in parallel with the overlay
+            this.startCameraIntroSequence(introData, options.introDurationMs || 30000);
+
             // Wait for the overlay sequence to complete
             await this.delay(options.introDurationMs || 30000);
 
@@ -736,16 +739,21 @@ export class TalkShowIntroManager {
                 animation: player.animation
             }));
 
-            // Send to all players' UI overlays
+            // Send to all players' main menu UI (which will handle the overlay)
             this.currentPlayers?.forEach(player => {
                 try {
                     player.ui.sendData({
-                        type: 'LOAD_INTRO_OVERLAY',
+                        type: 'START_INTRO_SEQUENCE',
                         payload: {
                             hostMessage,
                             players: overlayPlayers,
                             duration
                         }
+                    });
+                    logger.info(`Sent intro sequence to player ${player.username}`, {
+                        component: 'TalkShowIntroManager',
+                        playerId: player.id,
+                        playerCount: overlayPlayers.length
                     });
                 } catch (error) {
                     logger.error(`Failed to send intro overlay to player ${player.username}`, error as Error, {
@@ -780,6 +788,186 @@ export class TalkShowIntroManager {
             logger.error('Failed to broadcast message', error as Error, {
                 component: 'TalkShowIntroManager',
                 message
+            });
+        }
+    }
+
+    /**
+     * Start camera introduction sequence with closeups of each contestant
+     */
+    private startCameraIntroSequence(introData: PlayerIntroData[], totalDuration: number): void {
+        try {
+            logger.info('Starting camera intro sequence', {
+                component: 'TalkShowIntroManager',
+                playerCount: introData.length,
+                totalDuration
+            });
+
+            if (!this.currentPlayers) {
+                logger.warn('No current players for camera intro sequence', {
+                    component: 'TalkShowIntroManager'
+                });
+                return;
+            }
+
+            // Initial delay before starting player introductions (2 seconds for host message)
+            setTimeout(() => {
+                this.startPlayerCameraSequence(introData, 0);
+            }, 2000);
+
+        } catch (error) {
+            logger.error('Failed to start camera intro sequence', error as Error, {
+                component: 'TalkShowIntroManager'
+            });
+        }
+    }
+
+    /**
+     * Sequence through each player with camera closeups
+     */
+    private startPlayerCameraSequence(introData: PlayerIntroData[], currentIndex: number): void {
+        if (currentIndex >= introData.length) {
+            // All players introduced, return to wide shot
+            logger.info('All players introduced, returning to wide shot', {
+                component: 'TalkShowIntroManager'
+            });
+            this.setCameraToWideShot();
+            return;
+        }
+
+        const player = introData[currentIndex];
+
+        logger.info(`Focusing camera on player ${currentIndex + 1}`, {
+            component: 'TalkShowIntroManager',
+            player: player.player.username,
+            podium: player.podiumNumber
+        });
+
+        // Focus camera on current player
+        this.focusCameraOnPlayer(player);
+
+        // Move to next player after 3 seconds (matching overlay timing)
+        setTimeout(() => {
+            this.startPlayerCameraSequence(introData, currentIndex + 1);
+        }, 3000);
+    }
+
+    /**
+     * Focus camera on specific player at their podium
+     */
+    private focusCameraOnPlayer(playerData: PlayerIntroData): void {
+        try {
+            if (!this.currentPlayers) return;
+
+            // Get camera position for this player's podium
+            const cameraPosition = this.getCameraPositionForPodium(playerData.podiumNumber);
+            const targetPosition = this.getPlayerPositionForPodium(playerData.podiumNumber);
+
+            this.currentPlayers.forEach(player => {
+                try {
+                    // Smooth camera transition to player closeup
+                    player.camera.setAttachedToPosition(cameraPosition);
+                    player.camera.setTrackedPosition(targetPosition);
+                    player.camera.setFov(60); // Closer FOV for intimate feel
+                    player.camera.setZoom(1.5); // Zoom in for closeup
+
+                    logger.debug(`Camera focused on player at podium ${playerData.podiumNumber}`, {
+                        component: 'TalkShowIntroManager',
+                        playerId: player.id,
+                        podium: playerData.podiumNumber,
+                        cameraPosition,
+                        targetPosition
+                    });
+                } catch (error) {
+                    logger.error(`Failed to set camera for player ${player.username}`, error as Error, {
+                        component: 'TalkShowIntroManager',
+                        playerId: player.id
+                    });
+                }
+            });
+
+        } catch (error) {
+            logger.error('Failed to focus camera on player', error as Error, {
+                component: 'TalkShowIntroManager',
+                playerPodium: playerData.podiumNumber
+            });
+        }
+    }
+
+    /**
+     * Get camera position for closeup of specific podium
+     */
+    private getCameraPositionForPodium(podiumNumber: number): { x: number; y: number; z: number } {
+        const podiumPositions = this.playerPodiums;
+        const podiumPos = podiumPositions.get(podiumNumber);
+
+        if (!podiumPos) {
+            // Fallback to center position
+            return { x: 9, y: 6, z: -3 };
+        }
+
+        // Camera positioned for an intimate closeup shot
+        return {
+            x: podiumPos.x + 1, // Slightly to the side
+            y: podiumPos.y + 2, // Elevated for good angle
+            z: podiumPos.z + 3  // Close but not too close
+        };
+    }
+
+    /**
+     * Get target position to look at for specific podium
+     */
+    private getPlayerPositionForPodium(podiumNumber: number): { x: number; y: number; z: number } {
+        const podiumPositions = this.playerPodiums;
+        const podiumPos = podiumPositions.get(podiumNumber);
+
+        if (!podiumPos) {
+            return { x: 9, y: 4.5, z: -10 };
+        }
+
+        // Look at player's head level
+        return {
+            x: podiumPos.x,
+            y: podiumPos.y + 0.5, // Look at head level
+            z: podiumPos.z
+        };
+    }
+
+    /**
+     * Return camera to wide shot showing all contestants
+     */
+    private setCameraToWideShot(): void {
+        try {
+            if (!this.currentPlayers) return;
+
+            this.currentPlayers.forEach(player => {
+                try {
+                    // Return to wide game show shot
+                    player.camera.setAttachedToPosition({ x: 15, y: 6, z: 1 });
+                    player.camera.setTrackedPosition({ x: 9, y: 4, z: -8 }); // Center of all podiums
+                    player.camera.setFov(75); // Wide angle to see all contestants
+                    player.camera.setZoom(1.0); // Normal zoom
+
+                    logger.debug(`Camera returned to wide shot for player ${player.username}`, {
+                        component: 'TalkShowIntroManager',
+                        playerId: player.id
+                    });
+                } catch (error) {
+                    logger.error(`Failed to reset camera for player ${player.username}`, error as Error, {
+                        component: 'TalkShowIntroManager',
+                        playerId: player.id
+                    });
+                }
+            });
+
+            logger.info('All cameras returned to wide shot', {
+                component: 'TalkShowIntroManager',
+                playerCount: this.currentPlayers.size
+            });
+
+        } catch (error) {
+            logger.error('Failed to set wide shot camera', error as Error, {
+                component: 'TalkShowIntroManager'
             });
         }
     }

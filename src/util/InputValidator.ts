@@ -219,7 +219,9 @@ export class InputValidator {
             'SELECT_CELL', 'BUZZ', 'SUBMIT_ANSWER', 'SUBMIT_WAGER',
             'FINAL_WAGER', 'FINAL_ANSWER', 'START_GAME', 'PLAYER_READY',
             'GET_GAME_STATE', 'TOGGLE_MUSIC', 'TOGGLE_SFX', 'PLAY_SOUND',
-            'START_SINGLE_PLAYER', 'START_MULTIPLAYER', 'LOAD_GAME_BOARD'
+            'START_SINGLE_PLAYER', 'START_MULTIPLAYER', 'LOAD_GAME_BOARD',
+            'LOAD_INTRO_OVERLAY', 'INTRO_COMPLETE', 'ANSWER_SUBMIT',
+            'START_INTRO_SEQUENCE'
         ];
 
         if (!allowedEventTypes.includes(eventType)) {

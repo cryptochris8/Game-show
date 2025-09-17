@@ -886,12 +886,29 @@
 
   function transitionToGame() {
     const mainMenu = document.getElementById('mainMenu');
+    const introOverlay = document.getElementById('introOverlay');
 
     // Play transition sound
     hytopia.sendData({
       type: 'PLAY_SOUND',
       payload: { sound: 'transition' }
     });
+
+    // Remove intro overlay if it exists
+    if (introOverlay) {
+      console.log('🗑️ Removing intro overlay during transition');
+      introOverlay.style.opacity = '0';
+      setTimeout(() => {
+        try {
+          if (introOverlay.parentNode) {
+            introOverlay.parentNode.removeChild(introOverlay);
+            console.log('✅ Intro overlay removed during transition');
+          }
+        } catch (error) {
+          console.error('❌ Error removing intro overlay during transition:', error);
+        }
+      }, 500);
+    }
 
     // Fade out main menu
     mainMenu.classList.add('fade-out');
@@ -991,6 +1008,12 @@
         }
         break;
 
+      case 'START_INTRO_SEQUENCE':
+        // Show intro overlay with player introductions
+        console.log('🎬 Starting intro sequence:', data.payload);
+        showIntroOverlay(data.payload);
+        break;
+
       case 'LOAD_GAME_BOARD':
         // Server is telling us to load the game board (intro completed)
         console.log('🎯 Server requesting game board load after intro completion');
@@ -1002,7 +1025,7 @@
         resetButtonStates();
         console.error('Game Error:', data.payload);
         break;
-        
+
       default:
         console.log('Unknown data type:', data.type);
     }
@@ -1026,6 +1049,259 @@
         </div>
       `;
     }
+  }
+
+  function showIntroOverlay(payload) {
+    console.log('🎬 Creating intro overlay with payload:', payload);
+
+    // Create overlay element
+    const overlay = document.createElement('div');
+    overlay.id = 'introOverlay';
+    overlay.style.cssText = `
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg,
+        rgba(10, 10, 15, 0.95) 0%,
+        rgba(26, 26, 46, 0.95) 50%,
+        rgba(10, 10, 15, 0.95) 100%);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+      font-family: 'Exo 2', sans-serif;
+      color: white;
+    `;
+
+    // Create content
+    overlay.innerHTML = `
+      <div style="text-align: center; max-width: 90%; width: 800px; padding: 2rem;">
+        <div id="mainIntroContent" style="transition: opacity 0.5s ease-in-out;">
+          <div style="font-size: 3rem; margin-bottom: 1rem; animation: bounce 2s ease-in-out infinite;">🐝</div>
+          <h1 style="font-family: 'Orbitron', monospace; font-size: 2.5rem; font-weight: 900; color: #FFD700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); margin-bottom: 1rem;">BUZZCHAIN</h1>
+          <div id="hostMessage" style="font-size: 1.4rem; color: white; margin-bottom: 2rem; line-height: 1.6;"></div>
+        </div>
+        <div id="playerIntros" style="margin: 2rem 0;"></div>
+        <div id="countdownText" style="font-size: 1rem; color: #CCCCCC; animation: pulse 1.5s ease-in-out infinite;"></div>
+      </div>
+      <style>
+        @keyframes bounce {
+          0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+          40% { transform: translateY(-10px); }
+          60% { transform: translateY(-5px); }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 0.5; }
+          50% { opacity: 1; }
+        }
+        .player-card {
+          background: rgba(20, 20, 30, 0.95);
+          border: 2px solid #FFD700;
+          border-radius: 15px;
+          padding: 1.5rem;
+          position: fixed;
+          bottom: 2rem;
+          right: 2rem;
+          width: 350px;
+          box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+          transform: translateX(100%);
+          opacity: 0;
+          transition: all 0.8s ease-out;
+          z-index: 1001;
+        }
+        .player-card.visible {
+          transform: translateX(0);
+          opacity: 1;
+        }
+        .player-name {
+          font-family: 'Orbitron', monospace;
+          font-size: 2rem;
+          font-weight: 700;
+          color: #FFD700;
+          margin-bottom: 0.5rem;
+          text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+        .player-title {
+          font-size: 1.3rem;
+          color: #00BFFF;
+          font-weight: 600;
+          margin-bottom: 0.5rem;
+          font-style: italic;
+        }
+        .player-fact {
+          font-size: 1.1rem;
+          color: white;
+          line-height: 1.5;
+          margin-bottom: 1rem;
+        }
+        .podium-info {
+          font-size: 0.9rem;
+          color: #CCCCCC;
+          background: rgba(255, 215, 0, 0.1);
+          padding: 0.5rem 1rem;
+          border-radius: 25px;
+          display: inline-block;
+        }
+        .camera-hint {
+          font-size: 0.8rem;
+          color: #00BFFF;
+          margin-top: 0.5rem;
+          animation: pulse 1.5s ease-in-out infinite;
+          font-style: italic;
+        }
+      </style>
+    `;
+
+    // Add to page
+    document.body.appendChild(overlay);
+
+    // Show overlay
+    setTimeout(() => {
+      overlay.style.opacity = '1';
+    }, 100);
+
+    // Set host message
+    const hostMessage = document.getElementById('hostMessage');
+    hostMessage.innerHTML = payload.hostMessage || 'Welcome to Buzzchain!';
+
+    // Show players one by one
+    const playerIntros = document.getElementById('playerIntros');
+    const players = payload.players || [];
+
+    // Show players one at a time, clearing previous cards
+    let currentPlayerIndex = 0;
+
+    function showNextPlayer() {
+      const mainIntroContent = document.getElementById('mainIntroContent');
+
+      if (currentPlayerIndex >= players.length) {
+        // All players shown, bring back main intro content and start countdown
+        console.log('🎬 All players introduced, showing main content again');
+        if (mainIntroContent) {
+          mainIntroContent.style.opacity = '1';
+        }
+        return;
+      }
+
+      // Hide main intro content when starting player introductions
+      if (currentPlayerIndex === 0 && mainIntroContent) {
+        console.log('🎬 Hiding main intro content for player introductions');
+        mainIntroContent.style.opacity = '0';
+      }
+
+      const player = players[currentPlayerIndex];
+
+      // Clear all previous cards for clean view
+      playerIntros.innerHTML = '';
+
+      // Create new card for current player
+      const card = document.createElement('div');
+      card.className = 'player-card';
+      card.innerHTML = `
+        <div class="player-name">${player.name}</div>
+        <div class="player-title">${player.title}</div>
+        <div class="player-fact">${player.fact}</div>
+        <div class="podium-info">Competing at Podium ${player.podium}</div>
+        <div class="camera-hint">📹 Camera focusing on this contestant</div>
+      `;
+
+      playerIntros.appendChild(card);
+
+      // Animate in
+      setTimeout(() => {
+        card.classList.add('visible');
+      }, 100);
+
+      currentPlayerIndex++;
+
+      // Schedule next player (if any) after 3 seconds
+      if (currentPlayerIndex < players.length) {
+        setTimeout(() => {
+          showNextPlayer();
+        }, 3000);
+      } else {
+        // All players done, clear the intro area after 2 seconds and show main content
+        setTimeout(() => {
+          playerIntros.innerHTML = '';
+          console.log('🎬 All players done, showing main content for countdown');
+          if (mainIntroContent) {
+            mainIntroContent.style.opacity = '1';
+          }
+        }, 2000);
+      }
+    }
+
+    // Start showing players after 2 seconds (after host intro)
+    setTimeout(() => {
+      showNextPlayer();
+    }, 2000);
+
+    // Countdown and removal with error handling
+    const totalDuration = payload.duration || 30000;
+    const countdownStart = Math.max(totalDuration - 8000, 15000); // Start countdown with 8 seconds left
+
+    console.log('🕐 Setting up overlay removal', { totalDuration, countdownStart });
+
+    // Backup removal in case countdown fails
+    const backupRemovalTimer = setTimeout(() => {
+      console.log('🚨 Backup overlay removal triggered');
+      if (document.getElementById('introOverlay')) {
+        removeOverlay();
+      }
+    }, totalDuration + 2000); // Remove after total duration + 2 seconds buffer
+
+    function removeOverlay() {
+      console.log('🗑️ Removing intro overlay');
+      const overlayElement = document.getElementById('introOverlay');
+      if (overlayElement) {
+        overlayElement.style.opacity = '0';
+        setTimeout(() => {
+          try {
+            if (overlayElement.parentNode) {
+              overlayElement.parentNode.removeChild(overlayElement);
+              console.log('✅ Intro overlay removed successfully');
+            }
+          } catch (error) {
+            console.error('❌ Error removing overlay:', error);
+          }
+        }, 500);
+      }
+      // Clear backup timer
+      if (backupRemovalTimer) {
+        clearTimeout(backupRemovalTimer);
+      }
+    }
+
+    setTimeout(() => {
+      const countdownText = document.getElementById('countdownText');
+      if (!countdownText) {
+        console.warn('⚠️ Countdown text element not found, using backup removal');
+        removeOverlay();
+        return;
+      }
+
+      let timeLeft = 5;
+
+      const countdownInterval = setInterval(() => {
+        if (timeLeft > 0) {
+          countdownText.textContent = `Game starts in ${timeLeft}...`;
+          timeLeft--;
+        } else {
+          countdownText.textContent = 'Let the game begin!';
+          clearInterval(countdownInterval);
+
+          // Remove overlay after final message
+          setTimeout(() => {
+            removeOverlay();
+          }, 2000);
+        }
+      }, 1000);
+    }, countdownStart);
   }
 
   function resetButtonStates() {
