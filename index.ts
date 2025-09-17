@@ -418,6 +418,40 @@ startServer(world => {
           }
           break;
 
+        case 'LOAD_INTRO_OVERLAY':
+          // Load the intro overlay UI
+          logger.info(`Loading intro overlay for ${player.username}`, {
+            component: 'UISystem',
+            playerId: player.id
+          });
+
+          try {
+            player.ui.load('ui/intro-overlay.html');
+
+            // Send the intro data after a short delay
+            timerManager.setTimeout(`intro-data-${player.id}`, () => {
+              player.ui.sendData({
+                type: 'START_INTRO_SEQUENCE',
+                payload: sanitizedPayload
+              });
+            }, 500);
+          } catch (error) {
+            logger.error('Failed to load intro overlay', error as Error, {
+              component: 'UISystem',
+              playerId: player.id
+            });
+          }
+          break;
+
+        case 'INTRO_COMPLETE':
+          // Intro overlay finished, load game board
+          logger.info(`Intro complete for ${player.username}, loading game board`, {
+            component: 'UISystem',
+            playerId: player.id
+          });
+          loadGameBoardUI(player);
+          break;
+
         default:
           // Forward other events to GameManager
           if (gameManager) {

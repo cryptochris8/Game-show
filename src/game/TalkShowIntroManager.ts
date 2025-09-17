@@ -149,40 +149,28 @@ export class TalkShowIntroManager {
                 hostGreeting
             });
 
-            // Send opening message
-            logger.info('Broadcasting opening message...', {
-                component: 'TalkShowIntroManager'
-            });
-            this.broadcastMessage(`🎬 LIVE FROM THE BUZZCHAIN STUDIO!`, 'FFD700');
-            await this.delay(2000);
-
-            // Introduce each contestant
-            logger.info('Starting contestant introductions...', {
+            // Use new overlay system instead of chat messages
+            logger.info('Starting overlay-based introduction sequence...', {
                 component: 'TalkShowIntroManager',
                 contestantCount: introData.length
             });
-            for (const data of introData) {
-                logger.info('Introducing contestant', {
-                    component: 'TalkShowIntroManager',
-                    player: data.player.username,
-                    podium: data.podiumNumber
-                });
-                await this.introduceContestant(data);
-            }
 
-            // Host introduction
-            logger.info('Starting host introduction...', {
-                component: 'TalkShowIntroManager'
-            });
-            await this.introduceHost(hostName, hostGreeting);
+            // Create comprehensive host message
+            const fullHostMessage = `
+                🎬 <strong>LIVE FROM THE BUZZCHAIN STUDIO!</strong><br><br>
+                ${hostGreeting}<br><br>
+                <em>Tonight's contestants are ready to test their knowledge in the ultimate trivia challenge!</em>
+            `;
 
-            // Final transition
-            logger.info('Final transition...', {
-                component: 'TalkShowIntroManager'
-            });
-            await this.delay(2000);
-            this.broadcastMessage(`🎮 LET THE GAME BEGIN!`, 'FFD700');
-            await this.delay(1500);
+            // Send the complete intro sequence to the overlay
+            this.sendIntroToOverlay(
+                fullHostMessage,
+                introData,
+                options.introDurationMs || 30000
+            );
+
+            // Wait for the overlay sequence to complete
+            await this.delay(options.introDurationMs || 30000);
 
             // Reset cameras to normal gameplay
             logger.info('Resetting cameras...', {
@@ -725,7 +713,57 @@ export class TalkShowIntroManager {
     }
 
     /**
-     * Send a broadcast message to all players
+     * Send introduction data to UI overlay instead of chat
+     */
+    private sendIntroToOverlay(
+        hostMessage: string,
+        players: PlayerIntroData[],
+        duration: number = 30000
+    ): void {
+        try {
+            logger.info('Sending intro sequence to UI overlay', {
+                component: 'TalkShowIntroManager',
+                playerCount: players.length,
+                duration
+            });
+
+            // Prepare player data for the overlay
+            const overlayPlayers = players.map(player => ({
+                name: player.player.username,
+                title: player.funnyTitle,
+                fact: player.funFact,
+                podium: player.podiumNumber,
+                animation: player.animation
+            }));
+
+            // Send to all players' UI overlays
+            this.currentPlayers?.forEach(player => {
+                try {
+                    player.ui.sendData({
+                        type: 'LOAD_INTRO_OVERLAY',
+                        payload: {
+                            hostMessage,
+                            players: overlayPlayers,
+                            duration
+                        }
+                    });
+                } catch (error) {
+                    logger.error(`Failed to send intro overlay to player ${player.username}`, error as Error, {
+                        component: 'TalkShowIntroManager',
+                        playerId: player.id
+                    });
+                }
+            });
+
+        } catch (error) {
+            logger.error('Failed to send intro to overlay', error as Error, {
+                component: 'TalkShowIntroManager'
+            });
+        }
+    }
+
+    /**
+     * Send a broadcast message to all players (fallback for non-intro messages)
      */
     private broadcastMessage(message: string, color?: string): void {
         try {
