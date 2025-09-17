@@ -221,7 +221,7 @@ export class InputValidator {
             'GET_GAME_STATE', 'TOGGLE_MUSIC', 'TOGGLE_SFX', 'PLAY_SOUND',
             'START_SINGLE_PLAYER', 'START_MULTIPLAYER', 'LOAD_GAME_BOARD',
             'LOAD_INTRO_OVERLAY', 'INTRO_COMPLETE', 'ANSWER_SUBMIT',
-            'START_INTRO_SEQUENCE'
+            'START_INTRO_SEQUENCE', 'LOAD_MAIN_MENU'
         ];
 
         if (!allowedEventTypes.includes(eventType)) {

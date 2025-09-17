@@ -293,7 +293,7 @@ startServer(world => {
    * Player Join Event - Load Main Menu UI and Setup Camera
    */
   world.on(PlayerEvent.JOINED_WORLD, ({ player }) => {
-    logger.info(`Player joined - loading main menu UI: ${player.username}`, {
+    logger.info(`Player joined - loading intro splash: ${player.username}`, {
       component: 'UISystem',
       playerId: player.id
     });
@@ -301,32 +301,11 @@ startServer(world => {
     // Set up fixed camera view immediately
     setupFixedCameraView(player);
 
-    // Load the main menu for the player
-    player.ui.load('ui/main-menu.html');
+    // Load the intro splash screen first
+    player.ui.load('ui/intro-splash.html');
 
     // Unlock pointer so they can interact with the menu
     player.ui.lockPointer(false);
-
-    // Start background music if enabled - force auto-play
-    if (audioSystem.backgroundMusic && audioSystem.musicEnabled) {
-      try {
-        audioSystem.backgroundMusic.play(world);
-        logger.info(`Background music started for player: ${player.username}`, {
-          component: 'AudioSystem',
-          playerId: player.id,
-          musicFile: 'main-menu.mp3'
-        });
-      } catch (error) {
-        logger.warn(`Failed to start background music for ${player.username}`, {
-          component: 'AudioSystem',
-          error: error
-        });
-      }
-    } else {
-      logger.warn(`Background music not started - music: ${!!audioSystem.backgroundMusic}, enabled: ${audioSystem.musicEnabled}`, {
-        component: 'AudioSystem'
-      });
-    }
 
     // Set up UI event handler for this player
     player.ui.on(PlayerUIEvent.DATA, ({ data }) => {
@@ -365,6 +344,33 @@ startServer(world => {
       });
 
       switch (data.type) {
+        case 'LOAD_MAIN_MENU':
+          // Load main menu after intro splash
+          logger.info(`Loading main menu for player: ${player.username}`, {
+            component: 'UISystem',
+            playerId: player.id
+          });
+          player.ui.load('ui/main-menu.html');
+
+          // Start background music if enabled
+          if (audioSystem.backgroundMusic && audioSystem.musicEnabled) {
+            try {
+              audioSystem.backgroundMusic.play(world);
+              logger.info(`Background music started for player: ${player.username}`, {
+                component: 'AudioSystem',
+                playerId: player.id,
+                musicFile: 'main-menu.mp3'
+              });
+            } catch (error) {
+              logger.warn(`Failed to start background music for ${player.username}`, {
+                component: 'AudioSystem',
+                playerId: player.id,
+                error: (error as Error).message
+              });
+            }
+          }
+          break;
+
         case 'START_SINGLE_PLAYER':
           startSinglePlayerMode(player, sanitizedPayload);
           break;

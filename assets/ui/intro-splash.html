@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Buzzchain Intro</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #000;
+      color: white;
+      font-family: 'Exo 2', sans-serif;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .intro-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #000 0%, #1a1a2e 50%, #000 100%);
+    }
+
+    .intro-logo {
+      max-width: 90%;
+      max-height: 90%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      opacity: 0;
+      transform: scale(0.9);
+      animation: logoFadeIn 1s ease-out forwards;
+    }
+
+    @keyframes logoFadeIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.9);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    .loading-indicator {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 0.9rem;
+      color: #CCCCCC;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    .fade-out {
+      animation: fadeOut 0.5s ease-in-out forwards;
+    }
+
+    @keyframes fadeOut {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="intro-container" id="introContainer">
+    <img src="{{CDN_ASSETS_URL}}/ui/logos/buzz-chain-intro.jpg" alt="Buzzchain Intro" class="intro-logo" id="introLogo" onerror="this.style.display='none'; console.error('Failed to load intro logo');">
+    <div class="loading-indicator">Loading...</div>
+  </div>
+
+  <script>
+    console.log('🎬 Buzzchain Intro Splash Screen Loaded');
+
+    // Auto-transition to main menu after 5 seconds
+    setTimeout(() => {
+      console.log('🎯 Transitioning to main menu...');
+
+      const container = document.getElementById('introContainer');
+      container.classList.add('fade-out');
+
+      // Load main menu after fade out completes
+      setTimeout(() => {
+        try {
+          // Tell the server to load the main menu
+          hytopia.sendData({
+            type: 'LOAD_MAIN_MENU',
+            payload: {}
+          });
+        } catch (error) {
+          console.error('Failed to transition to main menu:', error);
+        }
+      }, 500);
+    }, 5000);
+
+    // Handle click to skip intro
+    document.addEventListener('click', () => {
+      console.log('🖱️ User clicked to skip intro');
+
+      const container = document.getElementById('introContainer');
+      container.classList.add('fade-out');
+
+      setTimeout(() => {
+        try {
+          hytopia.sendData({
+            type: 'LOAD_MAIN_MENU',
+            payload: {}
+          });
+        } catch (error) {
+          console.error('Failed to transition to main menu:', error);
+        }
+      }, 500);
+    });
+
+    // Handle any key press to skip intro
+    document.addEventListener('keydown', (event) => {
+      console.log('⌨️ User pressed key to skip intro');
+
+      const container = document.getElementById('introContainer');
+      container.classList.add('fade-out');
+
+      setTimeout(() => {
+        try {
+          hytopia.sendData({
+            type: 'LOAD_MAIN_MENU',
+            payload: {}
+          });
+        } catch (error) {
+          console.error('Failed to transition to main menu:', error);
+        }
+      }, 500);
+    });
+  </script>
+</body>
+</html>

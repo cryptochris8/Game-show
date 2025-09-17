@@ -810,10 +810,10 @@ export class TalkShowIntroManager {
                 return;
             }
 
-            // Initial delay before starting player introductions (2 seconds for host message)
+            // Initial delay before starting player introductions (5 seconds for host message)
             setTimeout(() => {
                 this.startPlayerCameraSequence(introData, 0);
-            }, 2000);
+            }, 5000);
 
         } catch (error) {
             logger.error('Failed to start camera intro sequence', error as Error, {
@@ -846,10 +846,10 @@ export class TalkShowIntroManager {
         // Focus camera on current player
         this.focusCameraOnPlayer(player);
 
-        // Move to next player after 3 seconds (matching overlay timing)
+        // Move to next player after 5 seconds (matching overlay timing)
         setTimeout(() => {
             this.startPlayerCameraSequence(introData, currentIndex + 1);
-        }, 3000);
+        }, 5000);
     }
 
     /**
