@@ -37,6 +37,8 @@ export interface ClueData {
     value: number;
     clue: string;
     answer: string;
+    choices?: string[]; // Array of 4 multiple choice options (A, B, C, D)
+    correctChoice?: number; // Index (0-3) of the correct choice
 }
 
 export interface CategoryData {
@@ -108,6 +110,8 @@ export interface ClueRevealPayload {
     maxWager?: number;
     lockoutMs: number;
     buzzWindowMs: number;
+    choices?: string[];
+    correctChoice?: number;
 }
 
 export interface BuzzResultPayload {
@@ -193,6 +197,7 @@ export interface BuzzPayload {
 export interface AnswerSubmitPayload {
     answer: string;
     submitTime: number;
+    choiceIndex?: number; // For multiple choice answers (0-3)
 }
 
 export interface DailyDoubleWagerPayload {
@@ -284,7 +289,7 @@ export function isValidAnswer(answer: string): boolean {
 export const BUZZ_LOCKOUT_MS = 300;
 export const BUZZ_WINDOW_MS = 12000;
 export const CLUE_DISPLAY_MS = 3000;
-export const ANSWER_TIME_MS = 30000;
+export const ANSWER_TIME_MS = 45000;
 export const FINAL_WAGER_TIME_MS = 30000;
 export const FINAL_ANSWER_TIME_MS = 30000;
 export const MIN_PLAYERS = 3;  // Exactly 3 players for Buzzchain format

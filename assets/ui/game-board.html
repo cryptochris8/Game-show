@@ -416,6 +416,54 @@
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
   }
 
+  /* Multiple Choice Buttons */
+  .choice-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .choice-button {
+    background: linear-gradient(135deg, rgba(0, 100, 200, 0.8), rgba(0, 50, 150, 0.9));
+    color: var(--text-light);
+    border: 2px solid var(--accent-blue);
+    border-radius: 15px;
+    padding: 1rem 1.5rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--animation-speed) ease;
+    text-align: left;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+  }
+
+  .choice-button:hover:not(:disabled) {
+    background: linear-gradient(135deg, rgba(0, 120, 220, 0.9), rgba(0, 80, 180, 1));
+    border-color: var(--primary-gold);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 100, 200, 0.4);
+  }
+
+  .choice-button:active {
+    transform: translateY(0);
+  }
+
+  .choice-button.selected {
+    background: linear-gradient(135deg, var(--success-green), #00CC70);
+    border-color: var(--primary-gold);
+    color: var(--dark-bg);
+    font-weight: 700;
+  }
+
+  .choice-button:disabled {
+    background: rgba(100, 100, 100, 0.5);
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
   .submit-button {
     background: linear-gradient(135deg, var(--success-green), #00CC70);
     color: var(--dark-bg);
@@ -441,7 +489,60 @@
     opacity: 0.5;
   }
 
-  /* Final Round */
+  /* Daily Double Modal */
+  .daily-double-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(0, 0, 0, 0.95));
+    z-index: 10000;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(10px);
+  }
+
+  .daily-double-modal.active {
+    display: flex;
+  }
+
+  .daily-double-content {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.9), rgba(32, 32, 64, 0.9));
+    border: 3px solid var(--primary-gold);
+    border-radius: 20px;
+    padding: 3rem;
+    text-align: center;
+    animation: dailyDoubleAppear 0.5s ease-out;
+  }
+
+  .daily-double-title {
+    font-size: 3rem;
+    color: var(--primary-gold);
+    text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+    margin-bottom: 2rem;
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  .wager-info {
+    color: var(--text-dim);
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+  }
+
+  @keyframes dailyDoubleAppear {
+    from {
+      opacity: 0;
+      transform: scale(0.8);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+/* Final Round */
   .final-round-modal {
     display: none;
     position: fixed;
@@ -636,6 +737,10 @@
       <div class="round-label">Current Round</div>
       <div class="round-name" id="roundName">ROUND 1</div>
     </div>
+    <div class="picker-info" style="flex: 1; text-align: center; color: var(--accent-yellow);">
+      <div class="picker-label" style="font-size: 0.8rem; opacity: 0.8;">Current Picker</div>
+      <div class="picker-name" id="currentPickerName" style="font-size: 1.2rem; font-weight: bold;">---</div>
+    </div>
     <div class="timer" id="gameTimer">--:--</div>
   </div>
 
@@ -667,10 +772,26 @@
     </div>
 
     <div class="answer-container" id="answerContainer">
-      <h3 style="color: var(--success-green); margin-bottom: 1rem; font-size: 1.2rem;">🎯 YOU BUZZED IN! TYPE YOUR ANSWER:</h3>
-      <input type="text" class="answer-input" id="answerInput" placeholder="What is your answer?" autocomplete="off" />
-      <button class="submit-button" id="submitButton">Submit Answer</button>
-      <p style="color: var(--text-dim); font-size: 0.9rem; margin-top: 0.5rem;">Press Enter to submit</p>
+      <h3 style="color: var(--success-green); margin-bottom: 1rem; font-size: 1.2rem;">🎯 YOU BUZZED IN! CHOOSE YOUR ANSWER:</h3>
+      <div class="choice-buttons" id="choiceButtons">
+        <button class="choice-button" id="choiceA" data-choice="0">A. Choice A</button>
+        <button class="choice-button" id="choiceB" data-choice="1">B. Choice B</button>
+        <button class="choice-button" id="choiceC" data-choice="2">C. Choice C</button>
+        <button class="choice-button" id="choiceD" data-choice="3">D. Choice D</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Daily Double Modal -->
+<div class="daily-double-modal" id="dailyDoubleModal" style="display: none;">
+  <div class="daily-double-content">
+    <h1 class="daily-double-title">🏆 DAILY DOUBLE! 🏆</h1>
+    <div class="wager-container">
+      <h2 style="color: var(--text-dim); margin-bottom: 1rem;">Enter Your Wager</h2>
+      <p class="wager-info" id="dailyDoubleInfo">Maximum wager: $0</p>
+      <input type="number" class="wager-input" id="dailyDoubleWagerInput" placeholder="$0" min="0" />
+      <button class="submit-button" id="submitDailyDoubleWager" style="margin-top: 1rem;">Lock In Wager</button>
     </div>
   </div>
 </div>
@@ -722,6 +843,9 @@ let gameState = {
   modalCloseTimeout: null
 };
 
+// Store the current player ID globally
+let currentPlayerId = null;
+
 // Initialize game when ready
 function initializeGame() {
   if (typeof hytopia === 'undefined') {
@@ -731,6 +855,13 @@ function initializeGame() {
   }
 
   console.log('🎮 Buzzchain Game Board Initialized');
+
+  // Store player ID if available
+  if (hytopia.playerId) {
+    currentPlayerId = hytopia.playerId;
+    console.log('🆔 Current Player ID set:', currentPlayerId);
+  }
+
   setupEventListeners();
 
   // Listen for game updates from server
@@ -747,6 +878,10 @@ function handleServerMessage(data) {
   console.log('Received from server:', data);
 
   switch(data.type) {
+    case 'PLAYER_ID':
+      currentPlayerId = data.payload.playerId || data.payload;
+      console.log('🆔 Player ID received:', currentPlayerId);
+      break;
     case 'GAME_STATE':
       console.log('Received GAME_STATE:', data.payload);
       updateGameState(data.payload.gameState || data.payload);
@@ -758,6 +893,10 @@ function handleServerMessage(data) {
     case 'CLUE_REVEAL':
       console.log('Received CLUE_REVEAL:', data.payload);
       showQuestion(data.payload);
+      break;
+    case 'DAILY_DOUBLE_REVEAL':
+      console.log('Received DAILY_DOUBLE_REVEAL:', data.payload);
+      showDailyDoubleWager(data.payload);
       break;
     case 'BUZZ_RESULT':
       handleBuzzWinner(data.payload);
@@ -804,6 +943,7 @@ function updateGameState(state) {
 
   // Update UI based on state
   updateRoundDisplay();
+  updateCurrentPicker(state);
 
   // Merge usedCells into board data before updating
   if (state.board && state.usedCells) {
@@ -833,6 +973,33 @@ function updateRoundDisplay() {
     roundName.textContent = 'FINAL ROUND';
   } else {
     roundName.textContent = `ROUND ${gameState.round}`;
+  }
+}
+
+// Update current picker display
+function updateCurrentPicker(state) {
+  const pickerNameElement = document.getElementById('currentPickerName');
+  if (!pickerNameElement) return;
+
+  if (state.currentPickerId) {
+    // Find the picker's name from the players list
+    const picker = state.players?.find(p => p.id === state.currentPickerId);
+    if (picker) {
+      pickerNameElement.textContent = picker.name;
+      pickerNameElement.style.color = 'var(--accent-yellow)';
+
+      // Add animation for emphasis when it's the human player's turn
+      if (state.currentPickerId === currentPlayerId) {
+        pickerNameElement.style.animation = 'pulse 1s ease-in-out infinite';
+        pickerNameElement.textContent = `⭐ ${picker.name} ⭐`;
+      } else {
+        pickerNameElement.style.animation = 'none';
+      }
+    } else {
+      pickerNameElement.textContent = '---';
+    }
+  } else {
+    pickerNameElement.textContent = 'Waiting...';
   }
 }
 
@@ -964,13 +1131,34 @@ function showQuestion(questionData) {
   categoryEl.textContent = questionData.category;
   textEl.textContent = questionData.clue || questionData.text; // Handle both field names
 
+  // Populate multiple choice options
+  console.log('Question data received:', questionData);
+  console.log('Choices:', questionData.choices);
+  console.log('Correct choice:', questionData.correctChoice);
+
+  if (questionData.choices && questionData.choices.length === 4) {
+    console.log('Populating choice buttons with:', questionData.choices);
+    const choiceButtons = ['choiceA', 'choiceB', 'choiceC', 'choiceD'];
+    choiceButtons.forEach((buttonId, index) => {
+      const button = document.getElementById(buttonId);
+      if (button) {
+        const letter = String.fromCharCode(65 + index); // A, B, C, D
+        button.textContent = `${letter}. ${questionData.choices[index]}`;
+        button.disabled = false;
+        button.classList.remove('selected');
+        console.log(`Set button ${buttonId} to: ${button.textContent}`);
+      }
+    });
+  } else {
+    console.warn('No choices found or incorrect number of choices:', questionData.choices);
+  }
+
   // Reset UI state
   buzzContainer.style.display = questionData.isDailyDouble ? 'none' : 'block';
   answerContainer.classList.remove('active');
   answerContainer.style.display = 'none'; // Ensure it's hidden initially
   document.getElementById('buzzButton').disabled = false;
-  document.getElementById('answerInput').value = '';
-  document.getElementById('submitButton').disabled = false;
+  resetChoiceButtons();
 
   // Show modal
   modal.classList.add('active');
@@ -980,13 +1168,74 @@ function showQuestion(questionData) {
   console.log(`Using timer duration: ${timerSeconds} seconds`);
   startQuestionTimer(timerSeconds);
 
-  // If Daily Double, show answer input immediately
-  if (questionData.isDailyDouble) {
+  // If Daily Double and this player is the picker, show answer choices immediately
+  // (Wager should have been handled separately via DAILY_DOUBLE_REVEAL event)
+  if (questionData.isDailyDouble && questionData.pickerId === currentPlayerId) {
     answerContainer.classList.add('active');
-    const answerInput = document.getElementById('answerInput');
-    answerInput.focus();
-    setupAnswerInputFocusProtection(answerInput);
+    answerContainer.style.display = 'block';
   }
+}
+
+// Reset choice buttons to default state
+function resetChoiceButtons() {
+  const choiceButtons = ['choiceA', 'choiceB', 'choiceC', 'choiceD'];
+  choiceButtons.forEach(buttonId => {
+    const button = document.getElementById(buttonId);
+    if (button) {
+      button.classList.remove('selected');
+      button.disabled = false;
+    }
+  });
+}
+
+// Handle choice button selection
+function selectChoice(choiceIndex) {
+  console.log('Choice selected:', choiceIndex);
+
+  // Remove previous selection
+  resetChoiceButtons();
+
+  // Mark selected choice
+  const choiceButtons = ['choiceA', 'choiceB', 'choiceC', 'choiceD'];
+  const selectedButton = document.getElementById(choiceButtons[choiceIndex]);
+  if (selectedButton) {
+    selectedButton.classList.add('selected');
+  }
+
+  // Submit answer immediately
+  submitChoice(choiceIndex);
+}
+
+// Submit choice answer
+function submitChoice(choiceIndex) {
+  console.log('Submitting choice:', choiceIndex);
+
+  if (choiceIndex < 0 || choiceIndex > 3) {
+    showMessage('Invalid choice selection!', 'warning');
+    return;
+  }
+
+  // Disable all choice buttons
+  const choiceButtons = ['choiceA', 'choiceB', 'choiceC', 'choiceD'];
+  choiceButtons.forEach(buttonId => {
+    const button = document.getElementById(buttonId);
+    if (button) button.disabled = true;
+  });
+
+  // Get the text of the selected choice for display purposes
+  const selectedButton = document.getElementById(choiceButtons[choiceIndex]);
+  const selectedText = selectedButton ? selectedButton.textContent : `Choice ${choiceIndex + 1}`;
+
+  hytopia.sendData({
+    type: 'ANSWER_SUBMIT',
+    payload: {
+      answer: selectedText, // For logging/display
+      choiceIndex: choiceIndex,
+      submitTime: Date.now()
+    }
+  });
+
+  showMessage(`Answer submitted: ${selectedText}`, 'success');
 }
 
 // Start question timer
@@ -1038,30 +1287,70 @@ function buzz() {
     }
   });
 
-  // Fallback: If we don't get a response in 2 seconds, assume we won the buzz
+  // Smart fallback for legitimate buzz wins (more conservative approach)
   setTimeout(() => {
     const answerContainer = document.getElementById('answerContainer');
     if (answerContainer && !answerContainer.classList.contains('active')) {
-      console.log('Fallback: Assuming buzz win, showing answer input');
-      answerContainer.classList.add('active');
-      answerContainer.style.display = 'block';
-      answerContainer.style.visibility = 'visible';
-      answerContainer.style.opacity = '1';
+      console.log('⚠️ Server response delayed - offering manual activation');
 
-      const answerInput = document.getElementById('answerInput');
-      if (answerInput) {
-        answerInput.focus();
-        setupAnswerInputFocusProtection(answerInput);
-      }
+      // Create a manual activation button
+      const fallbackButton = document.createElement('button');
+      fallbackButton.id = 'fallbackAnswerButton';
+      fallbackButton.textContent = '🎯 I buzzed in first - Show answer input';
+      fallbackButton.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: #ff6b35;
+        color: white;
+        border: none;
+        padding: 1rem 2rem;
+        border-radius: 8px;
+        font-size: 1.2rem;
+        cursor: pointer;
+        z-index: 9999;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      `;
 
-      showMessage('🎯 Answer input activated! (fallback)', 'success');
+      fallbackButton.onclick = () => {
+        console.log('🔧 Manual activation triggered by user');
+        answerContainer.classList.add('active');
+        answerContainer.style.display = 'block';
+        answerContainer.style.visibility = 'visible';
+        answerContainer.style.opacity = '1';
+
+        const answerInput = document.getElementById('answerInput');
+        if (answerInput) {
+          answerInput.focus();
+          setupAnswerInputFocusProtection(answerInput);
+        }
+
+        fallbackButton.remove();
+        showMessage('🎯 Answer input activated manually!', 'success');
+      };
+
+      document.body.appendChild(fallbackButton);
+
+      // Auto-remove button after 10 seconds
+      setTimeout(() => {
+        if (fallbackButton.parentNode) {
+          fallbackButton.remove();
+        }
+      }, 10000);
     }
-  }, 2000);
+  }, 3000);
 }
 
 // Handle buzz winner
 function handleBuzzWinner(data) {
   console.log('🎯 Buzz winner received:', data);
+  console.log('🆔 Player ID comparison:', {
+    dataWinnerId: data.winnerId,
+    currentPlayerId: currentPlayerId,
+    hytopiaPlayerId: hytopia.playerId,
+    match: data.winnerId === currentPlayerId || data.winnerId === hytopia.playerId
+  });
 
   if (!data || !data.winnerId) {
     console.error('Invalid buzz winner data:', data);
@@ -1074,14 +1363,13 @@ function handleBuzzWinner(data) {
     payload: { sound: 'buzz' }
   });
 
-  if (data.winnerId === hytopia.playerId) {
-    // Show answer input
+  if (data.winnerId === currentPlayerId || data.winnerId === hytopia.playerId) {
+    // Show answer choices
     const answerContainer = document.getElementById('answerContainer');
-    const answerInput = document.getElementById('answerInput');
 
     console.log('Showing answer container for player buzz win');
 
-    // Make sure container exists and is shown with multiple approaches
+    // Make sure container exists and is shown
     if (answerContainer) {
       console.log('Answer container before activation:', {
         display: window.getComputedStyle(answerContainer).display,
@@ -1097,6 +1385,9 @@ function handleBuzzWinner(data) {
       answerContainer.style.opacity = '1';
       answerContainer.style.zIndex = '1001';
 
+      // Reset choice buttons to enabled state
+      resetChoiceButtons();
+
       console.log('Answer container after activation:', {
         display: window.getComputedStyle(answerContainer).display,
         visibility: window.getComputedStyle(answerContainer).visibility,
@@ -1107,23 +1398,7 @@ function handleBuzzWinner(data) {
       console.error('Answer container not found!');
     }
 
-    // Focus on input with enhanced focus management
-    if (answerInput) {
-      console.log('Focusing on answer input:', answerInput);
-      setTimeout(() => {
-        answerInput.focus();
-        answerInput.style.border = '3px solid var(--success-green)';
-        answerInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        console.log('Input focused and styled');
-
-        // Set up focus protection to prevent HYTOPIA chat from stealing focus
-        setupAnswerInputFocusProtection(answerInput);
-      }, 200);
-    } else {
-      console.error('Answer input not found!');
-    }
-
-    showMessage('🎯 YOU BUZZED IN FIRST! Type your answer!', 'success');
+    showMessage('🎯 YOU BUZZED IN FIRST! Choose your answer!', 'success');
 
     // Visual feedback - flash the screen green briefly
     document.body.style.animation = 'flashGreen 0.5s ease';
@@ -1142,6 +1417,11 @@ function handleBuzzWinner(data) {
     // Show who buzzed
     showMessage(`⚡ ${data.winnerName} buzzed in first!`, 'warning');
     document.getElementById('buzzButton').disabled = true;
+    console.log('🚫 Different player won the buzz:', {
+      winner: data.winnerName,
+      winnerId: data.winnerId,
+      currentPlayer: hytopia.playerId
+    });
 
     // Visual feedback - flash the screen red briefly
     document.body.style.animation = 'flashRed 0.3s ease';
@@ -1174,13 +1454,22 @@ function setupAnswerInputFocusProtection(answerInput) {
     clearInterval(window.answerInputFocusInterval);
   }
 
-  // Aggressive focus maintenance - check every 100ms
+  // More reasonable focus maintenance - check every 500ms
+  let focusAttempts = 0;
   window.answerInputFocusInterval = setInterval(() => {
     if (answerInput && document.activeElement !== answerInput) {
-      console.log('Refocusing answer input (stolen by:', document.activeElement, ')');
-      answerInput.focus();
+      focusAttempts++;
+      // Only log and refocus a few times to avoid spam
+      if (focusAttempts <= 5) {
+        console.log('Refocusing answer input (attempt ' + focusAttempts + ')');
+        answerInput.focus();
+      } else {
+        // Stop trying after 5 attempts
+        clearInterval(window.answerInputFocusInterval);
+        window.answerInputFocusInterval = null;
+      }
     }
-  }, 100);
+  }, 500);
 
   // Prevent HYTOPIA chat from capturing keydown events
   const keydownHandler = (e) => {
@@ -1369,6 +1658,49 @@ function showFinalRound(data) {
   }
 }
 
+// Show Daily Double wager selection
+function showDailyDoubleWager(data) {
+  console.log('Showing Daily Double wager screen:', data);
+
+  // Only show wager modal to the picker
+  if (data.pickerId === currentPlayerId) {
+    const modal = document.getElementById('dailyDoubleModal');
+    const infoElement = document.getElementById('dailyDoubleInfo');
+    const wagerInput = document.getElementById('dailyDoubleWagerInput');
+
+    // Set maximum wager info
+    infoElement.textContent = `Maximum wager: $${data.maxWager || 1000}`;
+    wagerInput.max = data.maxWager || 1000;
+    wagerInput.value = '';
+
+    // Show modal
+    modal.classList.add('active');
+    wagerInput.focus();
+  }
+}
+
+// Submit Daily Double wager
+function submitDailyDoubleWager() {
+  const wager = parseInt(document.getElementById('dailyDoubleWagerInput').value) || 0;
+  const maxWager = parseInt(document.getElementById('dailyDoubleWagerInput').max) || 1000;
+
+  if (wager < 0 || wager > maxWager) {
+    alert(`Invalid wager. Please enter a value between $0 and $${maxWager}.`);
+    return;
+  }
+
+  console.log(`Submitting Daily Double wager: $${wager}`);
+
+  hytopia.sendData({
+    type: 'DAILY_DOUBLE_WAGER',
+    payload: { wager }
+  });
+
+  // Hide wager modal
+  document.getElementById('dailyDoubleModal').classList.remove('active');
+  document.getElementById('submitDailyDoubleWager').disabled = true;
+}
+
 // Submit wager
 function submitWager() {
   const wager = parseInt(document.getElementById('wagerInput').value) || 0;
@@ -1435,13 +1767,43 @@ function addActivity(activity) {
 // Setup event listeners
 function setupEventListeners() {
   document.getElementById('buzzButton').addEventListener('click', buzz);
-  document.getElementById('submitButton').addEventListener('click', submitAnswer);
   document.getElementById('submitWager').addEventListener('click', submitWager);
+  document.getElementById('submitDailyDoubleWager').addEventListener('click', submitDailyDoubleWager);
   document.getElementById('submitFinalAnswer').addEventListener('click', submitFinalAnswer);
 
-  // Enter key submits answer
-  document.getElementById('answerInput').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') submitAnswer();
+  // Choice button event listeners
+  document.getElementById('choiceA').addEventListener('click', () => selectChoice(0));
+  document.getElementById('choiceB').addEventListener('click', () => selectChoice(1));
+  document.getElementById('choiceC').addEventListener('click', () => selectChoice(2));
+  document.getElementById('choiceD').addEventListener('click', () => selectChoice(3));
+
+  // Keyboard shortcuts for choices (A, B, C, D keys)
+  document.addEventListener('keydown', (e) => {
+    if (document.getElementById('answerContainer').classList.contains('active')) {
+      switch(e.key.toLowerCase()) {
+        case 'a':
+          selectChoice(0);
+          break;
+        case 'b':
+          selectChoice(1);
+          break;
+        case 'c':
+          selectChoice(2);
+          break;
+        case 'd':
+          selectChoice(3);
+          break;
+      }
+    }
+  });
+
+  // Enter key submits wager
+  document.getElementById('dailyDoubleWagerInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') submitDailyDoubleWager();
+  });
+
+  document.getElementById('wagerInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') submitWager();
   });
 
   document.getElementById('finalAnswer').addEventListener('keypress', (e) => {

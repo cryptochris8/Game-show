@@ -70,6 +70,11 @@ export class GameManager {
     private timerManager: TimerManager;
     private finalRoundState: FinalRoundState | null = null;
 
+    // Timer properties
+    private clueTimer: NodeJS.Timeout | null = null;
+    private answerTimer: NodeJS.Timeout | null = null;
+    private wagerTimer: NodeJS.Timeout | null = null;
+
     private gameConfig: GameConfig;
     private gameStartTime: number = 0;
     
@@ -190,8 +195,8 @@ export class GameManager {
             buzz: (playerId: string) => {
                 this.handleAIBuzz(playerId);
             },
-            submitAnswer: (answer: string, playerId: string) => {
-                this.handleAISubmitAnswer(answer, playerId);
+            submitAnswer: (answer: string, playerId: string, choiceIndex?: number) => {
+                this.handleAISubmitAnswer(answer, playerId, choiceIndex);
             },
             submitWager: (wager: number, playerId: string) => {
                 this.handleAISubmitWager(wager, playerId);
@@ -701,7 +706,7 @@ export class GameManager {
     /**
      * Handle AI answer submission
      */
-    private async handleAISubmitAnswer(answer: string, aiPlayerId: string): Promise<void> {
+    private async handleAISubmitAnswer(answer: string, aiPlayerId: string, choiceIndex?: number): Promise<void> {
         const aiPlayer = this.aiPlayers.get(aiPlayerId);
         if (!aiPlayer) {
             logger.error('AI player not found for answer submission', null, {
@@ -713,7 +718,9 @@ export class GameManager {
 
         // Create a mock payload for the existing handler
         const payload: AnswerSubmitPayload = {
-            answer
+            answer,
+            submitTime: Date.now(),
+            choiceIndex: choiceIndex
         };
 
         // Use the existing answer submission logic
@@ -805,7 +812,9 @@ export class GameManager {
             pickerId: clue.pickerId,
             maxWager: clue.isDailyDouble ? this.scoreManager.calculateMaxWager(clue.pickerId!, clue.clue.value) : undefined,
             lockoutMs: 300,
-            buzzWindowMs: 12000
+            buzzWindowMs: 12000,
+            choices: clue.clue.choices,
+            correctChoice: clue.clue.correctChoice
         };
 
         this.broadcastEvent(BuzzchainEvent.CLUE_REVEAL, clueRevealData);
@@ -892,10 +901,32 @@ export class GameManager {
         if (currentClue.isDailyDouble && currentClue.pickerId !== player.id) return;
         if (!currentClue.isDailyDouble && currentWinner !== player.id) return;
         
-        // Check answer using sanitized version
-        const sanitizedAnswer = answerValidation.sanitized;
-        const matchResult = AnswerNormalizer.checkMatch(sanitizedAnswer, currentClue.clue.answer);
-        const isCorrect = matchResult.isMatch;
+        // Check answer - support both multiple choice and text input for backward compatibility
+        let isCorrect: boolean;
+
+        if (payload.choiceIndex !== undefined && currentClue.clue.correctChoice !== undefined) {
+            // Multiple choice answer
+            isCorrect = payload.choiceIndex === currentClue.clue.correctChoice;
+            logger.info('Multiple choice answer validation', {
+                component: 'GameManager',
+                playerId: player.id,
+                choiceIndex: payload.choiceIndex,
+                correctChoice: currentClue.clue.correctChoice,
+                isCorrect
+            });
+        } else {
+            // Fallback to text matching for legacy support
+            const sanitizedAnswer = answerValidation.sanitized;
+            const matchResult = AnswerNormalizer.checkMatch(sanitizedAnswer, currentClue.clue.answer);
+            isCorrect = matchResult.isMatch;
+            logger.info('Text answer validation', {
+                component: 'GameManager',
+                playerId: player.id,
+                answer: sanitizedAnswer,
+                correctAnswer: currentClue.clue.answer,
+                isCorrect
+            });
+        }
         
         // Apply scoring
         let scoreChange;
@@ -921,11 +952,17 @@ export class GameManager {
         });
         
         if (isCorrect) {
+            // Clear answer timer for correct answers
+            if (this.answerTimer) {
+                clearTimeout(this.answerTimer);
+                this.answerTimer = null;
+            }
+
             // Correct answer - picker gets control
             this.currentPickerId = player.id;
             this.roundManager?.clearCurrentClue();
             this.buzzManager.closeBuzzWindow();
-            
+
             await this.checkRoundComplete();
         } else {
             // Wrong answer - lock player and continue
@@ -1181,6 +1218,10 @@ export class GameManager {
             clearTimeout(this.clueTimer);
             this.clueTimer = null;
         }
+        if (this.answerTimer) {
+            clearTimeout(this.answerTimer);
+            this.answerTimer = null;
+        }
         if (this.wagerTimer) {
             clearTimeout(this.wagerTimer);
             this.wagerTimer = null;
@@ -1316,13 +1357,45 @@ export class GameManager {
     }
 
     private startAnswerTimer(playerId: string | null): void {
-        // Implementation depends on whether it's a buzz winner or Daily Double
-        setTimeout(() => {
-            if (playerId) {
-                // Time up for specific player after buzzing in (20 seconds to answer)
-                this.handleClueTimeout();
-            }
-        }, 20000);
+        // Clear any existing answer timer
+        if (this.answerTimer) {
+            clearTimeout(this.answerTimer);
+            this.answerTimer = null;
+        }
+
+        if (playerId) {
+            // Give humans adequate time to type their answer (45 seconds instead of 20)
+            this.answerTimer = setTimeout(() => {
+                logger.info(`Answer timeout for player ${playerId}`, {
+                    component: 'GameManager',
+                    playerId,
+                    timeoutDuration: '45 seconds'
+                });
+                this.handleAnswerTimeout(playerId);
+            }, 45000); // Increased from 20 to 45 seconds
+
+            logger.debug(`Answer timer started for player ${playerId}`, {
+                component: 'GameManager',
+                playerId,
+                duration: '45 seconds'
+            });
+        }
+    }
+
+    private handleAnswerTimeout(playerId: string): void {
+        // Clear the answer timer
+        if (this.answerTimer) {
+            clearTimeout(this.answerTimer);
+            this.answerTimer = null;
+        }
+
+        logger.info(`Answer timeout handled for player ${playerId}`, {
+            component: 'GameManager',
+            playerId
+        });
+
+        // Continue with normal clue timeout handling
+        this.handleClueTimeout();
     }
 
     private async broadcastGameState(): Promise<void> {

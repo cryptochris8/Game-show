@@ -636,6 +636,14 @@ startServer(world => {
     // Unlock pointer for UI interaction
     player.ui.lockPointer(false);
 
+    // Send player ID to the game board
+    setTimeout(() => {
+      player.ui.sendData({
+        type: 'PLAYER_ID',
+        payload: { playerId: player.id }
+      });
+    }, 100);
+
     // Stop main menu music and start game music
     if (audioSystem.backgroundMusic) {
       audioSystem.backgroundMusic.pause();

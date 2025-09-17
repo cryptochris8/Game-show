@@ -14,7 +14,9 @@
     "install:clean": "rm -rf node_modules package-lock.json && npm install",
     "verify": "node verify-setup.js",
     "lint": "tsc --noEmit",
-    "typecheck": "tsc --noEmit --skipLibCheck"
+    "typecheck": "tsc --noEmit --skipLibCheck",
+    "add-choices": "node add-choices-to-questions.js",
+    "process-pack": "node add-choices-to-questions.js"
   },
   "keywords": [],
   "author": "HYTOPIA Game Developer",

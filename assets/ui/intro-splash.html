@@ -113,11 +113,16 @@
       }, 500);
     }, 5000);
 
-    // Handle click to skip intro
-    document.addEventListener('click', () => {
-      console.log('🖱️ User clicked to skip intro');
+    // Flag to prevent multiple transitions
+    let isTransitioning = false;
+
+    function skipIntro() {
+      if (isTransitioning) return;
+      isTransitioning = true;
 
       const container = document.getElementById('introContainer');
+      if (!container || container.classList.contains('fade-out')) return;
+
       container.classList.add('fade-out');
 
       setTimeout(() => {
@@ -130,25 +135,22 @@
           console.error('Failed to transition to main menu:', error);
         }
       }, 500);
+    }
+
+    // Handle click to skip intro
+    document.addEventListener('click', () => {
+      if (!isTransitioning) {
+        console.log('🖱️ User clicked to skip intro');
+        skipIntro();
+      }
     });
 
     // Handle any key press to skip intro
     document.addEventListener('keydown', (event) => {
-      console.log('⌨️ User pressed key to skip intro');
-
-      const container = document.getElementById('introContainer');
-      container.classList.add('fade-out');
-
-      setTimeout(() => {
-        try {
-          hytopia.sendData({
-            type: 'LOAD_MAIN_MENU',
-            payload: {}
-          });
-        } catch (error) {
-          console.error('Failed to transition to main menu:', error);
-        }
-      }, 500);
+      if (!isTransitioning) {
+        console.log('⌨️ User pressed key to skip intro');
+        skipIntro();
+      }
     });
   </script>
 </body>

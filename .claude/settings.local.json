@@ -6,7 +6,9 @@
       "Bash(npm run build:*)",
       "Bash(git add:*)",
       "Bash(git rm:*)",
-      "mcp__hytopia-mcp__search"
+      "mcp__hytopia-mcp__search",
+      "Bash(cat:*)",
+      "Bash(node:*)"
     ]
   },
   "enableAllProjectMcpServers": true,

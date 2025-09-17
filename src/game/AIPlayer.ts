@@ -26,7 +26,7 @@ export interface AIPersonality {
 export interface AIGameActions {
     selectCell: (categoryIndex: number, clueIndex: number, playerId: string) => void;
     buzz: (playerId: string) => void;
-    submitAnswer: (answer: string, playerId: string) => void;
+    submitAnswer: (answer: string, playerId: string, choiceIndex?: number) => void;
     submitWager: (wager: number, playerId: string) => void;
 }
 
@@ -212,8 +212,13 @@ export class AIPlayer {
 
             setTimeout(() => {
                 this.simulateBuzz();
-                // After buzzing, schedule answer submission
-                this.scheduleAnswerSubmission(clue.clue.answer, knowsAnswer);
+                // After buzzing, schedule answer submission with choice information
+                this.scheduleAnswerSubmission(
+                    clue.clue.answer,
+                    knowsAnswer,
+                    clue.clue.choices,
+                    clue.clue.correctChoice
+                );
             }, buzzDelay);
         }
     }
@@ -342,7 +347,7 @@ export class AIPlayer {
         }
     }
 
-    private scheduleAnswerSubmission(correctAnswer: string, knowsAnswer: boolean): void {
+    private scheduleAnswerSubmission(correctAnswer: string, knowsAnswer: boolean, choices?: string[], correctChoice?: number): void {
         // Give AI much more time to "think" after buzzing - let humans have a real chance
         const thinkingTime = 8000 + (Math.random() * 5000); // 8-13 seconds
 
@@ -350,27 +355,46 @@ export class AIPlayer {
             const willAnswerCorrectly = knowsAnswer && Math.random() < this.personality.answerAccuracy;
 
             let answer: string;
-            if (willAnswerCorrectly) {
-                answer = correctAnswer; // Give correct answer
+            let choiceIndex: number | undefined;
+
+            if (choices && correctChoice !== undefined) {
+                // Multiple choice logic
+                if (willAnswerCorrectly) {
+                    choiceIndex = correctChoice;
+                    answer = choices[correctChoice];
+                } else {
+                    // Pick a random wrong choice
+                    const wrongChoices = choices.map((_, index) => index).filter(index => index !== correctChoice);
+                    choiceIndex = wrongChoices[Math.floor(Math.random() * wrongChoices.length)];
+                    answer = choices[choiceIndex];
+                }
             } else {
-                answer = this.generateIncorrectAnswer(); // Generate plausible wrong answer
+                // Fallback to text answers
+                if (willAnswerCorrectly) {
+                    answer = correctAnswer; // Give correct answer
+                } else {
+                    answer = this.generateIncorrectAnswer(); // Generate plausible wrong answer
+                }
             }
 
             logger.info(`AI ${this.username} submitting answer`, {
                 component: 'AIPlayer',
                 playerId: this.id,
                 knowsAnswer: knowsAnswer,
-                willAnswerCorrectly: willAnswerCorrectly
+                willAnswerCorrectly: willAnswerCorrectly,
+                choiceIndex: choiceIndex,
+                answer: answer
             });
 
             if (this.gameActions) {
                 try {
-                    this.gameActions.submitAnswer(answer, this.id);
+                    this.gameActions.submitAnswer(answer, this.id, choiceIndex);
                 } catch (error) {
                     logger.error('AI failed to submit answer', error as Error, {
                         component: 'AIPlayer',
                         playerId: this.id,
-                        answer: answer
+                        answer: answer,
+                        choiceIndex: choiceIndex
                     });
                 }
             }
