@@ -658,15 +658,15 @@
   .activity-feed {
     position: fixed;
     right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 300px;
-    max-height: 400px;
-    background: rgba(20, 20, 30, 0.9);
+    bottom: 0.25rem;
+    width: 260px;
+    max-height: 120px;
+    background: rgba(20, 20, 30, 0.95);
     border: 2px solid rgba(255, 215, 0, 0.3);
-    border-radius: 10px;
-    padding: 1rem;
+    border-radius: 8px;
+    padding: 0.6rem;
     overflow-y: auto;
+    z-index: 100;
   }
 
   .activity-title {
@@ -723,6 +723,28 @@
 
     .activity-feed {
       display: none;
+    }
+  }
+
+  /* Tablet and smaller desktop - make activity feed more compact */
+  @media (max-width: 1200px) {
+    .activity-feed {
+      width: 200px;
+      max-height: 100px;
+      padding: 0.5rem;
+      font-size: 0.8rem;
+      bottom: 0.2rem;
+    }
+
+    .activity-title {
+      font-size: 0.85rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .activity-item {
+      padding: 0.25rem;
+      margin-bottom: 0.25rem;
+      font-size: 0.75rem;
     }
   }
 </style>
@@ -1595,24 +1617,34 @@ function showAnswerResult(result) {
     type: result.correct ? 'correct' : 'incorrect'
   });
 
-  // Instead of closing modal after 2 seconds, respect the full question timer
-  const elapsed = Date.now() - gameState.questionStartTime;
-  const remaining = gameState.questionDuration - elapsed;
-
   // Clear any existing modal close timeout
   if (gameState.modalCloseTimeout) {
     clearTimeout(gameState.modalCloseTimeout);
   }
 
-  if (remaining > 0) {
-    // Question timer is still running - wait for it to complete
-    console.log(`Answer received early, waiting ${remaining}ms more for question timer to complete`);
+  // If correct answer, close modal quickly to move to next question
+  // If incorrect, wait for the full timer to allow other players to buzz
+  if (result.correct) {
+    // Close modal after short delay (1.5 seconds) for correct answers
+    console.log('Correct answer - closing modal quickly');
     gameState.modalCloseTimeout = setTimeout(() => {
       closeQuestionModal();
-    }, remaining);
+    }, 1500);
   } else {
-    // Question timer already expired - close immediately
-    closeQuestionModal();
+    // For incorrect answers, respect the full question timer
+    const elapsed = Date.now() - gameState.questionStartTime;
+    const remaining = gameState.questionDuration - elapsed;
+
+    if (remaining > 0) {
+      // Question timer is still running - wait for it to complete
+      console.log(`Incorrect answer, waiting ${remaining}ms more for question timer to complete`);
+      gameState.modalCloseTimeout = setTimeout(() => {
+        closeQuestionModal();
+      }, remaining);
+    } else {
+      // Question timer already expired - close immediately
+      closeQuestionModal();
+    }
   }
 }
 

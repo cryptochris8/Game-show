@@ -331,11 +331,11 @@
                 for (let i = 0; i < players.length; i++) {
                     setTimeout(() => {
                         this.showNextPlayerIntro();
-                    }, 4000 + (i * playerDelay));
+                    }, 5000 + (i * playerDelay));  // Changed from 4000 to 5000 to match camera timing
                 }
 
                 // Countdown to game start - calculated based on actual timing
-                const countdownStart = 4000 + (players.length * playerDelay);
+                const countdownStart = 5000 + (players.length * playerDelay);  // Updated to match new player intro start time
                 setTimeout(() => {
                     let timeLeft = 5;
                     const countdownInterval = setInterval(() => {

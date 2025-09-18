@@ -1226,13 +1226,13 @@
 
       currentPlayerIndex++;
 
-      // Schedule next player (if any) after 5 seconds
+      // Schedule next player (if any) after 10 seconds to match camera timing
       if (currentPlayerIndex < players.length) {
         setTimeout(() => {
           showNextPlayer();
-        }, 5000);
+        }, 10000);  // Changed from 5000 to 10000 to match camera timing
       } else {
-        // All players done, clear the intro area after 2 seconds and show main content
+        // All players done, wait for remaining camera time then show countdown
         setTimeout(() => {
           playerIntros.innerHTML = '';
           console.log('🎬 All players done, showing main content for countdown');
@@ -1244,7 +1244,7 @@
               rgba(26, 26, 46, 0.95) 50%,
               rgba(10, 10, 15, 0.95) 100%)`;
           }
-        }, 2000);
+        }, 10000);  // Wait full 10 seconds for last player before countdown
       }
     }
 
@@ -1254,10 +1254,11 @@
     }, 5000);
 
     // Countdown and removal with error handling
-    const totalDuration = payload.duration || 30000;
-    const countdownStart = Math.max(totalDuration - 8000, 15000); // Start countdown with 8 seconds left
+    // Duration should be: 5s host + (10s * players) + 5s countdown
+    const totalDuration = payload.duration || (5000 + (players.length * 10000) + 5000);
+    const countdownStart = 5000 + (players.length * 10000); // Start countdown after all players shown
 
-    console.log('🕐 Setting up overlay removal', { totalDuration, countdownStart });
+    console.log('🕐 Setting up overlay removal', { totalDuration, countdownStart, playerCount: players.length });
 
     // Backup removal in case countdown fails
     const backupRemovalTimer = setTimeout(() => {
