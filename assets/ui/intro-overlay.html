@@ -279,6 +279,9 @@
 
                 const player = this.introQueue[this.currentIntroIndex];
 
+                // Clear previous player cards to show only one at a time
+                this.playerIntros.innerHTML = '';
+
                 const card = document.createElement('div');
                 card.className = 'player-intro-card';
                 card.innerHTML = `
@@ -308,7 +311,9 @@
                 this.countdownText.innerHTML = text;
             }
 
-            async playFullIntroSequence(hostMessage, players, duration = 30000) {
+            async playFullIntroSequence(hostMessage, players, duration = null) {
+                // If no duration provided, calculate it: 5s host + (10s * players) + 5s countdown
+                const calculatedDuration = duration || (5000 + (players.length * 10000) + 5000);
                 // Show overlay
                 this.show();
 
@@ -320,17 +325,17 @@
                 // Add all players to queue
                 players.forEach(player => this.addPlayerIntro(player));
 
-                // Show players one by one
-                const playerDelay = Math.min(5000, (duration - 5000) / players.length);
+                // Show players one by one - each player gets exactly 10 seconds
+                const playerDelay = 10000;
 
                 for (let i = 0; i < players.length; i++) {
                     setTimeout(() => {
                         this.showNextPlayerIntro();
-                    }, 2000 + (i * playerDelay));
+                    }, 4000 + (i * playerDelay));
                 }
 
-                // Countdown to game start
-                const countdownStart = 2000 + (players.length * playerDelay) + 2000;
+                // Countdown to game start - calculated based on actual timing
+                const countdownStart = 4000 + (players.length * playerDelay);
                 setTimeout(() => {
                     let timeLeft = 5;
                     const countdownInterval = setInterval(() => {

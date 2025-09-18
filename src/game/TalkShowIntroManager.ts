@@ -162,18 +162,22 @@ export class TalkShowIntroManager {
                 <em>Tonight's contestants are ready to test their knowledge in the ultimate trivia challenge!</em>
             `;
 
+            // Calculate proper duration: 5s host + (10s * players) + 5s countdown
+            const calculatedDuration = 5000 + (introData.length * 10000) + 5000;
+            const finalDuration = options.introDurationMs || calculatedDuration;
+
             // Send the complete intro sequence to the overlay
             this.sendIntroToOverlay(
                 fullHostMessage,
                 introData,
-                options.introDurationMs || 30000
+                finalDuration
             );
 
             // Start the camera sequence in parallel with the overlay
-            this.startCameraIntroSequence(introData, options.introDurationMs || 30000);
+            this.startCameraIntroSequence(introData, finalDuration);
 
             // Wait for the overlay sequence to complete
-            await this.delay(options.introDurationMs || 30000);
+            await this.delay(finalDuration);
 
             // Reset cameras to normal gameplay
             logger.info('Resetting cameras...', {
@@ -379,12 +383,12 @@ export class TalkShowIntroManager {
      * Set cameras to specific positions for contestant introductions using invisible camera mount entities
      */
     private setCamerasToContestantView(podiumNumber: number, players?: Map<string, Player>): void {
-        // Camera positions properly offset from each podium for direct character shots
+        // Camera positions properly offset from each podium for character shots - backed out for better view
         // Podiums are at y:4, z:-10, so camera needs to be in front (higher z value) at eye level
         const cameraPositions = {
-            1: { x: 4, y: 5.5, z: -7 },   // Podium 1 (x:4) - camera 3 units in front, slightly above
-            2: { x: 9, y: 5.5, z: -7 },   // Podium 2 (x:9) - camera 3 units in front, slightly above
-            3: { x: 14, y: 5.5, z: -7 }   // Podium 3 (x:14) - camera 3 units in front, slightly above
+            1: { x: 4, y: 6, z: -4 },   // Podium 1 (x:4) - camera 6 units in front, higher up for better perspective
+            2: { x: 9, y: 6, z: -4 },   // Podium 2 (x:9) - camera 6 units in front, higher up for better perspective
+            3: { x: 14, y: 6, z: -4 }   // Podium 3 (x:14) - camera 6 units in front, higher up for better perspective
         };
 
         const cameraPosition = cameraPositions[podiumNumber as keyof typeof cameraPositions];
@@ -445,13 +449,13 @@ export class TalkShowIntroManager {
                     // Attach camera to the invisible mount entity (preserves HYTOPIA UI)
                     player.camera.setAttachedToEntity(cameraMount);
 
-                    // Set zoom for proper character framing
+                    // Set zoom for proper character framing - backed out for better view
                     const zoomSettings = {
-                        1: 1.8,  // Medium shot to show full character
-                        2: 1.8,  // Medium shot to show full character
-                        3: 1.8   // Medium shot to show full character
+                        1: 1.2,  // Wider shot to show character and some surroundings
+                        2: 1.2,  // Wider shot to show character and some surroundings
+                        3: 1.2   // Wider shot to show character and some surroundings
                     };
-                    const zoom = zoomSettings[podiumNumber as keyof typeof zoomSettings] || 1.8;
+                    const zoom = zoomSettings[podiumNumber as keyof typeof zoomSettings] || 1.2;
                     player.camera.setZoom(zoom);
 
                     // Look at the podium position directly (where the player/AI is standing)
@@ -721,7 +725,7 @@ export class TalkShowIntroManager {
     private sendIntroToOverlay(
         hostMessage: string,
         players: PlayerIntroData[],
-        duration: number = 30000
+        duration: number = 60000
     ): void {
         try {
             logger.info('Sending intro sequence to UI overlay', {
@@ -846,10 +850,10 @@ export class TalkShowIntroManager {
         // Focus camera on current player
         this.focusCameraOnPlayer(player);
 
-        // Move to next player after 5 seconds (matching overlay timing)
+        // Move to next player after 10 seconds (matching overlay timing)
         setTimeout(() => {
             this.startPlayerCameraSequence(introData, currentIndex + 1);
-        }, 5000);
+        }, 10000);
     }
 
     /**
