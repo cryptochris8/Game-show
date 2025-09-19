@@ -935,6 +935,12 @@ function handleServerMessage(data) {
     case 'FINAL_ROUND':
       showFinalRound(data.payload);
       break;
+    case 'FINAL_REVEAL':
+      showFinalReveal(data.payload);
+      break;
+    case 'GAME_COMPLETE':
+      showGameComplete(data.payload);
+      break;
     case 'GAME_END':
       showGameEnd(data.payload);
       break;
@@ -1671,13 +1677,27 @@ function closeQuestionModal() {
 
 // Show Final Round
 function showFinalRound(data) {
+  console.log('showFinalRound called with:', data);
   const modal = document.getElementById('finalModal');
   modal.classList.add('active');
 
-  if (data && data.category) {
-    // Show the question
-    document.getElementById('finalCategory').textContent = data.category;
-    document.getElementById('finalClue').textContent = data.clue;
+  if (data.phase === 'wager') {
+    // Show wager phase
+    console.log('Showing Final Round wager phase');
+    document.getElementById('finalCategory').textContent = data.category || 'FINAL ROUND';
+    document.querySelector('.wager-container').style.display = 'block';
+    document.getElementById('finalQuestion').style.display = 'none';
+
+    // Set up wager input
+    const wagerInput = document.getElementById('wagerInput');
+    if (wagerInput) {
+      wagerInput.max = data.maxWager || 10000;
+      wagerInput.focus();
+    }
+  } else if (data.phase === 'answer') {
+    // Show answer phase with question
+    console.log('Showing Final Round answer phase with clue:', data.clue);
+    document.getElementById('finalClue').textContent = data.clue || 'Final Round clue will appear here';
     document.querySelector('.wager-container').style.display = 'none';
     document.getElementById('finalQuestion').style.display = 'block';
 
@@ -1686,6 +1706,22 @@ function showFinalRound(data) {
     if (finalAnswer) {
       finalAnswer.focus();
       setupAnswerInputFocusProtection(finalAnswer);
+    }
+  } else {
+    // Backward compatibility - if no phase specified but has category/clue
+    if (data.category) {
+      document.getElementById('finalCategory').textContent = data.category;
+    }
+    if (data.clue) {
+      document.getElementById('finalClue').textContent = data.clue;
+      document.querySelector('.wager-container').style.display = 'none';
+      document.getElementById('finalQuestion').style.display = 'block';
+
+      const finalAnswer = document.getElementById('finalAnswer');
+      if (finalAnswer) {
+        finalAnswer.focus();
+        setupAnswerInputFocusProtection(finalAnswer);
+      }
     }
   }
 }
@@ -1885,6 +1921,82 @@ function showGameEnd(data) {
             <span style="color: var(--primary-gold); font-weight: 700;">$${player.score}</span>
           </div>
         `).join('')}
+        <button class="submit-button" onclick="location.reload()" style="margin-top: 2rem;">
+          Play Again
+        </button>
+      </div>
+    `;
+    modal.classList.add('active');
+  }, 3000);
+}
+
+// Show Final Round results
+function showFinalReveal(data) {
+  console.log('showFinalReveal called with:', data);
+
+  const modal = document.getElementById('finalModal');
+  modal.innerHTML = `
+    <h1 class="final-title">FINAL ROUND RESULTS</h1>
+    <div class="wager-container">
+      <h2 style="color: var(--primary-gold); margin-bottom: 2rem;">Final Round Results</h2>
+      ${data.results.map((result, index) => `
+        <div style="margin: 1rem 0; padding: 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem;">
+          <div style="font-size: 1.2rem; color: var(--text-light); margin-bottom: 0.5rem;">
+            ${index + 1}. ${result.name}
+          </div>
+          <div style="margin: 0.25rem 0;">
+            <span style="color: var(--text-dim);">Wager:</span>
+            <span style="color: var(--primary-gold);">$${result.wager}</span>
+          </div>
+          <div style="margin: 0.25rem 0;">
+            <span style="color: var(--text-dim);">Answer:</span>
+            <span style="color: ${result.correct ? 'var(--correct-green)' : 'var(--incorrect-red)'};">${result.answer}</span>
+          </div>
+          <div style="margin: 0.25rem 0;">
+            <span style="color: var(--text-dim);">Score Change:</span>
+            <span style="color: ${result.scoreChange >= 0 ? 'var(--correct-green)' : 'var(--incorrect-red)'};">
+              ${result.scoreChange >= 0 ? '+' : ''}$${result.scoreChange}
+            </span>
+          </div>
+          <div style="font-size: 1.1rem; font-weight: 700; color: var(--primary-gold);">
+            Final Score: $${result.finalScore}
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  modal.classList.add('active');
+}
+
+// Show game completion
+function showGameComplete(data) {
+  console.log('showGameComplete called with:', data);
+
+  // Show winner announcement first
+  showMessage(`🏆 ${data.winner.name} WINS with $${data.winner.score}!`, 'correct');
+
+  // Show detailed final scores after a delay
+  setTimeout(() => {
+    const modal = document.getElementById('finalModal');
+    modal.innerHTML = `
+      <h1 class="final-title">GAME OVER</h1>
+      <div class="wager-container">
+        <h2 style="color: var(--primary-gold); margin-bottom: 2rem;">🏆 Winner: ${data.winner.name}</h2>
+        <h3 style="color: var(--text-light); margin-bottom: 2rem;">Final Scores</h3>
+        ${Object.values(data.finalScores).map((player, index) => `
+          <div style="margin: 1rem 0; font-size: 1.5rem; padding: 0.5rem;">
+            <span style="color: var(--text-light);">${index + 1}. ${player.name}:</span>
+            <span style="color: var(--primary-gold); font-weight: 700;">$${player.score}</span>
+            ${index === 0 ? '<span style="color: var(--primary-gold); margin-left: 1rem;">👑</span>' : ''}
+          </div>
+        `).join('')}
+        <div style="margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border-color);">
+          <h4 style="color: var(--text-dim); margin-bottom: 1rem;">Game Statistics</h4>
+          <div style="font-size: 0.9rem; color: var(--text-dim);">
+            Questions Answered: ${data.gameStats?.totalAnswered || 'N/A'} |
+            Correct Answers: ${data.gameStats?.totalCorrect || 'N/A'}
+          </div>
+        </div>
         <button class="submit-button" onclick="location.reload()" style="margin-top: 2rem;">
           Play Again
         </button>

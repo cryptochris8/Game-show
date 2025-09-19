@@ -28,6 +28,8 @@ export interface AIGameActions {
     buzz: (playerId: string) => void;
     submitAnswer: (answer: string, playerId: string, choiceIndex?: number) => void;
     submitWager: (wager: number, playerId: string) => void;
+    submitFinalWager: (wager: number, playerId: string) => void;
+    submitFinalAnswer: (answer: string, playerId: string) => void;
 }
 
 export class AIPlayer {
@@ -43,6 +45,8 @@ export class AIPlayer {
     private isActive: boolean = true;
     private lastActionTime: number = 0;
     private gameActions: AIGameActions | null = null;
+    private finalWagerSubmitted: boolean = false;
+    private finalAnswerSubmitted: boolean = false;
 
     constructor(world: World, personality: AIPersonality, gameActions?: AIGameActions) {
         this.id = `ai_${personality.name.toLowerCase().replace(/\s+/g, '_')}_${Date.now()}`;
@@ -402,15 +406,51 @@ export class AIPlayer {
     }
 
     private handleFinalRoundDecision(gameState: GameStateData): void {
-        // AI makes final round wager and answer decisions
-        const wager = this.calculateWager(this.score);
-        const answer = this.generateFinalAnswer();
+        if (!this.gameActions) return;
 
-        logger.info(`AI ${this.username} final round decision`, {
-            component: 'AIPlayer',
-            wager,
-            playerId: this.id
-        });
+        // Check if we need to submit wager (in wager phase)
+        if (gameState.phase === 'FINAL' && !this.finalWagerSubmitted) {
+            const wager = this.calculateWager(this.score);
+
+            logger.info(`AI ${this.username} final round wager`, {
+                component: 'AIPlayer',
+                player: this.id,
+                wager
+            });
+
+            // Submit final wager
+            try {
+                this.gameActions.submitFinalWager(wager, this.id);
+                this.finalWagerSubmitted = true;
+            } catch (error) {
+                logger.error('AI failed to submit final wager', error as Error, {
+                    component: 'AIPlayer',
+                    playerId: this.id
+                });
+            }
+        }
+
+        // Check if we need to submit answer (in answer phase)
+        if (gameState.phase === 'FINAL' && this.finalWagerSubmitted && !this.finalAnswerSubmitted) {
+            const answer = this.generateFinalAnswer();
+
+            logger.info(`AI ${this.username} final round answer`, {
+                component: 'AIPlayer',
+                player: this.id,
+                answer
+            });
+
+            // Submit final answer
+            try {
+                this.gameActions.submitFinalAnswer(answer, this.id);
+                this.finalAnswerSubmitted = true;
+            } catch (error) {
+                logger.error('AI failed to submit final answer', error as Error, {
+                    component: 'AIPlayer',
+                    playerId: this.id
+                });
+            }
+        }
     }
 
     private handleDailyDoubleWager(gameState: GameStateData): void {

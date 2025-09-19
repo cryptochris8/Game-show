@@ -201,6 +201,12 @@ export class GameManager {
             },
             submitWager: (wager: number, playerId: string) => {
                 this.handleAISubmitWager(wager, playerId);
+            },
+            submitFinalWager: (wager: number, playerId: string) => {
+                this.handleAIFinalWager(wager, playerId);
+            },
+            submitFinalAnswer: (answer: string, playerId: string) => {
+                this.handleAIFinalAnswer(answer, playerId);
             }
         };
 
@@ -751,6 +757,50 @@ export class GameManager {
     }
 
     /**
+     * Handle AI Final Wager submission
+     */
+    private async handleAIFinalWager(wager: number, aiPlayerId: string): Promise<void> {
+        const aiPlayer = this.aiPlayers.get(aiPlayerId);
+        if (!aiPlayer) {
+            logger.error('AI player not found for final wager submission', null, {
+                component: 'GameManager',
+                aiPlayerId
+            });
+            return;
+        }
+
+        // Create a mock payload for the existing handler
+        const payload: FinalWagerPayload = {
+            wager
+        };
+
+        // Use the existing final wager logic
+        await this.handleFinalWager(aiPlayer as any, payload);
+    }
+
+    /**
+     * Handle AI Final Answer submission
+     */
+    private async handleAIFinalAnswer(answer: string, aiPlayerId: string): Promise<void> {
+        const aiPlayer = this.aiPlayers.get(aiPlayerId);
+        if (!aiPlayer) {
+            logger.error('AI player not found for final answer submission', null, {
+                component: 'GameManager',
+                aiPlayerId
+            });
+            return;
+        }
+
+        // Create a mock payload for the existing handler
+        const payload: FinalAnswerPayload = {
+            answer
+        };
+
+        // Use the existing final answer logic
+        await this.handleFinalAnswer(aiPlayer as any, payload);
+    }
+
+    /**
      * Handle cell selection
      */
     private async handleCellSelection(player: Player | AIPlayer, payload: SelectCellPayload): Promise<void> {
@@ -1029,14 +1079,15 @@ export class GameManager {
         // Check if all players have wagered
         if (this.finalRoundState.wagers.size === this.players.size) {
             this.finalRoundState.phase = 'answer';
-            
+
             // Reveal Final Round clue
             this.broadcastEvent(BuzzchainEvent.FINAL_ROUND, {
                 phase: 'answer',
+                category: this.finalRoundState.category,
                 clue: this.finalRoundState.clue,
                 timeLimit: 45000
             });
-            
+
             // Start answer timer
             this.wagerTimer = setTimeout(() => {
                 this.finalizeFinalRound();
@@ -1234,6 +1285,12 @@ export class GameManager {
 
         // Stop AI update loop
         this.stopAIUpdateLoop();
+
+        // Reset AI player final round tracking
+        this.aiPlayers.forEach(aiPlayer => {
+            (aiPlayer as any).finalWagerSubmitted = false;
+            (aiPlayer as any).finalAnswerSubmitted = false;
+        });
 
         // Clean up AI players
         for (const aiPlayer of this.aiPlayers.values()) {
