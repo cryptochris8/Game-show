@@ -79,8 +79,8 @@
     },
     {
       "id": 12,
-      "name": "jeopardy2",
-      "textureUri": "blocks/jeopardy2.png",
+      "name": "jepblue",
+      "textureUri": "blocks/swirl-rune.png",
       "isCustom": true,
       "isMultiTexture": false
     }

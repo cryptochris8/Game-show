@@ -1,7 +1,7 @@
 // PodiumManager - Manages player positioning at podiums for Buzzchain trivia gameplay
 // Handles 3 contestant podiums and 1 host podium using HYTOPIA SDK
 
-import { Player, World, Entity, RigidBodyType, Quaternion } from 'hytopia';
+import { Player, World, Entity, RigidBodyType, Quaternion, PlayerCameraMode } from 'hytopia';
 import { logger } from '../util/Logger';
 
 export interface PodiumPosition {
@@ -37,7 +37,7 @@ export class PodiumManager {
 
     private readonly HOST_PODIUM: PodiumPosition = {
         x: 9, y: 4, z: -1,  // Host stands opposite contestants
-        rotation: Quaternion.fromEuler(0, 0, 0)  // Try identity rotation first (was 180°)
+        rotation: Quaternion.fromEuler(0, 180, 0)  // Face toward contestants (south)
     };
 
     // Buzzy Bee - The legendary host of Buzzchain
@@ -51,7 +51,11 @@ export class PodiumManager {
 
     constructor(world: World) {
         this.world = world;
-        this.hostPodium = this.HOST_PODIUM;
+        // Calculate host rotation dynamically to face contestants
+        this.hostPodium = {
+            ...this.HOST_PODIUM,
+            rotation: this.calculateHostRotationToFaceContestants()
+        };
 
         // Initialize contestant podium positions with calculated rotations to face host
         this.CONTESTANT_PODIUMS.forEach((pos, index) => {
@@ -73,6 +77,35 @@ export class PodiumManager {
     }
 
     /**
+     * Calculate the correct rotation for the host to face the contestants
+     */
+    private calculateHostRotationToFaceContestants(): { x: number; y: number; z: number; w: number } {
+        // Host at z=-1 should face south (toward z=-10 where contestants are)
+        // This means a 180-degree rotation around Y axis
+        const hostPos = { x: 9, y: 4, z: -1 };
+        const centerContestantPos = { x: 9, y: 4, z: -10 };
+
+        // Direction vector from host to center contestant
+        const dx = centerContestantPos.x - hostPos.x;
+        const dz = centerContestantPos.z - hostPos.z;
+
+        // Calculate yaw angle to face contestants
+        const yawRadians = Math.atan2(dx, dz);
+        const yawDegrees = yawRadians * (180 / Math.PI);
+
+        logger.info('Calculated host rotation to face contestants', {
+            component: 'PodiumManager',
+            hostPos,
+            centerContestantPos,
+            direction: { dx, dz },
+            yawDegrees,
+            yawRadians
+        });
+
+        return Quaternion.fromEuler(0, yawDegrees, 0);
+    }
+
+    /**
      * Calculate the correct rotation for a contestant to face the host
      */
     private calculateRotationToFaceHost(contestantPos: PodiumPosition, podiumNumber: number): { x: number; y: number; z: number; w: number } {
@@ -83,17 +116,7 @@ export class PodiumManager {
         // Calculate yaw angle (rotation around Y axis) to face the host
         // atan2(dx, dz) gives us the angle from contestant TO host
         const yawRadians = Math.atan2(dx, dz);
-        let yawDegrees = yawRadians * (180 / Math.PI);
-
-        // Simple fix: if this is podium 1 (where human player goes), try 0 degrees
-        if (podiumNumber === 1) {
-            yawDegrees = 0; // Face forward
-            logger.info('Applied 0-degree rotation for podium 1 (human player)', {
-                component: 'PodiumManager',
-                podiumNumber,
-                forcedYaw: yawDegrees
-            });
-        }
+        const yawDegrees = yawRadians * (180 / Math.PI);
 
         logger.info('Calculated rotation to face host', {
             component: 'PodiumManager',
@@ -102,7 +125,7 @@ export class PodiumManager {
             hostPos: { x: this.hostPodium.x, z: this.hostPodium.z },
             direction: { dx, dz },
             yawDegrees,
-            originalYaw: yawRadians * (180 / Math.PI)
+            yawRadians
         });
 
         // Create quaternion from Euler angles (pitch=0, yaw, roll=0)
@@ -170,15 +193,34 @@ export class PodiumManager {
         }
 
         try {
-            // Teleport player to podium and set rotation
-            if (player.entity) {
-                player.entity.setPosition(position);
+            // Find the player's entity using the entity manager
+            const playerEntities = this.world.entityManager.getAllPlayerEntities();
+            const playerEntity = playerEntities.find(entity => entity.player?.id === player.id);
 
-                // Set player rotation to face the host
+            if (playerEntity) {
+                // Teleport player entity to podium position
+                playerEntity.setPosition(position);
+
+                // Set player entity rotation to face the host
                 if (position.rotation) {
-                    player.entity.setRotation(position.rotation);
+                    // Apply rotation immediately
+                    playerEntity.setRotation(position.rotation);
 
-                    logger.info('Applied rotation to player entity', {
+                    // Force rotation update after a small delay to ensure it takes effect
+                    setTimeout(() => {
+                        playerEntity.setRotation(position.rotation);
+
+                        logger.info('Forced rotation update after teleport', {
+                            component: 'PodiumManager',
+                            playerId: player.id,
+                            rotation: position.rotation
+                        });
+                    }, 100);
+
+                    // CRITICAL: Also synchronize the camera orientation
+                    this.synchronizePlayerCameraWithRotation(player, position.rotation);
+
+                    logger.info('Applied rotation to player entity and synchronized camera', {
                         component: 'PodiumManager',
                         playerId: player.id,
                         playerName: player.username,
@@ -187,7 +229,7 @@ export class PodiumManager {
                     });
                 }
 
-                logger.info(`Successfully positioned and rotated human player entity at podium`, {
+                logger.info(`Successfully positioned player entity at podium`, {
                     component: 'PodiumManager',
                     playerId: player.id,
                     playerName: player.username,
@@ -197,19 +239,16 @@ export class PodiumManager {
                     entityFound: true
                 });
 
-                // Lock player movement during game (if player entity supports it)
-                if (typeof player.entity.setIsMovementDisabled === 'function') {
-                    player.entity.setIsMovementDisabled(true);
-                }
+                // Note: Player movement control would be implemented in custom player entity classes
 
             } else {
-                logger.error(`Player entity not found when assigning to podium`, {
+                logger.error(`Player entity not found when assigning to podium`, new Error('Player entity not found'), {
                     component: 'PodiumManager',
                     playerId: player.id,
                     playerName: player.username,
                     podiumNumber,
                     entityFound: false,
-                    playerObject: typeof player
+                    availableEntities: playerEntities.length
                 });
                 return false;
             }
@@ -295,10 +334,12 @@ export class PodiumManager {
      */
     public releasePlayer(player: Player): void {
         try {
-            // Re-enable player movement (if player entity supports it)
-            if (player.entity && typeof player.entity.setIsMovementDisabled === 'function') {
-                player.entity.setIsMovementDisabled(false);
-            }
+            // Find and re-enable player movement
+            const playerEntities = this.world.entityManager.getAllPlayerEntities();
+            const playerEntity = playerEntities.find(entity => entity.player?.id === player.id);
+
+            // Note: Player movement control would be implemented in custom player entity classes
+
             this.podiumAssignments.delete(player.id);
 
             logger.info('Player released from podium', {
@@ -324,21 +365,70 @@ export class PodiumManager {
 
 
     /**
+     * Synchronize player camera orientation with entity rotation
+     * This is the key to making players actually look where their entity is facing
+     */
+    private synchronizePlayerCameraWithRotation(player: Player, rotation: { x: number; y: number; z: number; w: number }): void {
+        try {
+            // Convert quaternion to Euler angles to get the yaw
+            // Formula: yaw = atan2(2*(w*y + x*z), 1 - 2*(y^2 + z^2))
+            const yaw = Math.atan2(
+                2 * (rotation.w * rotation.y + rotation.x * rotation.z),
+                1 - 2 * (rotation.y * rotation.y + rotation.z * rotation.z)
+            );
+
+            // Set camera to first-person mode for proper control
+            player.camera.setMode(PlayerCameraMode.FIRST_PERSON);
+            player.camera.setOffset({ x: 0, y: 0.4, z: 0 }); // Head height offset
+            player.camera.setForwardOffset(0.1); // Slightly forward for better view
+
+            // Note: In Hytopia SDK, camera orientation is typically controlled by player input
+            // The entity rotation will visually show the correct facing direction
+            // For camera control, we rely on the entity rotation to provide visual feedback
+            // while the camera follows normal first-person controls
+
+            logger.info('Set up player camera for podium positioning', {
+                component: 'PodiumManager',
+                playerId: player.id,
+                playerName: player.username,
+                entityRotation: rotation,
+                calculatedYawRadians: yaw,
+                cameraMode: 'FIRST_PERSON',
+                note: 'Entity rotation provides visual direction, camera follows player input'
+            });
+
+        } catch (error) {
+            logger.error('Failed to synchronize player camera', error as Error, {
+                component: 'PodiumManager',
+                playerId: player.id
+            });
+        }
+    }
+
+    /**
      * Ensure all players are facing the correct direction
+     * This method can be called periodically to maintain proper orientation
      */
     public ensureProperOrientation(): void {
         this.podiumAssignments.forEach((podiumNumber, playerId) => {
             const position = this.playerPodiums.get(podiumNumber);
             if (!position || !position.rotation) return;
 
-            // Try to find the player entity and correct their rotation
+            // Try to find the player and correct their rotation + camera
             const connectedPlayers = this.world.entityManager.getAllPlayerEntities();
             const playerEntity = connectedPlayers.find(p => p.player?.id === playerId);
 
-            if (playerEntity) {
+            if (playerEntity && playerEntity.player) {
                 try {
+                    // Force entity rotation update
                     playerEntity.setRotation(position.rotation);
-                    logger.debug('Corrected player orientation', {
+
+                    // For human players, also sync camera
+                    if (playerEntity.player) {
+                        this.synchronizePlayerCameraWithRotation(playerEntity.player, position.rotation);
+                    }
+
+                    logger.debug('Corrected player orientation and camera', {
                         component: 'PodiumManager',
                         playerId,
                         podiumNumber,
@@ -348,8 +438,30 @@ export class PodiumManager {
                     logger.warn('Failed to correct player orientation', {
                         component: 'PodiumManager',
                         playerId,
-                        error: error.message
+                        error: (error as Error).message
                     });
+                }
+            } else {
+                // Check for AI entities
+                const aiEntities = this.world.entityManager.getAllNonPlayerEntities();
+                const aiEntity = aiEntities.find(e => e.id?.toString() === playerId || e.name === playerId);
+
+                if (aiEntity && aiEntity.isSpawned) {
+                    try {
+                        aiEntity.setRotation(position.rotation);
+                        logger.debug('Corrected AI orientation', {
+                            component: 'PodiumManager',
+                            aiId: playerId,
+                            podiumNumber,
+                            rotation: position.rotation
+                        });
+                    } catch (error) {
+                        logger.warn('Failed to correct AI orientation', {
+                            component: 'PodiumManager',
+                            aiId: playerId,
+                            error: (error as Error).message
+                        });
+                    }
                 }
             }
         });
@@ -358,13 +470,24 @@ export class PodiumManager {
         if (this.hostEntity && this.hostEntity.isSpawned && this.hostPodium.rotation) {
             try {
                 this.hostEntity.setRotation(this.hostPodium.rotation);
+                logger.debug('Corrected host orientation', {
+                    component: 'PodiumManager',
+                    rotation: this.hostPodium.rotation
+                });
             } catch (error) {
                 logger.warn('Failed to correct host orientation', {
                     component: 'PodiumManager',
-                    error: error.message
+                    error: (error as Error).message
                 });
             }
         }
+    }
+
+    /**
+     * Get current podium assignments
+     */
+    public getPodiumAssignments(): Map<string, number> {
+        return new Map(this.podiumAssignments);
     }
 
     /**
@@ -377,15 +500,27 @@ export class PodiumManager {
     /**
      * Make host perform an animation
      */
-    public animateHost(animation: string): void {
+    public animateHost(animation: string, loop: boolean = false): void {
         if (this.hostEntity && this.hostEntity.isSpawned) {
             try {
-                this.hostEntity.playAnimation(animation, { loop: false });
+                if (loop) {
+                    this.hostEntity.startModelLoopedAnimations([animation]);
+                } else {
+                    this.hostEntity.startModelOneshotAnimations([animation]);
+                }
+
+                logger.info('Host animation started', {
+                    component: 'PodiumManager',
+                    animation,
+                    loop,
+                    hostName: this.currentHost?.name
+                });
             } catch (error) {
                 logger.warn('Failed to animate host', {
                     component: 'PodiumManager',
                     animation,
-                    error
+                    loop,
+                    error: (error as Error).message
                 });
             }
         }

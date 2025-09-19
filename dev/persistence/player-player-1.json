@@ -1,0 +1,20 @@
+{
+  "stats": {
+    "gamesPlayed": 1,
+    "gamesWon": 0,
+    "correctAnswers": 47,
+    "incorrectAnswers": 8,
+    "totalBuzzes": 104,
+    "buzzWins": 52,
+    "averageBuzzTimeMs": 1758244237722.0193,
+    "fastestBuzzMs": 1758243822727,
+    "longestWinStreak": 0,
+    "currentStreak": 0,
+    "totalScore": 12300,
+    "highestSingleGameScore": 12300,
+    "dailyDoublesWon": 0,
+    "finalRoundWins": 0,
+    "lastPlayedDate": 1758244828161,
+    "totalPlayTimeMs": 1071609
+  }
+}

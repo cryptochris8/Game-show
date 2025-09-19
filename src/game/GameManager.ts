@@ -592,6 +592,12 @@ export class GameManager {
         // After intro completes, transition to game
         this.gamePhase = GamePhase.ROUND1;
 
+        // Ensure all players and host are facing the correct direction after intro
+        this.podiumManager.ensureProperOrientation();
+        logger.info('Ensured proper orientation after intro sequence', {
+            component: 'GameManager'
+        });
+
         // Pick random starting player
         this.assignRandomPicker();
 
