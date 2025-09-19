@@ -146,6 +146,7 @@ export class GameManager {
         }
     }
 
+
     /**
      * Retry assigning a player to a podium (called when entity becomes available)
      */
@@ -263,7 +264,7 @@ export class GameManager {
         // Initialize player in score manager
         await this.scoreManager.initializePlayer(player);
 
-        // Assign player to next available podium (will try again later if entity not ready)
+        // Assign player to next available podium immediately
         const podiumNumber = this.podiumManager.getNextAvailablePodium();
         if (podiumNumber) {
             const assigned = this.podiumManager.assignPlayerToPodium(player, podiumNumber);

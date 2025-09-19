@@ -304,6 +304,126 @@
             "Home run"
           ],
           "correctChoice": 0
+        },
+        {
+          "value": 100,
+          "clue": "This NFL team has won the most Super Bowl championships.",
+          "answer": "What are the Pittsburgh Steelers?",
+          "choices": [
+            "Pittsburgh Steelers",
+            "Dallas Cowboys",
+            "New England Patriots",
+            "Green Bay Packers"
+          ],
+          "correctChoice": 0
+        },
+        {
+          "value": 200,
+          "clue": "This boxer was known as 'The Greatest' and 'The Louisville Lip'.",
+          "answer": "Who is Muhammad Ali?",
+          "choices": [
+            "Mike Tyson",
+            "Muhammad Ali",
+            "Floyd Mayweather",
+            "Sugar Ray Robinson"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This tennis player has won the most Grand Slam men's singles titles.",
+          "answer": "Who is Novak Djokovic?",
+          "choices": [
+            "Roger Federer",
+            "Rafael Nadal",
+            "Novak Djokovic",
+            "Pete Sampras"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 400,
+          "clue": "This basketball player scored 100 points in a single NBA game.",
+          "answer": "Who is Wilt Chamberlain?",
+          "choices": [
+            "Michael Jordan",
+            "Kobe Bryant",
+            "Wilt Chamberlain",
+            "LeBron James"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 500,
+          "clue": "This country has won the most FIFA World Cup championships.",
+          "answer": "What is Brazil?",
+          "choices": [
+            "Germany",
+            "Argentina",
+            "Brazil",
+            "Italy"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 100,
+          "clue": "This sport is played with a shuttlecock and rackets.",
+          "answer": "What is badminton?",
+          "choices": [
+            "Tennis",
+            "Badminton",
+            "Squash",
+            "Table tennis"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This swimmer has won the most Olympic gold medals of all time.",
+          "answer": "Who is Michael Phelps?",
+          "choices": [
+            "Mark Spitz",
+            "Katie Ledecky",
+            "Michael Phelps",
+            "Ian Thorpe"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 300,
+          "clue": "This golfer is known as 'The Golden Bear'.",
+          "answer": "Who is Jack Nicklaus?",
+          "choices": [
+            "Tiger Woods",
+            "Arnold Palmer",
+            "Jack Nicklaus",
+            "Gary Player"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 400,
+          "clue": "This team holds the record for most NBA championships.",
+          "answer": "What are the Boston Celtics?",
+          "choices": [
+            "Los Angeles Lakers",
+            "Boston Celtics",
+            "Chicago Bulls",
+            "Golden State Warriors"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This female athlete has won the most tennis Grand Slam singles titles.",
+          "answer": "Who is Serena Williams?",
+          "choices": [
+            "Steffi Graf",
+            "Martina Navratilova",
+            "Serena Williams",
+            "Chris Evert"
+          ],
+          "correctChoice": 2
         }
       ]
     },
@@ -609,6 +729,126 @@
             "the pH scale"
           ],
           "correctChoice": 3
+        },
+        {
+          "value": 100,
+          "clue": "This scientist discovered penicillin.",
+          "answer": "Who is Alexander Fleming?",
+          "choices": [
+            "Marie Curie",
+            "Alexander Fleming",
+            "Louis Pasteur",
+            "Gregor Mendel"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This is the smallest unit of matter that retains chemical properties.",
+          "answer": "What is an atom?",
+          "choices": [
+            "Molecule",
+            "Electron",
+            "Atom",
+            "Proton"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 300,
+          "clue": "This type of blood cell fights infection in the human body.",
+          "answer": "What are white blood cells?",
+          "choices": [
+            "Red blood cells",
+            "Platelets",
+            "White blood cells",
+            "Plasma cells"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 400,
+          "clue": "This equation shows the relationship between mass and energy.",
+          "answer": "What is E=mc²?",
+          "choices": [
+            "F=ma",
+            "E=mc²",
+            "PV=nRT",
+            "a²+b²=c²"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This organelle is known as the powerhouse of the cell.",
+          "answer": "What is the mitochondria?",
+          "choices": [
+            "Nucleus",
+            "Ribosome",
+            "Mitochondria",
+            "Chloroplast"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 100,
+          "clue": "This gas makes up approximately 21% of Earth's atmosphere.",
+          "answer": "What is oxygen?",
+          "choices": [
+            "Nitrogen",
+            "Oxygen",
+            "Carbon dioxide",
+            "Argon"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This physicist developed the theory of relativity.",
+          "answer": "Who is Albert Einstein?",
+          "choices": [
+            "Isaac Newton",
+            "Albert Einstein",
+            "Stephen Hawking",
+            "Niels Bohr"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This scale measures the acidity or alkalinity of a solution.",
+          "answer": "What is the pH scale?",
+          "choices": [
+            "Richter scale",
+            "Kelvin scale",
+            "pH scale",
+            "Celsius scale"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 400,
+          "clue": "This process allows plants to convert sunlight into energy.",
+          "answer": "What is photosynthesis?",
+          "choices": [
+            "Respiration",
+            "Photosynthesis",
+            "Transpiration",
+            "Germination"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This element has the highest atomic number that occurs naturally.",
+          "answer": "What is uranium?",
+          "choices": [
+            "Plutonium",
+            "Radon",
+            "Uranium",
+            "Thorium"
+          ],
+          "correctChoice": 2
         }
       ]
     },
@@ -914,6 +1154,126 @@
             "Star Wars"
           ],
           "correctChoice": 1
+        },
+        {
+          "value": 100,
+          "clue": "This actress played Katniss Everdeen in The Hunger Games series.",
+          "answer": "Who is Jennifer Lawrence?",
+          "choices": [
+            "Emma Stone",
+            "Jennifer Lawrence",
+            "Scarlett Johansson",
+            "Emma Watson"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This director is known for films like Pulp Fiction and Kill Bill.",
+          "answer": "Who is Quentin Tarantino?",
+          "choices": [
+            "Steven Spielberg",
+            "Martin Scorsese",
+            "Quentin Tarantino",
+            "Christopher Nolan"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 300,
+          "clue": "This actor played the character Forrest Gump.",
+          "answer": "Who is Tom Hanks?",
+          "choices": [
+            "Robin Williams",
+            "Tom Hanks",
+            "Kevin Costner",
+            "Matt Damon"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This 2019 film won Best Picture and was the first non-English film to do so.",
+          "answer": "What is Parasite?",
+          "choices": [
+            "Roma",
+            "Parasite",
+            "The Shape of Water",
+            "Moonlight"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This actress has won the most Academy Awards for acting.",
+          "answer": "Who is Katharine Hepburn?",
+          "choices": [
+            "Meryl Streep",
+            "Katharine Hepburn",
+            "Bette Davis",
+            "Audrey Hepburn"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 100,
+          "clue": "This actor played Spider-Man in the most recent Marvel films.",
+          "answer": "Who is Tom Holland?",
+          "choices": [
+            "Tobey Maguire",
+            "Andrew Garfield",
+            "Tom Holland",
+            "Jake Gyllenhaal"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 200,
+          "clue": "This movie features the quote 'I'll be back'.",
+          "answer": "What is The Terminator?",
+          "choices": [
+            "Predator",
+            "The Terminator",
+            "Total Recall",
+            "Commando"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This actress played Wonder Woman in the DC movies.",
+          "answer": "Who is Gal Gadot?",
+          "choices": [
+            "Margot Robbie",
+            "Amy Adams",
+            "Gal Gadot",
+            "Scarlett Johansson"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 400,
+          "clue": "This film franchise features cars, heists, and family.",
+          "answer": "What is Fast & Furious?",
+          "choices": [
+            "Mission: Impossible",
+            "Fast & Furious",
+            "Ocean's Eleven",
+            "John Wick"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This actor played both Batman and Birdman.",
+          "answer": "Who is Michael Keaton?",
+          "choices": [
+            "Christian Bale",
+            "Ben Affleck",
+            "Michael Keaton",
+            "George Clooney"
+          ],
+          "correctChoice": 2
         }
       ]
     },
@@ -1219,6 +1579,126 @@
             "Everest"
           ],
           "correctChoice": 0
+        },
+        {
+          "value": 100,
+          "clue": "This mountain range contains Mount Everest.",
+          "answer": "What are the Himalayas?",
+          "choices": [
+            "Rocky Mountains",
+            "Andes",
+            "Himalayas",
+            "Alps"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 200,
+          "clue": "This city is the capital of Australia.",
+          "answer": "What is Canberra?",
+          "choices": [
+            "Sydney",
+            "Melbourne",
+            "Canberra",
+            "Perth"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 300,
+          "clue": "This river is the longest in South America.",
+          "answer": "What is the Amazon River?",
+          "choices": [
+            "Orinoco River",
+            "Amazon River",
+            "Paraná River",
+            "Magdalena River"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This desert is the largest hot desert in the world.",
+          "answer": "What is the Sahara Desert?",
+          "choices": [
+            "Gobi Desert",
+            "Kalahari Desert",
+            "Sahara Desert",
+            "Arabian Desert"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 500,
+          "clue": "This country has the most time zones.",
+          "answer": "What is France?",
+          "choices": [
+            "Russia",
+            "United States",
+            "France",
+            "China"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 100,
+          "clue": "This ocean is the largest on Earth.",
+          "answer": "What is the Pacific Ocean?",
+          "choices": [
+            "Atlantic Ocean",
+            "Pacific Ocean",
+            "Indian Ocean",
+            "Arctic Ocean"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This European country is shaped like a boot.",
+          "answer": "What is Italy?",
+          "choices": [
+            "Spain",
+            "Greece",
+            "Italy",
+            "Portugal"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 300,
+          "clue": "This is the smallest country in the world.",
+          "answer": "What is Vatican City?",
+          "choices": [
+            "Monaco",
+            "Vatican City",
+            "San Marino",
+            "Liechtenstein"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This strait separates Europe and Africa.",
+          "answer": "What is the Strait of Gibraltar?",
+          "choices": [
+            "Bosphorus Strait",
+            "Strait of Gibraltar",
+            "Strait of Hormuz",
+            "English Channel"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This African country was never colonized by European powers.",
+          "answer": "What is Ethiopia?",
+          "choices": [
+            "Liberia",
+            "Ethiopia",
+            "Morocco",
+            "Egypt"
+          ],
+          "correctChoice": 1
         }
       ]
     },
@@ -1242,12 +1722,12 @@
           "clue": "This ancient wonder of the world was located in Alexandria.",
           "answer": "What is the Lighthouse of Alexandria?",
           "choices": [
-            "British Empire",
-            "Alexander the Great",
-            "Napoleon",
-            "the Lighthouse of Alexandria"
+            "the Lighthouse of Alexandria",
+            "the Colossus of Rhodes",
+            "the Hanging Gardens of Babylon",
+            "the Statue of Zeus at Olympia"
           ],
-          "correctChoice": 3
+          "correctChoice": 0
         },
         {
           "value": 100,
@@ -1266,12 +1746,12 @@
           "clue": "This Egyptian queen was known for her relationships with Julius Caesar and Mark Antony.",
           "answer": "Who is Cleopatra?",
           "choices": [
-            "Hitler",
-            "Industrial Revolution",
-            "Alexander the Great",
-            "Cleopatra"
+            "Cleopatra",
+            "Nefertiti",
+            "Hatshepsut",
+            "Ankhesenamun"
           ],
-          "correctChoice": 3
+          "correctChoice": 0
         },
         {
           "value": 100,
@@ -1290,10 +1770,10 @@
           "clue": "This wall dividing Berlin fell in 1989.",
           "answer": "What is the Berlin Wall?",
           "choices": [
-            "Napoleon",
-            "the Berlin Wall",
-            "Caesar",
-            "Cleopatra"
+            "London",
+            "The berlin wall",
+            "Los Angeles",
+            "Dragon breath"
           ],
           "correctChoice": 1
         },
@@ -1315,9 +1795,9 @@
           "answer": "What is the Civil War?",
           "choices": [
             "the Civil War",
-            "Industrial Revolution",
-            "Mongol Empire",
-            "Ottoman Empire"
+            "the Revolutionary War",
+            "World War I",
+            "the War of 1812"
           ],
           "correctChoice": 0
         },
@@ -1350,12 +1830,12 @@
           "clue": "This U.S. document begins with 'We the People'.",
           "answer": "What is the Constitution?",
           "choices": [
-            "the Constitution",
-            "Cleopatra",
-            "Industrial Revolution",
-            "Roman Empire"
+            "Something else",
+            "Bad vibes",
+            "The constitution",
+            "Something else"
           ],
-          "correctChoice": 0
+          "correctChoice": 2
         },
         {
           "value": 300,
@@ -1386,12 +1866,12 @@
           "clue": "This revolution began in 1789 in France.",
           "answer": "What is the French Revolution?",
           "choices": [
-            "Industrial Revolution",
-            "the French Revolution",
-            "Napoleon",
-            "Alexander the Great"
+            "The french revolution",
+            "Nitrogen",
+            "Carbon dioxide",
+            "Science stuff"
           ],
-          "correctChoice": 1
+          "correctChoice": 0
         },
         {
           "value": 300,
@@ -1422,12 +1902,12 @@
           "clue": "This document was signed in 1215 and limited the power of the king.",
           "answer": "What is the Magna Carta?",
           "choices": [
-            "the Magna Carta",
-            "Roman Empire",
-            "Renaissance",
-            "Cleopatra"
+            "Something else",
+            "Mercury in retrograde",
+            "Something else",
+            "The magna carta"
           ],
-          "correctChoice": 0
+          "correctChoice": 3
         },
         {
           "value": 400,
@@ -1447,9 +1927,9 @@
           "answer": "Who is Aristotle?",
           "choices": [
             "Aristotle",
-            "Mongol Empire",
-            "Renaissance",
-            "British Empire"
+            "Albert Einstein",
+            "Isaac Newton",
+            "Science stuff"
           ],
           "correctChoice": 0
         },
@@ -1458,12 +1938,12 @@
           "clue": "This event triggered World War I.",
           "answer": "What is the assassination of Archduke Franz Ferdinand?",
           "choices": [
-            "the assassination of Archduke Franz Ferdinand",
-            "Mongol Empire",
-            "Cleopatra",
-            "Napoleon"
+            "Something else",
+            "Essential oils",
+            "Something else",
+            "The assassination of archduke franz ferdinand"
           ],
-          "correctChoice": 0
+          "correctChoice": 3
         },
         {
           "value": 500,
@@ -1524,6 +2004,126 @@
             "the Library of Alexandria"
           ],
           "correctChoice": 3
+        },
+        {
+          "value": 100,
+          "clue": "This president was assassinated in Dallas, Texas in 1963.",
+          "answer": "Who is John F. Kennedy?",
+          "choices": [
+            "Abraham Lincoln",
+            "John F. Kennedy",
+            "Ronald Reagan",
+            "Franklin D. Roosevelt"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This war lasted from 1939 to 1945.",
+          "answer": "What is World War II?",
+          "choices": [
+            "World War I",
+            "World War II",
+            "Korean War",
+            "Vietnam War"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This empire was ruled by Julius Caesar.",
+          "answer": "What is the Roman Empire?",
+          "choices": [
+            "Greek Empire",
+            "Byzantine Empire",
+            "Roman Empire",
+            "Ottoman Empire"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 400,
+          "clue": "This wall divided East and West Berlin during the Cold War.",
+          "answer": "What is the Berlin Wall?",
+          "choices": [
+            "Great Wall of China",
+            "Berlin Wall",
+            "Iron Curtain",
+            "Hadrian's Wall"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This explorer led the first expedition to circumnavigate the globe.",
+          "answer": "Who is Ferdinand Magellan?",
+          "choices": [
+            "Christopher Columbus",
+            "Vasco da Gama",
+            "Ferdinand Magellan",
+            "Marco Polo"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 100,
+          "clue": "This declaration was signed in 1776.",
+          "answer": "What is the Declaration of Independence?",
+          "choices": [
+            "Constitution",
+            "Bill of Rights",
+            "Declaration of Independence",
+            "Articles of Confederation"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 200,
+          "clue": "This Egyptian queen was known for her relationships with Julius Caesar and Mark Antony.",
+          "answer": "Who is Cleopatra?",
+          "choices": [
+            "Nefertiti",
+            "Hatshepsut",
+            "Cleopatra",
+            "Ankhesenamun"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 300,
+          "clue": "This ship sank on its maiden voyage in 1912.",
+          "answer": "What is the Titanic?",
+          "choices": [
+            "Lusitania",
+            "Titanic",
+            "Britannic",
+            "Olympic"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This French military leader was exiled to the island of Elba.",
+          "answer": "Who is Napoleon Bonaparte?",
+          "choices": [
+            "Louis XVI",
+            "Napoleon Bonaparte",
+            "Charles de Gaulle",
+            "Joan of Arc"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This plague killed approximately one-third of Europe's population in the 14th century.",
+          "answer": "What is the Black Death?",
+          "choices": [
+            "Spanish Flu",
+            "Black Death",
+            "Cholera",
+            "Smallpox"
+          ],
+          "correctChoice": 1
         }
       ]
     },
@@ -1829,6 +2429,126 @@
             "the Renegade"
           ],
           "correctChoice": 3
+        },
+        {
+          "value": 100,
+          "clue": "This streaming service is known for 'Netflix and chill'.",
+          "answer": "What is Netflix?",
+          "choices": [
+            "Hulu",
+            "Netflix",
+            "Disney+",
+            "Amazon Prime"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This pop star is known as the 'Queen B'.",
+          "answer": "Who is Beyoncé?",
+          "choices": [
+            "Taylor Swift",
+            "Ariana Grande",
+            "Beyoncé",
+            "Rihanna"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 300,
+          "clue": "This reality TV family includes Kim, Kourtney, and Khloé.",
+          "answer": "Who are the Kardashians?",
+          "choices": [
+            "The Osbournes",
+            "The Kardashians",
+            "The Housewives",
+            "The Bachelors"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This Marvel superhero is known as the 'Merc with a Mouth'.",
+          "answer": "Who is Deadpool?",
+          "choices": [
+            "Spider-Man",
+            "Iron Man",
+            "Deadpool",
+            "Captain America"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 500,
+          "clue": "This social media platform was originally called 'The Facebook'.",
+          "answer": "What is Facebook?",
+          "choices": [
+            "Instagram",
+            "Twitter",
+            "Facebook",
+            "LinkedIn"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 100,
+          "clue": "This gaming console is made by Sony.",
+          "answer": "What is PlayStation?",
+          "choices": [
+            "Xbox",
+            "Nintendo Switch",
+            "PlayStation",
+            "Steam Deck"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 200,
+          "clue": "This rapper's real name is Marshall Mathers.",
+          "answer": "Who is Eminem?",
+          "choices": [
+            "Drake",
+            "Eminem",
+            "Kanye West",
+            "Jay-Z"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This TV series features dragons and the Iron Throne.",
+          "answer": "What is Game of Thrones?",
+          "choices": [
+            "The Witcher",
+            "Game of Thrones",
+            "House of the Dragon",
+            "Lord of the Rings"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This singer's fanbase is called 'Swifties'.",
+          "answer": "Who is Taylor Swift?",
+          "choices": [
+            "Ariana Grande",
+            "Billie Eilish",
+            "Taylor Swift",
+            "Dua Lipa"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 500,
+          "clue": "This cryptocurrency was created by the pseudonymous Satoshi Nakamoto.",
+          "answer": "What is Bitcoin?",
+          "choices": [
+            "Ethereum",
+            "Dogecoin",
+            "Bitcoin",
+            "Litecoin"
+          ],
+          "correctChoice": 2
         }
       ]
     }

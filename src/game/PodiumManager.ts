@@ -1,7 +1,7 @@
 // PodiumManager - Manages player positioning at podiums for Buzzchain trivia gameplay
 // Handles 3 contestant podiums and 1 host podium using HYTOPIA SDK
 
-import { Player, World, Entity, RigidBodyType } from 'hytopia';
+import { Player, World, Entity, RigidBodyType, Quaternion } from 'hytopia';
 import { logger } from '../util/Logger';
 
 export interface PodiumPosition {
@@ -27,17 +27,17 @@ export class PodiumManager {
     private currentHost: HostPersonality | null = null;
 
     // Podium positions for 3 contestants and 1 host
-    // These match your actual map's podium locations with proper rotations
-    // All contestants face toward the host (positive Z direction)
+    // These match your actual map's podium locations
+    // Rotations are calculated dynamically to face the host
     private readonly CONTESTANT_PODIUMS: PodiumPosition[] = [
-        { x: 4, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } },     // Left podium - facing host
-        { x: 9, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } },     // Center podium - facing host
-        { x: 14, y: 4, z: -10, rotation: { x: 0, y: 0, z: 0, w: 1 } }     // Right podium - facing host
+        { x: 4, y: 4, z: -10 },     // Left podium - rotation calculated to face host
+        { x: 9, y: 4, z: -10 },     // Center podium - rotation calculated to face host
+        { x: 14, y: 4, z: -10 }     // Right podium - rotation calculated to face host
     ];
 
     private readonly HOST_PODIUM: PodiumPosition = {
         x: 9, y: 4, z: -1,  // Host stands opposite contestants
-        rotation: { x: 0, y: 1, z: 0, w: 0 }  // Facing contestants (180 degrees)
+        rotation: Quaternion.fromEuler(0, 0, 0)  // Try identity rotation first (was 180°)
     };
 
     // Buzzy Bee - The legendary host of Buzzchain
@@ -53,10 +53,60 @@ export class PodiumManager {
         this.world = world;
         this.hostPodium = this.HOST_PODIUM;
 
-        // Initialize contestant podium positions
+        // Initialize contestant podium positions with calculated rotations to face host
         this.CONTESTANT_PODIUMS.forEach((pos, index) => {
-            this.playerPodiums.set(index + 1, pos);
+            const podiumNumber = index + 1;
+            const rotation = this.calculateRotationToFaceHost(pos, podiumNumber);
+            const correctedPosition = {
+                ...pos,
+                rotation
+            };
+            this.playerPodiums.set(podiumNumber, correctedPosition);
+
+            logger.info(`Podium ${podiumNumber} initialized with rotation`, {
+                component: 'PodiumManager',
+                podiumNumber,
+                position: pos,
+                calculatedRotation: rotation
+            });
         });
+    }
+
+    /**
+     * Calculate the correct rotation for a contestant to face the host
+     */
+    private calculateRotationToFaceHost(contestantPos: PodiumPosition, podiumNumber: number): { x: number; y: number; z: number; w: number } {
+        // Direction vector from contestant to host
+        const dx = this.hostPodium.x - contestantPos.x;
+        const dz = this.hostPodium.z - contestantPos.z;
+
+        // Calculate yaw angle (rotation around Y axis) to face the host
+        // atan2(dx, dz) gives us the angle from contestant TO host
+        const yawRadians = Math.atan2(dx, dz);
+        let yawDegrees = yawRadians * (180 / Math.PI);
+
+        // Simple fix: if this is podium 1 (where human player goes), try 0 degrees
+        if (podiumNumber === 1) {
+            yawDegrees = 0; // Face forward
+            logger.info('Applied 0-degree rotation for podium 1 (human player)', {
+                component: 'PodiumManager',
+                podiumNumber,
+                forcedYaw: yawDegrees
+            });
+        }
+
+        logger.info('Calculated rotation to face host', {
+            component: 'PodiumManager',
+            podiumNumber,
+            contestantPos: { x: contestantPos.x, z: contestantPos.z },
+            hostPos: { x: this.hostPodium.x, z: this.hostPodium.z },
+            direction: { dx, dz },
+            yawDegrees,
+            originalYaw: yawRadians * (180 / Math.PI)
+        });
+
+        // Create quaternion from Euler angles (pitch=0, yaw, roll=0)
+        return Quaternion.fromEuler(0, yawDegrees, 0);
     }
 
     /**
@@ -127,6 +177,14 @@ export class PodiumManager {
                 // Set player rotation to face the host
                 if (position.rotation) {
                     player.entity.setRotation(position.rotation);
+
+                    logger.info('Applied rotation to player entity', {
+                        component: 'PodiumManager',
+                        playerId: player.id,
+                        playerName: player.username,
+                        podiumNumber,
+                        appliedRotation: position.rotation
+                    });
                 }
 
                 logger.info(`Successfully positioned and rotated human player entity at podium`, {
@@ -143,6 +201,7 @@ export class PodiumManager {
                 if (typeof player.entity.setIsMovementDisabled === 'function') {
                     player.entity.setIsMovementDisabled(true);
                 }
+
             } else {
                 logger.error(`Player entity not found when assigning to podium`, {
                     component: 'PodiumManager',
@@ -262,6 +321,7 @@ export class PodiumManager {
             this.releasePlayer(player);
         });
     }
+
 
     /**
      * Ensure all players are facing the correct direction

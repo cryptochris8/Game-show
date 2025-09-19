@@ -117,7 +117,8 @@ startServer(world => {
     backgroundMusic: null as Audio | null,
     soundEffects: new Map<string, Audio>(),
     musicEnabled: true,
-    sfxEnabled: true
+    sfxEnabled: true,
+    musicIsPlaying: false // Track actual playback state
   };
 
   // Initialize background music
@@ -304,6 +305,32 @@ startServer(world => {
     // Load the intro splash screen first
     player.ui.load('ui/intro-splash.html');
 
+    // Start background music immediately when intro splash loads
+    if (audioSystem.backgroundMusic && audioSystem.musicEnabled && !audioSystem.musicIsPlaying) {
+      try {
+        audioSystem.backgroundMusic.play(world);
+        audioSystem.musicIsPlaying = true;
+        logger.info(`Background music started for player: ${player.username}`, {
+          component: 'AudioSystem',
+          playerId: player.id,
+          musicFile: 'main-menu.mp3',
+          trigger: 'intro-splash-load'
+        });
+      } catch (error) {
+        logger.warn(`Failed to start background music for ${player.username}`, {
+          component: 'AudioSystem',
+          playerId: player.id,
+          error: (error as Error).message
+        });
+      }
+    } else if (audioSystem.musicIsPlaying) {
+      logger.info(`Background music already playing for ${player.username}`, {
+        component: 'AudioSystem',
+        playerId: player.id,
+        trigger: 'intro-splash-load'
+      });
+    }
+
     // Unlock pointer so they can interact with the menu
     player.ui.lockPointer(false);
 
@@ -352,23 +379,7 @@ startServer(world => {
           });
           player.ui.load('ui/main-menu.html');
 
-          // Start background music if enabled
-          if (audioSystem.backgroundMusic && audioSystem.musicEnabled) {
-            try {
-              audioSystem.backgroundMusic.play(world);
-              logger.info(`Background music started for player: ${player.username}`, {
-                component: 'AudioSystem',
-                playerId: player.id,
-                musicFile: 'main-menu.mp3'
-              });
-            } catch (error) {
-              logger.warn(`Failed to start background music for ${player.username}`, {
-                component: 'AudioSystem',
-                playerId: player.id,
-                error: (error as Error).message
-              });
-            }
-          }
+          // Music already started when intro splash loaded - no need to restart
           break;
 
         case 'START_SINGLE_PLAYER':
@@ -549,16 +560,56 @@ startServer(world => {
    */
   function togglePlayerMusic(player: any, enabled: boolean) {
     audioSystem.musicEnabled = enabled;
-    
+
     if (audioSystem.backgroundMusic) {
-      if (enabled) {
-        audioSystem.backgroundMusic.play(world);
-      } else {
-        audioSystem.backgroundMusic.pause();
+      if (enabled && !audioSystem.musicIsPlaying) {
+        // Only start music if it's not already playing
+        try {
+          audioSystem.backgroundMusic.play(world);
+          audioSystem.musicIsPlaying = true;
+          logger.info(`Music started for ${player.username}`, {
+            component: 'AudioSystem',
+            playerId: player.id,
+            trigger: 'toggle-on'
+          });
+        } catch (error) {
+          logger.warn(`Failed to start music for ${player.username}`, {
+            component: 'AudioSystem',
+            playerId: player.id,
+            error: (error as Error).message
+          });
+        }
+      } else if (!enabled && audioSystem.musicIsPlaying) {
+        // Stop music by recreating the audio instance (Hytopia doesn't have pause)
+        try {
+          // Recreate the audio instance to stop it
+          audioSystem.backgroundMusic = new Audio({
+            uri: 'audio/music/main-menu.mp3',
+            loop: true,
+            volume: 0.3
+          });
+          audioSystem.musicIsPlaying = false;
+          logger.info(`Music stopped for ${player.username}`, {
+            component: 'AudioSystem',
+            playerId: player.id,
+            trigger: 'toggle-off'
+          });
+        } catch (error) {
+          logger.warn(`Failed to stop music for ${player.username}`, {
+            component: 'AudioSystem',
+            playerId: player.id,
+            error: (error as Error).message
+          });
+        }
       }
     }
-    
-    logger.info(`Music ${enabled ? 'enabled' : 'disabled'} for ${player.username}`);
+
+    logger.info(`Music ${enabled ? 'enabled' : 'disabled'} for ${player.username}`, {
+      component: 'AudioSystem',
+      playerId: player.id,
+      actuallyPlaying: audioSystem.musicIsPlaying,
+      settingEnabled: audioSystem.musicEnabled
+    });
   }
 
   /**
