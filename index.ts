@@ -646,6 +646,31 @@ startServer(world => {
   }
 
   /**
+   * Stop all music and clean up audio state
+   */
+  function stopAllMusic() {
+    // Stop background music
+    if (audioSystem.backgroundMusic) {
+      audioSystem.backgroundMusic.pause();
+      audioSystem.musicIsPlaying = false;
+    }
+
+    // Stop all tracked music
+    const musicKeys = ['gameMusic', 'finalMusic'];
+    musicKeys.forEach(key => {
+      const music = audioSystem.soundEffects.get(key);
+      if (music) {
+        music.pause();
+        audioSystem.soundEffects.delete(key);
+      }
+    });
+
+    logger.info('All music stopped and cleaned up', {
+      component: 'AudioSystem'
+    });
+  }
+
+  /**
    * Switch to Final Round Music
    */
   function playFinalRoundMusic() {
@@ -655,21 +680,27 @@ startServer(world => {
     const currentGameMusic = audioSystem.soundEffects.get('gameMusic');
     if (currentGameMusic) {
       currentGameMusic.pause();
+      audioSystem.soundEffects.delete('gameMusic'); // Remove from tracking
+      logger.info('Stopped game music for Final Round', { component: 'AudioSystem' });
     }
 
-    // Start Final Round music
-    const finalMusic = new Audio({
-      uri: 'audio/music/final-round.mp3',
-      loop: true,
-      volume: 0.25
-    });
-    finalMusic.play(world);
-    audioSystem.soundEffects.set('finalMusic', finalMusic);
+    // Only start Final Round music if not already playing
+    if (!audioSystem.soundEffects.has('finalMusic')) {
+      const finalMusic = new Audio({
+        uri: 'audio/music/final-round.mp3',
+        loop: true,
+        volume: 0.25
+      });
+      finalMusic.play(world);
+      audioSystem.soundEffects.set('finalMusic', finalMusic);
 
-    logger.info('Started Final Round music', {
-      component: 'AudioSystem',
-      file: 'final-round.mp3'
-    });
+      logger.info('Started Final Round music', {
+        component: 'AudioSystem',
+        file: 'final-round.mp3'
+      });
+    } else {
+      logger.info('Final Round music already playing', { component: 'AudioSystem' });
+    }
   }
 
   /**
@@ -695,14 +726,11 @@ startServer(world => {
       });
     }, 100);
 
-    // Stop main menu music and start game music
-    if (audioSystem.backgroundMusic) {
-      audioSystem.backgroundMusic.pause();
-      logger.info('Stopped main menu music', { component: 'AudioSystem' });
-    }
+    // Stop all existing music before starting game music
+    stopAllMusic();
 
-    // Start game background music
-    if (serverConfig.audioEnabled) {
+    // Start game background music (only if not already playing)
+    if (serverConfig.audioEnabled && !audioSystem.soundEffects.has('gameMusic')) {
       const gameMusic = new Audio({
         uri: 'audio/music/game-background.mp3',
         loop: true,
@@ -711,9 +739,13 @@ startServer(world => {
       gameMusic.play(world);
       audioSystem.soundEffects.set('gameMusic', gameMusic);
 
-      logger.info('Loading custom game background music', {
+      logger.info('Started game background music', {
         component: 'AudioSystem',
         file: 'game-background.mp3'
+      });
+    } else if (audioSystem.soundEffects.has('gameMusic')) {
+      logger.info('Game music already playing, not starting another instance', {
+        component: 'AudioSystem'
       });
     }
 

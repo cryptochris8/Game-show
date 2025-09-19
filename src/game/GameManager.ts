@@ -270,29 +270,13 @@ export class GameManager {
         // Initialize player in score manager
         await this.scoreManager.initializePlayer(player);
 
-        // Assign player to next available podium immediately
-        const podiumNumber = this.podiumManager.getNextAvailablePodium();
-        if (podiumNumber) {
-            const assigned = this.podiumManager.assignPlayerToPodium(player, podiumNumber);
-            if (assigned) {
-                logger.info(`Player ${player.username} assigned to podium ${podiumNumber}`, {
-                    component: 'GameManager',
-                    playerId: player.id,
-                    podiumNumber
-                });
-            } else {
-                // Store assignment for later when entity is ready
-                logger.info(`Player ${player.username} queued for podium ${podiumNumber} (entity not ready)`, {
-                    component: 'GameManager',
-                    playerId: player.id,
-                    podiumNumber
-                });
-                // Try again after a short delay
-                setTimeout(() => {
-                    this.retryPlayerPodiumAssignment(player.id, podiumNumber);
-                }, 1000);
-            }
-        }
+        // DON'T assign to podium immediately - let players spawn randomly
+        // They will be assigned to podiums when the game starts
+        logger.info(`Player ${player.username} will be assigned to podium when game starts`, {
+            component: 'GameManager',
+            playerId: player.id,
+            currentPhase: this.gamePhase
+        });
         
         // UI loading is now handled by main server - don't load here
         
@@ -453,6 +437,60 @@ export class GameManager {
     }
 
     /**
+     * Assign all players to podiums when game starts
+     */
+    private async assignAllPlayersToPodiums(): Promise<void> {
+        logger.info('Assigning all players to podiums at game start', {
+            component: 'GameManager',
+            humanPlayers: this.players.size,
+            aiPlayers: this.aiPlayers.size
+        });
+
+        // Assign human players first
+        let podiumNumber = 1;
+        for (const [playerId, player] of this.players) {
+            if (podiumNumber <= 3) {
+                const assigned = this.podiumManager.assignPlayerToPodium(player, podiumNumber);
+                if (assigned) {
+                    logger.info(`Human player ${player.username} assigned to podium ${podiumNumber}`, {
+                        component: 'GameManager',
+                        playerId,
+                        podiumNumber
+                    });
+                } else {
+                    logger.warn(`Failed to assign human player ${player.username} to podium ${podiumNumber}`, {
+                        component: 'GameManager',
+                        playerId,
+                        podiumNumber
+                    });
+                }
+                podiumNumber++;
+            }
+        }
+
+        // Assign AI players to remaining podiums
+        for (const [aiId, aiPlayer] of this.aiPlayers) {
+            if (podiumNumber <= 3 && aiPlayer.entity) {
+                const assigned = this.podiumManager.assignAIToPodium(aiPlayer.entity, podiumNumber);
+                if (assigned) {
+                    logger.info(`AI player ${aiPlayer.username} assigned to podium ${podiumNumber}`, {
+                        component: 'GameManager',
+                        aiId,
+                        podiumNumber
+                    });
+                } else {
+                    logger.warn(`Failed to assign AI player ${aiPlayer.username} to podium ${podiumNumber}`, {
+                        component: 'GameManager',
+                        aiId,
+                        podiumNumber
+                    });
+                }
+                podiumNumber++;
+            }
+        }
+    }
+
+    /**
      * Start the game
      */
     async startGame(): Promise<void> {
@@ -480,6 +518,9 @@ export class GameManager {
         // Initialize game systems
         this.roundManager = new RoundManager(packResult.boardData);
         this.gameStartTime = Date.now();
+
+        // NOW assign all players to podiums at game start
+        await this.assignAllPlayersToPodiums();
 
         // Give a short delay to ensure all players are properly positioned at podiums
         await new Promise(resolve => setTimeout(resolve, 1000));
