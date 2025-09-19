@@ -40,20 +40,21 @@ import { TIMING, CAMERA, AUDIO, GAME_CONSTANTS } from './src/util/GameConstants'
  */
 
 startServer(world => {
-  // Load configuration from environment
-  config.loadFromEnvironment();
+  try {
+    // Load configuration from environment
+    config.loadFromEnvironment();
 
-  const serverConfig = getServerConfig();
-  const gameConfig = config.getGameConfig();
+    const serverConfig = getServerConfig();
+    const gameConfig = config.getGameConfig();
 
-  logger.info('🐝 Starting Buzzchain - The Golden Knowledge Chain Game', {
-    component: 'Server',
-    debugMode: serverConfig.debugMode,
-    audioEnabled: serverConfig.audioEnabled,
-    packName: gameConfig.packName,
-    singlePlayerMode: process.env.SINGLE_PLAYER_MODE === 'true',
-    aiPlayersCount: parseInt(process.env.AI_PLAYERS_COUNT || '3')
-  });
+    logger.info('🐝 Starting Buzzchain - The Golden Knowledge Chain Game', {
+      component: 'Server',
+      debugMode: serverConfig.debugMode,
+      audioEnabled: serverConfig.audioEnabled,
+      packName: gameConfig.packName,
+      singlePlayerMode: process.env.SINGLE_PLAYER_MODE === 'true',
+      aiPlayersCount: parseInt(process.env.AI_PLAYERS_COUNT || '3')
+    });
 
   /**
    * Initialize Timer Manager for proper cleanup
@@ -87,7 +88,8 @@ startServer(world => {
   let cameraMount: Entity | null = null;
 
   // Create camera mount after world is ready
-  setTimeout(() => {
+  timerManager.setTimeout('camera-mount-creation', () => {
+    try {
     cameraMount = new Entity({
       modelUri: 'models/misc/selection-indicator.gltf', // Use a simple indicator model
       modelScale: 0.01, // Scale it down to be very small
@@ -104,10 +106,15 @@ startServer(world => {
     // Make it invisible
     cameraMount.setOpacity(0);
 
-    logger.info('Fixed camera mount created for game show view', {
-      component: 'CameraSystem',
-      position: CAMERA.GAME_VIEW_POSITION
-    });
+      logger.info('Fixed camera mount created for game show view', {
+        component: 'CameraSystem',
+        position: CAMERA.GAME_VIEW_POSITION
+      });
+    } catch (error) {
+      logger.error('Failed to create camera mount', error as Error, {
+        component: 'CameraSystem'
+      });
+    }
   }, TIMING.UI_UPDATE_DELAY_MS * 2);
 
   /**
@@ -123,11 +130,12 @@ startServer(world => {
 
   // Initialize background music
   if (serverConfig.audioEnabled) {
-    audioSystem.backgroundMusic = new Audio({
-      uri: 'audio/music/main-menu.mp3',
-      loop: true,
-      volume: 0.3
-    });
+    try {
+      audioSystem.backgroundMusic = new Audio({
+        uri: 'audio/music/main-menu.mp3',
+        loop: true,
+        volume: AUDIO.MUSIC_VOLUME
+      });
 
     logger.info('Loading custom main menu music', {
       component: 'AudioSystem',
@@ -148,19 +156,33 @@ startServer(world => {
       { name: 'notification', uri: 'audio/sfx/ui/notification-1.mp3', volume: 0.5 }
     ];
 
-    soundEffects.forEach(sfx => {
-      audioSystem.soundEffects.set(sfx.name, new Audio({
-        uri: sfx.uri,
-        loop: false,
-        volume: sfx.volume
-      }));
-    });
+      soundEffects.forEach(sfx => {
+        try {
+          audioSystem.soundEffects.set(sfx.name, new Audio({
+            uri: sfx.uri,
+            loop: false,
+            volume: sfx.volume
+          }));
+        } catch (error) {
+          logger.warn(`Failed to load sound effect: ${sfx.name}`, {
+            component: 'AudioSystem',
+            uri: sfx.uri,
+            error: (error as Error).message
+          });
+        }
+      });
 
-    logger.info('Audio system initialized with music and sound effects', {
-      component: 'AudioSystem',
-      backgroundMusic: !!audioSystem.backgroundMusic,
-      soundEffectsCount: audioSystem.soundEffects.size
-    });
+      logger.info('Audio system initialized with music and sound effects', {
+        component: 'AudioSystem',
+        backgroundMusic: !!audioSystem.backgroundMusic,
+        soundEffectsCount: audioSystem.soundEffects.size
+      });
+    } catch (error) {
+      logger.error('Failed to initialize audio system', error as Error, {
+        component: 'AudioSystem'
+      });
+      // Continue without audio
+    }
   }
 
   /**
@@ -172,8 +194,15 @@ startServer(world => {
   /**
    * Load the game world map
    */
-  world.loadMap(worldMap);
-  logger.info('Game world map loaded', { component: 'Server' });
+  try {
+    world.loadMap(worldMap);
+    logger.info('Game world map loaded', { component: 'Server' });
+  } catch (error) {
+    logger.error('Failed to load world map', error as Error, {
+      component: 'Server'
+    });
+    throw error; // This is critical, re-throw
+  }
 
   /**
    * Initialize Chat Command Manager
@@ -294,10 +323,11 @@ startServer(world => {
    * Player Join Event - Load Main Menu UI and Setup Camera
    */
   world.on(PlayerEvent.JOINED_WORLD, ({ player }) => {
-    logger.info(`Player joined - loading intro splash: ${player.username}`, {
-      component: 'UISystem',
-      playerId: player.id
-    });
+    try {
+      logger.info(`Player joined - loading intro splash: ${player.username}`, {
+        component: 'UISystem',
+        playerId: player.id
+      });
 
     // Set up fixed camera view immediately
     setupFixedCameraView(player);
@@ -339,11 +369,17 @@ startServer(world => {
       handlePlayerUIEvent(player, data);
     });
 
-    // Send player ID to UI
-    player.ui.sendData({
-      type: 'PLAYER_ID',
-      payload: player.id
-    });
+      // Send player ID to UI
+      player.ui.sendData({
+        type: 'PLAYER_ID',
+        payload: player.id
+      });
+    } catch (error) {
+      logger.error(`Failed to handle player join for ${player?.username}`, error as Error, {
+        component: 'Server',
+        playerId: player?.id
+      });
+    }
   });
 
   /**
@@ -757,21 +793,27 @@ startServer(world => {
 
   // Setup chat command handler
   world.on('playerMessage', (data: any) => {
-    const { player, message } = data;
-    if (message.text.startsWith('/')) {
-      const parts = message.text.slice(1).split(' ');
-      const commandName = parts[0].toLowerCase();
-      const args = parts.slice(1);
+    try {
+      const { player, message } = data;
+      if (message.text.startsWith('/')) {
+        const parts = message.text.slice(1).split(' ');
+        const commandName = parts[0].toLowerCase();
+        const args = parts.slice(1);
 
-      chatCommandManager.execute(commandName, player, args, world);
-      return; // Don't process as regular message
+        chatCommandManager.execute(commandName, player, args, world);
+        return; // Don't process as regular message
+      }
+
+      // Process as regular chat message
+      logger.playerAction(player.id, 'chat_message', {
+        messageLength: message.text.length,
+        component: 'Chat'
+      });
+    } catch (error) {
+      logger.error('Error handling chat message', error as Error, {
+        component: 'Chat'
+      });
     }
-
-    // Process as regular chat message
-    logger.playerAction(player.id, 'chat_message', {
-      messageLength: message.text.length,
-      component: 'Chat'
-    });
   });
 
   /**
@@ -813,10 +855,34 @@ startServer(world => {
     autoHostDelay: `${gameConfig.autoHostDelay}ms`
   });
 
-  // Legacy console logging for compatibility
-  console.log('🐝 Buzzchain server started! The Golden Knowledge Chain awaits!');
-  console.log('   Features: 6-category board, Daily Doubles, Final Round');
-  console.log('   Players: 2-6 supported with server-authoritative gameplay');
-  console.log('   UI: Mobile-responsive overlay with buzz system');
-  console.log('   Stats: Persistent player statistics and leaderboards');
+    // Legacy console logging for compatibility
+    console.log('🐝 Buzzchain server started! The Golden Knowledge Chain awaits!');
+    console.log('   Features: 6-category board, Daily Doubles, Final Round');
+    console.log('   Players: 2-6 supported with server-authoritative gameplay');
+    console.log('   UI: Mobile-responsive overlay with buzz system');
+    console.log('   Stats: Persistent player statistics and leaderboards');
+
+    // Setup global error handlers
+    process.on('uncaughtException', (error) => {
+      logger.error('Uncaught exception in server', error, {
+        component: 'Server',
+        critical: true
+      });
+    });
+
+    process.on('unhandledRejection', (reason, promise) => {
+      logger.error('Unhandled promise rejection', reason as Error, {
+        component: 'Server',
+        promise: promise,
+        critical: true
+      });
+    });
+
+  } catch (error) {
+    logger.error('Failed to start Buzzchain server', error as Error, {
+      component: 'Server',
+      critical: true
+    });
+    throw error; // Re-throw to let Hytopia handle critical startup errors
+  }
 });

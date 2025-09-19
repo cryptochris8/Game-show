@@ -70,10 +70,10 @@
           "clue": "In soccer, this player can use their hands inside the penalty area.",
           "answer": "Who is the goalkeeper?",
           "choices": [
-            "Football",
-            "Tennis",
-            "Hat trick",
-            "the goalkeeper"
+            "Defender",
+            "Midfielder",
+            "Striker",
+            "Goalkeeper"
           ],
           "correctChoice": 3
         },
@@ -82,10 +82,10 @@
           "clue": "This tennis tournament is held annually in New York.",
           "answer": "What is the US Open?",
           "choices": [
-            "Football",
-            "Baseball",
-            "Boxing",
-            "the US Open"
+            "Wimbledon",
+            "French Open",
+            "Australian Open",
+            "US Open"
           ],
           "correctChoice": 3
         },
@@ -94,10 +94,10 @@
           "clue": "In American football, a touchdown is worth this many points.",
           "answer": "What is six?",
           "choices": [
-            "Soccer",
-            "Golf",
-            "six",
-            "Track and Field"
+            "Three",
+            "Seven",
+            "Six",
+            "Four"
           ],
           "correctChoice": 2
         },
@@ -118,10 +118,10 @@
           "clue": "This swimming stroke is named after an insect.",
           "answer": "What is the butterfly?",
           "choices": [
-            "Track and Field",
-            "Basketball",
-            "Golf",
-            "the butterfly"
+            "Freestyle",
+            "Backstroke",
+            "Breaststroke",
+            "Butterfly"
           ],
           "correctChoice": 3
         },
@@ -130,10 +130,10 @@
           "clue": "The NBA team from Chicago is called this.",
           "answer": "What are the Bulls?",
           "choices": [
-            "the Bulls",
-            "Strike",
-            "Basketball",
-            "Football"
+            "Bulls",
+            "Lakers",
+            "Celtics",
+            "Knicks"
           ],
           "correctChoice": 0
         },
@@ -154,10 +154,10 @@
           "clue": "In hockey, this is the term for scoring three goals in one game.",
           "answer": "What is a hat trick?",
           "choices": [
-            "a hat trick",
-            "Strike",
-            "Golf",
-            "Tennis"
+            "Hat trick",
+            "Triple play",
+            "Turkey",
+            "Grand slam"
           ],
           "correctChoice": 0
         },
@@ -167,9 +167,9 @@
           "answer": "Who is Jack Nicklaus?",
           "choices": [
             "Jack Nicklaus",
-            "Ace",
-            "Boxing",
-            "Football"
+            "Tiger Woods",
+            "Arnold Palmer",
+            "Gary Player"
           ],
           "correctChoice": 0
         },
@@ -178,10 +178,10 @@
           "clue": "This is the only sport to have been played on the moon.",
           "answer": "What is golf?",
           "choices": [
+            "Baseball",
             "Football",
-            "Swimming",
-            "Ace",
-            "golf"
+            "Tennis",
+            "Golf"
           ],
           "correctChoice": 3
         },
@@ -214,10 +214,10 @@
           "clue": "The World Cup in soccer is held every this many years.",
           "answer": "What is four?",
           "choices": [
-            "Home run",
-            "Goal",
-            "Football",
-            "four"
+            "Two",
+            "Three",
+            "Five",
+            "Four"
           ],
           "correctChoice": 3
         },
@@ -424,6 +424,186 @@
             "Chris Evert"
           ],
           "correctChoice": 2
+        },
+        {
+          "value": 100,
+          "clue": "This sport is played on a court with a net that is 10 feet high.",
+          "answer": "What is basketball?",
+          "choices": [
+            "Basketball",
+            "Volleyball",
+            "Badminton",
+            "Tennis"
+          ],
+          "correctChoice": 0
+        },
+        {
+          "value": 100,
+          "clue": "In this sport, players try to score goals using only their feet.",
+          "answer": "What is soccer?",
+          "choices": [
+            "Rugby",
+            "American football",
+            "Soccer",
+            "Australian rules football"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 100,
+          "clue": "This winter sport involves sliding stones across ice toward a target.",
+          "answer": "What is curling?",
+          "choices": [
+            "Curling",
+            "Ice hockey",
+            "Figure skating",
+            "Speed skating"
+          ],
+          "correctChoice": 0
+        },
+        {
+          "value": 200,
+          "clue": "This NFL team has won the most Super Bowl championships.",
+          "answer": "Who are the Pittsburgh Steelers?",
+          "choices": [
+            "Dallas Cowboys",
+            "New England Patriots",
+            "Pittsburgh Steelers",
+            "Green Bay Packers"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 200,
+          "clue": "In golf, this term means one stroke under par.",
+          "answer": "What is a birdie?",
+          "choices": [
+            "Eagle",
+            "Birdie",
+            "Bogey",
+            "Albatross"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This swimmer holds the record for most Olympic gold medals.",
+          "answer": "Who is Michael Phelps?",
+          "choices": [
+            "Mark Spitz",
+            "Michael Phelps",
+            "Katie Ledecky",
+            "Ryan Lochte"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This cricket term describes when a bowler takes three wickets in consecutive deliveries.",
+          "answer": "What is a hat trick?",
+          "choices": [
+            "Hat trick",
+            "Century",
+            "Maiden over",
+            "Duck"
+          ],
+          "correctChoice": 0
+        },
+        {
+          "value": 300,
+          "clue": "This NASCAR driver won seven Cup Series championships.",
+          "answer": "Who is Dale Earnhardt or Richard Petty?",
+          "choices": [
+            "Jeff Gordon",
+            "Dale Earnhardt Sr.",
+            "Jimmie Johnson",
+            "Richard Petty"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "In tennis, this tournament is the only Grand Slam played on clay courts.",
+          "answer": "What is the French Open?",
+          "choices": [
+            "Wimbledon",
+            "US Open",
+            "French Open",
+            "Australian Open"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 400,
+          "clue": "This baseball player holds the record for most career home runs.",
+          "answer": "Who is Barry Bonds?",
+          "choices": [
+            "Babe Ruth",
+            "Hank Aaron",
+            "Barry Bonds",
+            "Willie Mays"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 400,
+          "clue": "This Formula 1 driver has won the most World Championships.",
+          "answer": "Who is Lewis Hamilton or Michael Schumacher?",
+          "choices": [
+            "Lewis Hamilton",
+            "Michael Schumacher",
+            "Ayrton Senna",
+            "Sebastian Vettel"
+          ],
+          "correctChoice": 0
+        },
+        {
+          "value": 400,
+          "clue": "In bowling, this is the term for three strikes in a row.",
+          "answer": "What is a turkey?",
+          "choices": [
+            "Turkey",
+            "Spare",
+            "Split",
+            "Gutter ball"
+          ],
+          "correctChoice": 0
+        },
+        {
+          "value": 500,
+          "clue": "This gymnast scored the first perfect 10 in Olympic history.",
+          "answer": "Who is Nadia Comaneci?",
+          "choices": [
+            "Mary Lou Retton",
+            "Nadia Comaneci",
+            "Shannon Miller",
+            "Olga Korbut"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This horse won the Triple Crown in 1973 in record-breaking fashion.",
+          "answer": "Who is Secretariat?",
+          "choices": [
+            "Secretariat",
+            "Seattle Slew",
+            "Affirmed",
+            "Citation"
+          ],
+          "correctChoice": 0
+        },
+        {
+          "value": 500,
+          "clue": "This is the maximum score possible in a single game of ten-pin bowling.",
+          "answer": "What is 300?",
+          "choices": [
+            "250",
+            "275",
+            "300",
+            "350"
+          ],
+          "correctChoice": 2
         }
       ]
     },
@@ -519,10 +699,10 @@
           "clue": "This is the largest organ in the human body.",
           "answer": "What is the skin?",
           "choices": [
-            "Electron",
-            "Physics",
-            "Gravity",
-            "the skin"
+            "Heart",
+            "Liver",
+            "Brain",
+            "Skin"
           ],
           "correctChoice": 3
         },
@@ -531,10 +711,10 @@
           "clue": "This force keeps planets in orbit around the sun.",
           "answer": "What is gravity?",
           "choices": [
-            "gravity",
-            "Molecule",
-            "Photosynthesis",
-            "Botany"
+            "Gravity",
+            "Magnetism",
+            "Friction",
+            "Inertia"
           ],
           "correctChoice": 0
         },
@@ -543,10 +723,10 @@
           "clue": "This is the hardest natural substance on Earth.",
           "answer": "What is diamond?",
           "choices": [
-            "diamond",
-            "Biology",
-            "Electron",
-            "Chemistry"
+            "Diamond",
+            "Quartz",
+            "Ruby",
+            "Granite"
           ],
           "correctChoice": 0
         },
@@ -555,10 +735,10 @@
           "clue": "The speed of light is approximately 300,000 kilometers per this.",
           "answer": "What is second?",
           "choices": [
-            "Geology",
-            "Evolution",
-            "Gravity",
-            "second"
+            "Hour",
+            "Minute",
+            "Year",
+            "Second"
           ],
           "correctChoice": 3
         },
@@ -567,10 +747,10 @@
           "clue": "This organ produces insulin in the human body.",
           "answer": "What is the pancreas?",
           "choices": [
-            "Geology",
-            "Physics",
-            "Magnetism",
-            "the pancreas"
+            "Liver",
+            "Kidney",
+            "Stomach",
+            "Pancreas"
           ],
           "correctChoice": 3
         },
@@ -579,10 +759,10 @@
           "clue": "This is the smallest unit of matter that retains chemical properties.",
           "answer": "What is an atom?",
           "choices": [
-            "Evolution",
-            "Botany",
-            "Radiation",
-            "an atom"
+            "Molecule",
+            "Cell",
+            "Electron",
+            "Atom"
           ],
           "correctChoice": 3
         },
@@ -591,10 +771,10 @@
           "clue": "This type of blood cell fights infections.",
           "answer": "What are white blood cells?",
           "choices": [
-            "Chemistry",
-            "Photosynthesis",
-            "Gravity",
-            "white blood cells"
+            "Red blood cells",
+            "Platelets",
+            "Plasma",
+            "White blood cells"
           ],
           "correctChoice": 3
         },
@@ -627,10 +807,10 @@
           "clue": "This scientist discovered penicillin.",
           "answer": "Who is Alexander Fleming?",
           "choices": [
-            "Proton",
-            "Molecule",
+            "Louis Pasteur",
+            "Marie Curie",
             "Alexander Fleming",
-            "Electron"
+            "Jonas Salk"
           ],
           "correctChoice": 2
         },
@@ -849,6 +1029,186 @@
             "Thorium"
           ],
           "correctChoice": 2
+        },
+        {
+          "value": 100,
+          "clue": "This planet is known as the Red Planet.",
+          "answer": "What is Mars?",
+          "choices": [
+            "Venus",
+            "Mars",
+            "Jupiter",
+            "Saturn"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 100,
+          "clue": "This gas is necessary for fire to burn.",
+          "answer": "What is oxygen?",
+          "choices": [
+            "Nitrogen",
+            "Carbon dioxide",
+            "Oxygen",
+            "Hydrogen"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 100,
+          "clue": "This part of the brain controls balance and coordination.",
+          "answer": "What is the cerebellum?",
+          "choices": [
+            "Cerebrum",
+            "Cerebellum",
+            "Brain stem",
+            "Medulla"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This scientist developed the theory of evolution by natural selection.",
+          "answer": "Who is Charles Darwin?",
+          "choices": [
+            "Gregor Mendel",
+            "Charles Darwin",
+            "Alfred Wallace",
+            "Jean Lamarck"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This element has the chemical symbol Fe.",
+          "answer": "What is iron?",
+          "choices": [
+            "Fluorine",
+            "Iron",
+            "Francium",
+            "Fermium"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This type of rock is formed from cooled magma or lava.",
+          "answer": "What is igneous rock?",
+          "choices": [
+            "Sedimentary",
+            "Metamorphic",
+            "Igneous",
+            "Limestone"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 300,
+          "clue": "This scientist won Nobel Prizes in both Physics and Chemistry.",
+          "answer": "Who is Marie Curie?",
+          "choices": [
+            "Marie Curie",
+            "Linus Pauling",
+            "Dorothy Hodgkin",
+            "Barbara McClintock"
+          ],
+          "correctChoice": 0
+        },
+        {
+          "value": 300,
+          "clue": "This law states that energy cannot be created or destroyed.",
+          "answer": "What is the First Law of Thermodynamics?",
+          "choices": [
+            "Newton's First Law",
+            "Law of Conservation of Mass",
+            "First Law of Thermodynamics",
+            "Boyle's Law"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 300,
+          "clue": "This organelle contains the cell's genetic material.",
+          "answer": "What is the nucleus?",
+          "choices": [
+            "Mitochondria",
+            "Nucleus",
+            "Ribosome",
+            "Endoplasmic reticulum"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This equation represents Einstein's mass-energy equivalence.",
+          "answer": "What is E=mc²?",
+          "choices": [
+            "F=ma",
+            "E=mc²",
+            "PV=nRT",
+            "v=λf"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This molecule carries genetic information from DNA to ribosomes.",
+          "answer": "What is RNA?",
+          "choices": [
+            "ATP",
+            "RNA",
+            "Protein",
+            "Lipid"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This phenomenon causes light to bend when passing through different materials.",
+          "answer": "What is refraction?",
+          "choices": [
+            "Reflection",
+            "Diffraction",
+            "Refraction",
+            "Interference"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 500,
+          "clue": "This particle has no electric charge and is found in atomic nuclei.",
+          "answer": "What is a neutron?",
+          "choices": [
+            "Proton",
+            "Electron",
+            "Neutron",
+            "Photon"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 500,
+          "clue": "This scientist proposed the uncertainty principle in quantum mechanics.",
+          "answer": "Who is Werner Heisenberg?",
+          "choices": [
+            "Niels Bohr",
+            "Werner Heisenberg",
+            "Erwin Schrödinger",
+            "Max Planck"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This process involves the splitting of atomic nuclei to release energy.",
+          "answer": "What is nuclear fission?",
+          "choices": [
+            "Nuclear fusion",
+            "Nuclear fission",
+            "Radioactive decay",
+            "Beta decay"
+          ],
+          "correctChoice": 1
         }
       ]
     },
@@ -1274,6 +1634,186 @@
             "George Clooney"
           ],
           "correctChoice": 2
+        },
+        {
+          "value": 100,
+          "clue": "This animated movie features a fish searching for his son Nemo.",
+          "answer": "What is Finding Nemo?",
+          "choices": [
+            "Finding Nemo",
+            "Finding Dory",
+            "The Little Mermaid",
+            "Moana"
+          ],
+          "correctChoice": 0
+        },
+        {
+          "value": 100,
+          "clue": "This movie features a young wizard attending Hogwarts School.",
+          "answer": "What is Harry Potter?",
+          "choices": [
+            "Lord of the Rings",
+            "Harry Potter",
+            "The Chronicles of Narnia",
+            "Percy Jackson"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 100,
+          "clue": "This superhero movie features a man in a red and blue costume who can climb walls.",
+          "answer": "What is Spider-Man?",
+          "choices": [
+            "Superman",
+            "Batman",
+            "Spider-Man",
+            "Captain America"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 200,
+          "clue": "This director is known for movies like Jaws, E.T., and Jurassic Park.",
+          "answer": "Who is Steven Spielberg?",
+          "choices": [
+            "George Lucas",
+            "Steven Spielberg",
+            "James Cameron",
+            "Christopher Nolan"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This 1994 Disney movie features songs like 'Circle of Life' and 'Hakuna Matata'.",
+          "answer": "What is The Lion King?",
+          "choices": [
+            "The Jungle Book",
+            "The Lion King",
+            "Tarzan",
+            "Aladdin"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This actor played Jack in Titanic and won an Oscar for The Revenant.",
+          "answer": "Who is Leonardo DiCaprio?",
+          "choices": [
+            "Brad Pitt",
+            "Leonardo DiCaprio",
+            "Matt Damon",
+            "Ryan Gosling"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This 1972 movie about a crime family won the Academy Award for Best Picture.",
+          "answer": "What is The Godfather?",
+          "choices": [
+            "Goodfellas",
+            "The Godfather",
+            "Scarface",
+            "Casino"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This actress won an Oscar for her role as Katniss Everdeen in The Hunger Games.",
+          "answer": "Who is Jennifer Lawrence?",
+          "choices": [
+            "Emma Stone",
+            "Jennifer Lawrence",
+            "Scarlett Johansson",
+            "Anne Hathaway"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This movie features the quote 'May the Force be with you'.",
+          "answer": "What is Star Wars?",
+          "choices": [
+            "Star Trek",
+            "Star Wars",
+            "Guardians of the Galaxy",
+            "Blade Runner"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This director won Oscars for Birdman and The Revenant in consecutive years.",
+          "answer": "Who is Alejandro González Iñárritu?",
+          "choices": [
+            "Guillermo del Toro",
+            "Alejandro González Iñárritu",
+            "Alfonso Cuarón",
+            "Denis Villeneuve"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This 1941 film is often cited as the greatest movie ever made.",
+          "answer": "What is Citizen Kane?",
+          "choices": [
+            "Casablanca",
+            "Citizen Kane",
+            "Gone with the Wind",
+            "The Wizard of Oz"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This movie won 11 Academy Awards, tying the record for most Oscars won.",
+          "answer": "What is The Lord of the Rings: The Return of the King?",
+          "choices": [
+            "Titanic",
+            "Ben-Hur",
+            "The Lord of the Rings: The Return of the King",
+            "West Side Story"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 500,
+          "clue": "This filmmaker created the stop-motion animated movies Coraline and The Nightmare Before Christmas.",
+          "answer": "Who is Henry Selick?",
+          "choices": [
+            "Tim Burton",
+            "Henry Selick",
+            "Laika Studios",
+            "Nick Park"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This 1927 silent film is considered the first true science fiction movie.",
+          "answer": "What is Metropolis?",
+          "choices": [
+            "The Cabinet of Dr. Caligari",
+            "Metropolis",
+            "Nosferatu",
+            "M"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This actress holds the record for most Academy Award wins by a performer.",
+          "answer": "Who is Katharine Hepburn?",
+          "choices": [
+            "Meryl Streep",
+            "Katharine Hepburn",
+            "Bette Davis",
+            "Ingrid Bergman"
+          ],
+          "correctChoice": 1
         }
       ]
     },
@@ -1699,6 +2239,186 @@
             "Egypt"
           ],
           "correctChoice": 1
+        },
+        {
+          "value": 100,
+          "clue": "This river is the longest in the world.",
+          "answer": "What is the Nile River?",
+          "choices": [
+            "Amazon River",
+            "Nile River",
+            "Mississippi River",
+            "Yangtze River"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 100,
+          "clue": "This mountain range contains Mount Everest.",
+          "answer": "What are the Himalayas?",
+          "choices": [
+            "Andes",
+            "Rocky Mountains",
+            "Himalayas",
+            "Alps"
+          ],
+          "correctChoice": 2
+        },
+        {
+          "value": 100,
+          "clue": "This is the smallest country in the world.",
+          "answer": "What is Vatican City?",
+          "choices": [
+            "Monaco",
+            "Vatican City",
+            "San Marino",
+            "Liechtenstein"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This African desert is the largest hot desert in the world.",
+          "answer": "What is the Sahara Desert?",
+          "choices": [
+            "Kalahari Desert",
+            "Sahara Desert",
+            "Namib Desert",
+            "Gobi Desert"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This European capital city is known as the City of Light.",
+          "answer": "What is Paris?",
+          "choices": [
+            "London",
+            "Paris",
+            "Rome",
+            "Berlin"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This strait separates Europe and Africa.",
+          "answer": "What is the Strait of Gibraltar?",
+          "choices": [
+            "Bosphorus Strait",
+            "Strait of Gibraltar",
+            "Dardanelles",
+            "Strait of Hormuz"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This landlocked country is completely surrounded by South Africa.",
+          "answer": "What is Lesotho?",
+          "choices": [
+            "Swaziland",
+            "Lesotho",
+            "Botswana",
+            "Zimbabwe"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This island nation in the Indian Ocean is famous for its unique wildlife.",
+          "answer": "What is Madagascar?",
+          "choices": [
+            "Sri Lanka",
+            "Madagascar",
+            "Mauritius",
+            "Seychelles"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This lake is the deepest in the world.",
+          "answer": "What is Lake Baikal?",
+          "choices": [
+            "Lake Superior",
+            "Lake Baikal",
+            "Caspian Sea",
+            "Lake Tanganyika"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This is the only country that borders both the Caspian Sea and the Persian Gulf.",
+          "answer": "What is Iran?",
+          "choices": [
+            "Turkey",
+            "Iran",
+            "Iraq",
+            "Azerbaijan"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This African country has three capital cities.",
+          "answer": "What is South Africa?",
+          "choices": [
+            "Nigeria",
+            "South Africa",
+            "Kenya",
+            "Tanzania"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This Asian city-state consists of 63 islands.",
+          "answer": "What is Singapore?",
+          "choices": [
+            "Hong Kong",
+            "Singapore",
+            "Macau",
+            "Brunei"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This is the highest capital city in the world.",
+          "answer": "What is La Paz?",
+          "choices": [
+            "Quito",
+            "La Paz",
+            "Addis Ababa",
+            "Bogotá"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This country has the most time zones of any nation.",
+          "answer": "What is France?",
+          "choices": [
+            "Russia",
+            "France",
+            "United States",
+            "China"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This underwater ridge system is the longest mountain range on Earth.",
+          "answer": "What is the Mid-Atlantic Ridge?",
+          "choices": [
+            "Pacific Ring of Fire",
+            "Mid-Atlantic Ridge",
+            "East Pacific Rise",
+            "Indian Ocean Ridge"
+          ],
+          "correctChoice": 1
         }
       ]
     },
@@ -1758,10 +2478,10 @@
           "clue": "This ship sank in 1912 after hitting an iceberg.",
           "answer": "What is the Titanic?",
           "choices": [
-            "the Titanic",
-            "Caesar",
-            "Churchill",
-            "Ottoman Empire"
+            "Titanic",
+            "Lusitania",
+            "Olympic",
+            "Britannic"
           ],
           "correctChoice": 0
         },
@@ -1770,10 +2490,10 @@
           "clue": "This wall dividing Berlin fell in 1989.",
           "answer": "What is the Berlin Wall?",
           "choices": [
-            "London",
-            "The berlin wall",
-            "Los Angeles",
-            "Dragon breath"
+            "Iron Curtain",
+            "Berlin Wall",
+            "Great Wall of China",
+            "Hadrian's Wall"
           ],
           "correctChoice": 1
         },
@@ -1782,9 +2502,9 @@
           "clue": "This explorer is credited with discovering America in 1492.",
           "answer": "Who is Christopher Columbus?",
           "choices": [
-            "Napoleon",
-            "Caesar",
-            "Cleopatra",
+            "Vasco da Gama",
+            "Ferdinand Magellan",
+            "Marco Polo",
             "Christopher Columbus"
           ],
           "correctChoice": 3
@@ -1806,10 +2526,10 @@
           "clue": "This ancient civilization built the pyramids.",
           "answer": "Who are the Egyptians?",
           "choices": [
-            "the Egyptians",
-            "Ottoman Empire",
-            "British Empire",
-            "Caesar"
+            "Egyptians",
+            "Greeks",
+            "Romans",
+            "Babylonians"
           ],
           "correctChoice": 0
         },
@@ -1818,10 +2538,10 @@
           "clue": "This amendment gave women the right to vote.",
           "answer": "What is the 19th Amendment?",
           "choices": [
-            "the 19th Amendment",
-            "Churchill",
-            "French Revolution",
-            "Hitler"
+            "19th Amendment",
+            "15th Amendment",
+            "21st Amendment",
+            "13th Amendment"
           ],
           "correctChoice": 0
         },
@@ -1830,10 +2550,10 @@
           "clue": "This U.S. document begins with 'We the People'.",
           "answer": "What is the Constitution?",
           "choices": [
-            "Something else",
-            "Bad vibes",
-            "The constitution",
-            "Something else"
+            "Declaration of Independence",
+            "Bill of Rights",
+            "Constitution",
+            "Articles of Confederation"
           ],
           "correctChoice": 2
         },
@@ -1866,10 +2586,10 @@
           "clue": "This revolution began in 1789 in France.",
           "answer": "What is the French Revolution?",
           "choices": [
-            "The french revolution",
-            "Nitrogen",
-            "Carbon dioxide",
-            "Science stuff"
+            "French Revolution",
+            "American Revolution",
+            "Industrial Revolution",
+            "Russian Revolution"
           ],
           "correctChoice": 0
         },
@@ -2122,6 +2842,186 @@
             "Black Death",
             "Cholera",
             "Smallpox"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 100,
+          "clue": "This wall was built to keep East and West Berlin separate.",
+          "answer": "What is the Berlin Wall?",
+          "choices": [
+            "Iron Curtain",
+            "Berlin Wall",
+            "Great Wall",
+            "Hadrian's Wall"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 100,
+          "clue": "This emperor was known for his short stature and conquests across Europe.",
+          "answer": "Who is Napoleon Bonaparte?",
+          "choices": [
+            "Julius Caesar",
+            "Napoleon Bonaparte",
+            "Alexander the Great",
+            "Charlemagne"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 100,
+          "clue": "This ship famously sank in 1912 after hitting an iceberg.",
+          "answer": "What is the Titanic?",
+          "choices": [
+            "Lusitania",
+            "Titanic",
+            "Olympic",
+            "Britannic"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This ancient Roman leader was assassinated on the Ides of March.",
+          "answer": "Who is Julius Caesar?",
+          "choices": [
+            "Augustus",
+            "Julius Caesar",
+            "Nero",
+            "Caligula"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This war lasted from 1914 to 1918.",
+          "answer": "What is World War I?",
+          "choices": [
+            "World War I",
+            "World War II",
+            "Korean War",
+            "Vietnam War"
+          ],
+          "correctChoice": 0
+        },
+        {
+          "value": 200,
+          "clue": "This invention by Johannes Gutenberg revolutionized the spread of knowledge.",
+          "answer": "What is the printing press?",
+          "choices": [
+            "Telegraph",
+            "Printing press",
+            "Steam engine",
+            "Telescope"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This battle in 1066 changed the course of English history.",
+          "answer": "What is the Battle of Hastings?",
+          "choices": [
+            "Battle of Agincourt",
+            "Battle of Hastings",
+            "Battle of Waterloo",
+            "Battle of Trafalgar"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This ancient wonder of the world was located in Alexandria, Egypt.",
+          "answer": "What is the Lighthouse of Alexandria?",
+          "choices": [
+            "Pyramids of Giza",
+            "Lighthouse of Alexandria",
+            "Hanging Gardens",
+            "Colossus of Rhodes"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This Russian emperor was known for modernizing Russia and founding St. Petersburg.",
+          "answer": "Who is Peter the Great?",
+          "choices": [
+            "Ivan the Terrible",
+            "Peter the Great",
+            "Catherine the Great",
+            "Nicholas II"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This treaty ended World War I and imposed harsh penalties on Germany.",
+          "answer": "What is the Treaty of Versailles?",
+          "choices": [
+            "Treaty of Paris",
+            "Treaty of Versailles",
+            "Treaty of Ghent",
+            "Treaty of Vienna"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This Chinese dynasty built most of the Great Wall that exists today.",
+          "answer": "What is the Ming Dynasty?",
+          "choices": [
+            "Qing Dynasty",
+            "Ming Dynasty",
+            "Tang Dynasty",
+            "Han Dynasty"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This event in 1773 protested British taxation without representation.",
+          "answer": "What is the Boston Tea Party?",
+          "choices": [
+            "Boston Massacre",
+            "Boston Tea Party",
+            "Stamp Act Congress",
+            "First Continental Congress"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This medieval plague killed an estimated one-third of Europe's population.",
+          "answer": "What is the Black Death?",
+          "choices": [
+            "Spanish Flu",
+            "Black Death",
+            "Justinian Plague",
+            "Antonine Plague"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This code of laws was one of the earliest written legal codes in history.",
+          "answer": "What is the Code of Hammurabi?",
+          "choices": [
+            "Twelve Tables",
+            "Code of Hammurabi",
+            "Justinian Code",
+            "Napoleonic Code"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This peace treaty ended the Thirty Years' War in 1648.",
+          "answer": "What is the Peace of Westphalia?",
+          "choices": [
+            "Peace of Augsburg",
+            "Peace of Westphalia",
+            "Treaty of Utrecht",
+            "Congress of Vienna"
           ],
           "correctChoice": 1
         }
@@ -2549,6 +3449,186 @@
             "Litecoin"
           ],
           "correctChoice": 2
+        },
+        {
+          "value": 100,
+          "clue": "This streaming service is known for series like Stranger Things and The Crown.",
+          "answer": "What is Netflix?",
+          "choices": [
+            "Hulu",
+            "Netflix",
+            "Disney+",
+            "Amazon Prime"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 100,
+          "clue": "This reality show features people surviving on a deserted island.",
+          "answer": "What is Survivor?",
+          "choices": [
+            "The Bachelor",
+            "Survivor",
+            "Big Brother",
+            "The Amazing Race"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 100,
+          "clue": "This superhero movie franchise features characters like Iron Man and Captain America.",
+          "answer": "What is Marvel?",
+          "choices": [
+            "DC Comics",
+            "Marvel",
+            "X-Men",
+            "Transformers"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This singer is known for hits like 'Shake It Off' and 'Anti-Hero'.",
+          "answer": "Who is Taylor Swift?",
+          "choices": [
+            "Ariana Grande",
+            "Taylor Swift",
+            "Billie Eilish",
+            "Dua Lipa"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This video game features a battle royale on an island with building mechanics.",
+          "answer": "What is Fortnite?",
+          "choices": [
+            "Call of Duty",
+            "Fortnite",
+            "Apex Legends",
+            "PUBG"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 200,
+          "clue": "This social media platform is known for disappearing messages and stories.",
+          "answer": "What is Snapchat?",
+          "choices": [
+            "Instagram",
+            "Snapchat",
+            "Twitter",
+            "TikTok"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This HBO series about dragons and kingdoms concluded in 2019.",
+          "answer": "What is Game of Thrones?",
+          "choices": [
+            "The Witcher",
+            "Game of Thrones",
+            "House of the Dragon",
+            "Vikings"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This rapper's real name is Aubrey Drake Graham.",
+          "answer": "Who is Drake?",
+          "choices": [
+            "Kanye West",
+            "Drake",
+            "J. Cole",
+            "Kendrick Lamar"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 300,
+          "clue": "This Korean boy band became global superstars with songs like 'Dynamite'.",
+          "answer": "Who is BTS?",
+          "choices": [
+            "BLACKPINK",
+            "BTS",
+            "Stray Kids",
+            "TWICE"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This entrepreneur founded companies including Tesla and SpaceX.",
+          "answer": "Who is Elon Musk?",
+          "choices": [
+            "Jeff Bezos",
+            "Elon Musk",
+            "Bill Gates",
+            "Mark Zuckerberg"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This artist broke streaming records with the album 'Midnights' in 2022.",
+          "answer": "Who is Taylor Swift?",
+          "choices": [
+            "Beyoncé",
+            "Taylor Swift",
+            "Adele",
+            "Lady Gaga"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 400,
+          "clue": "This cryptocurrency reached an all-time high of nearly $69,000 in 2021.",
+          "answer": "What is Bitcoin?",
+          "choices": [
+            "Ethereum",
+            "Bitcoin",
+            "Dogecoin",
+            "Litecoin"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This influencer became the first person to reach 100 million followers on TikTok.",
+          "answer": "Who is Charli D'Amelio?",
+          "choices": [
+            "Addison Rae",
+            "Charli D'Amelio",
+            "Bella Poarch",
+            "Dixie D'Amelio"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This streaming platform was originally a DVD-by-mail service.",
+          "answer": "What is Netflix?",
+          "choices": [
+            "Hulu",
+            "Netflix",
+            "Blockbuster",
+            "Amazon Prime"
+          ],
+          "correctChoice": 1
+        },
+        {
+          "value": 500,
+          "clue": "This NFT project features cartoon apes and became a cultural phenomenon.",
+          "answer": "What is Bored Ape Yacht Club?",
+          "choices": [
+            "CryptoPunks",
+            "Bored Ape Yacht Club",
+            "Cool Cats",
+            "Pudgy Penguins"
+          ],
+          "correctChoice": 1
         }
       ]
     }

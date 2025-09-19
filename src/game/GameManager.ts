@@ -184,9 +184,10 @@ export class GameManager {
      * Initialize AI players for single player mode
      */
     public initializeAIPlayers(count?: number): void {
-        // Always use exactly 2 AI players for single player (3 total with human)
-        const aiCount = count || 2;
-        const shuffledPersonalities = [...AI_PERSONALITIES].sort(() => Math.random() - 0.5);
+        try {
+            // Always use exactly 2 AI players for single player (3 total with human)
+            const aiCount = count || 2;
+            const shuffledPersonalities = [...AI_PERSONALITIES].sort(() => Math.random() - 0.5);
 
         // Create game actions for AI players
         const gameActions: AIGameActions = {
@@ -231,27 +232,43 @@ export class GameManager {
             });
         }
 
-        logger.info(`Initialized ${aiCount} AI players for single player mode`, {
-            component: 'GameManager'
-        });
+            logger.info(`Initialized ${aiCount} AI players for single player mode`, {
+                component: 'GameManager'
+            });
+        } catch (error) {
+            logger.error('Failed to initialize AI players', error as Error, {
+                component: 'GameManager',
+                aiCount: count
+            });
+            throw error; // Re-throw as this is critical
+        }
     }
 
     /**
      * Setup HYTOPIA event handlers for player join/leave and UI communication
      */
     private setupEventHandlers(): void {
-        // Handle players joining
-        this.world.on('playerJoined', this.handlePlayerJoined.bind(this));
+        try {
+            // Handle players joining
+            this.world.on('playerJoined', this.handlePlayerJoined.bind(this));
 
-        // Handle players leaving
-        this.world.on('playerLeft', this.handlePlayerLeft.bind(this));
+            // Handle players leaving
+            this.world.on('playerLeft', this.handlePlayerLeft.bind(this));
+        } catch (error) {
+            logger.error('Failed to setup event handlers', error as Error, {
+                component: 'GameManager',
+                critical: true
+            });
+            throw error; // Re-throw as this is critical
+        }
     }
 
     /**
      * Handle player joining the game
      */
     private async handlePlayerJoined(player: Player): Promise<void> {
-        console.log(`Player ${player.username} joined the game`);
+        try {
+            console.log(`Player ${player.username} joined the game`);
 
         // Check if we already have 3 players (max for Buzzchain format)
         if (this.players.size >= MAX_PLAYERS) {
@@ -314,18 +331,25 @@ export class GameManager {
         // Send current game state to new player
         await this.broadcastGameState();
         
-        // Send welcome message
-        this.sendPlayerMessage(player, '🐝 Welcome to Buzzchain! The Golden Knowledge Chain awaits...', '#FFD700');
+            // Send welcome message
+            this.sendPlayerMessage(player, '🐝 Welcome to Buzzchain! The Golden Knowledge Chain awaits...', '#FFD700');
+        } catch (error) {
+            logger.error(`Failed to handle player join for ${player?.username}`, error as Error, {
+                component: 'GameManager',
+                playerId: player?.id
+            });
+        }
     }
 
     /**
      * Handle player leaving the game
      */
     private async handlePlayerLeft(player: Player): Promise<void> {
-        console.log(`Player ${player.username} left the game`);
+        try {
+            console.log(`Player ${player.username} left the game`);
 
-        // Release player from their podium
-        this.podiumManager.releasePlayer(player);
+            // Release player from their podium
+            this.podiumManager.releasePlayer(player);
 
         this.players.delete(player.id);
         
@@ -339,12 +363,18 @@ export class GameManager {
             this.assignNextPicker();
         }
         
-        // Check if we need to pause/end the game
-        if (this.players.size < MIN_PLAYERS && this.gamePhase !== GamePhase.LOBBY) {
-            await this.handleInsufficientPlayers();
+            // Check if we need to pause/end the game
+            if (this.players.size < MIN_PLAYERS && this.gamePhase !== GamePhase.LOBBY) {
+                await this.handleInsufficientPlayers();
+            }
+
+            await this.broadcastGameState();
+        } catch (error) {
+            logger.error(`Failed to handle player leave for ${player?.username}`, error as Error, {
+                component: 'GameManager',
+                playerId: player?.id
+            });
         }
-        
-        await this.broadcastGameState();
     }
 
     /**
@@ -494,10 +524,11 @@ export class GameManager {
      * Start the game
      */
     async startGame(): Promise<void> {
-        if (this.gamePhase !== GamePhase.LOBBY) {
-            console.warn('Cannot start game - not in lobby phase');
-            return;
-        }
+        try {
+            if (this.gamePhase !== GamePhase.LOBBY) {
+                console.warn('Cannot start game - not in lobby phase');
+                return;
+            }
 
         const totalPlayers = this.players.size + this.aiPlayers.size;
         if (totalPlayers < MIN_PLAYERS) {
@@ -578,9 +609,18 @@ export class GameManager {
             this.startAIUpdateLoop();
         }
 
-        logger.info('Game started successfully with introduction sequence', {
-            component: 'GameManager'
-        });
+            logger.info('Game started successfully with introduction sequence', {
+                component: 'GameManager'
+            });
+        } catch (error) {
+            logger.error('Failed to start game', error as Error, {
+                component: 'GameManager',
+                critical: true
+            });
+            this.broadcastMessage('❌ Failed to start game. Please try again.');
+            this.gamePhase = GamePhase.LOBBY; // Reset to lobby
+            await this.broadcastGameState();
+        }
     }
 
     /**
