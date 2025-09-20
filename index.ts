@@ -97,10 +97,10 @@ startServer(world => {
       rigidBodyOptions: { type: RigidBodyType.FIXED }
     });
 
-    // Position camera for optimal game show view based on screenshot
+    // Position camera for optimal game show view - elevated wide shot
     cameraMount.spawn(world,
-      { x: 15, y: 5, z: 2 },  // Adjusted camera position for perfect view
-      { x: -0.15, y: 0, z: 0, w: 0.989 }  // Slight downward angle
+      { x: 9, y: 12, z: 5 },  // Elevated position centered above the action
+      { x: -0.3, y: 0, z: 0, w: 0.954 }  // Downward angle to see the entire game area
     );
 
     // Make it invisible
@@ -455,6 +455,14 @@ startServer(world => {
 
           if (gameManager && currentPhase !== GamePhase.INTRO) {
             loadGameBoardUI(player);
+            // Re-establish fixed camera after game board loads
+            setTimeout(() => {
+              setupFixedCameraView(player);
+              logger.info('Fixed camera re-established after game board load', {
+                component: 'CameraSystem',
+                playerId: player.id
+              });
+            }, 1000);
           } else {
             logger.info(`Delaying game board load - currently in intro sequence`, {
               component: 'UISystem',
@@ -505,10 +513,17 @@ startServer(world => {
           loadGameBoardUI(player);
           break;
 
+
         default:
           // Forward other events to GameManager
           if (gameManager) {
             gameManager.handleUIEvent(player, data);
+          } else {
+            logger.warn(`Unhandled UI event: ${data.type}`, {
+              component: 'UISystem',
+              playerId: player.id,
+              eventType: data.type
+            });
           }
       }
     } catch (error) {
@@ -785,9 +800,15 @@ startServer(world => {
       });
     }
 
-    // Send initial game state to the new UI
+    // Send initial game state to the new UI and re-establish camera
     setTimeout(() => {
       gameManager.sendGameStateToPlayer(player);
+      // Ensure fixed camera is maintained after UI load
+      setupFixedCameraView(player);
+      logger.info('Camera re-established in loadGameBoardUI', {
+        component: 'CameraSystem',
+        playerId: player.id
+      });
     }, 500);
   }
 

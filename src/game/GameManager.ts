@@ -74,6 +74,8 @@ export class GameManager {
     private clueTimer: NodeJS.Timeout | null = null;
     private answerTimer: NodeJS.Timeout | null = null;
     private wagerTimer: NodeJS.Timeout | null = null;
+    private gameStateUpdateTimer: NodeJS.Timeout | null = null;
+    private autoHostTimeout: NodeJS.Timeout | null = null;
 
     private gameConfig: GameConfig;
     private gameStartTime: number = 0;
@@ -584,40 +586,113 @@ export class GameManager {
         } catch (error) {
             logger.error('Introduction sequence failed, continuing to game', error as Error, {
                 component: 'GameManager',
-                errorMessage: error.message,
-                errorStack: error.stack
+                errorMessage: (error as Error).message,
+                errorStack: (error as Error).stack
             });
+            // Skip intro on failure to prevent game from getting stuck
+            this.gameConfig.skipIntro = true;
         }
 
         // After intro completes, transition to game
         this.gamePhase = GamePhase.ROUND1;
 
         // Ensure all players and host are facing the correct direction after intro
-        this.podiumManager.ensureProperOrientation();
-        logger.info('Ensured proper orientation after intro sequence', {
-            component: 'GameManager'
-        });
+        try {
+            this.podiumManager.ensureProperOrientation();
+            logger.info('Ensured proper orientation after intro sequence', {
+                component: 'GameManager'
+            });
+        } catch (error) {
+            logger.warn('Failed to ensure proper orientation, continuing game', {
+                component: 'GameManager',
+                error: (error as Error).message
+            });
+        }
 
         // Pick random starting player
-        this.assignRandomPicker();
+        try {
+            this.assignRandomPicker();
+            logger.info('Random picker assigned successfully', {
+                component: 'GameManager',
+                currentPickerId: this.currentPickerId
+            });
+        } catch (error) {
+            logger.error('Failed to assign random picker', error as Error, {
+                component: 'GameManager'
+            });
+            throw error;
+        }
 
         // Reset buzz manager for new game
-        this.buzzManager.reset();
+        try {
+            this.buzzManager.reset();
+            logger.debug('Buzz manager reset successfully', {
+                component: 'GameManager'
+            });
+        } catch (error) {
+            logger.error('Failed to reset buzz manager', error as Error, {
+                component: 'GameManager'
+            });
+            throw error;
+        }
 
-        await this.broadcastGameState();
-        this.broadcastMessage('📺 And now... let the trivia begin!', 'FFD700');
+        try {
+            await this.broadcastGameState();
+            logger.debug('Game state broadcasted successfully', {
+                component: 'GameManager'
+            });
+        } catch (error) {
+            logger.error('Failed to broadcast game state', error as Error, {
+                component: 'GameManager'
+            });
+            throw error;
+        }
+
+        try {
+            this.broadcastMessage('📺 And now... let the trivia begin!', 'FFD700');
+            logger.debug('Welcome message broadcasted', {
+                component: 'GameManager'
+            });
+        } catch (error) {
+            logger.error('Failed to broadcast welcome message', error as Error, {
+                component: 'GameManager'
+            });
+            // Don't throw for message failures
+        }
 
         // Now that intro is complete, signal players to load game board
-        this.loadGameBoardForAllPlayers();
+        try {
+            this.loadGameBoardForAllPlayers();
+            logger.info('Game board loaded for all players', {
+                component: 'GameManager'
+            });
+        } catch (error) {
+            logger.error('Failed to load game board for players', error as Error, {
+                component: 'GameManager'
+            });
+            throw error;
+        }
 
         // Start AI player update loop if in single player mode
         if (this.gameConfig.singlePlayerMode && this.aiPlayers.size > 0) {
-            this.startAIUpdateLoop();
+            try {
+                this.startAIUpdateLoop();
+                logger.info('AI update loop started', {
+                    component: 'GameManager'
+                });
+            } catch (error) {
+                logger.error('Failed to start AI update loop', error as Error, {
+                    component: 'GameManager'
+                });
+                // Don't throw for AI loop failures
+            }
         }
 
-            logger.info('Game started successfully with introduction sequence', {
-                component: 'GameManager'
-            });
+        logger.info('Game started successfully', {
+            component: 'GameManager',
+            currentPickerId: this.currentPickerId,
+            gamePhase: this.gamePhase
+        });
         } catch (error) {
             logger.error('Failed to start game', error as Error, {
                 component: 'GameManager',
@@ -1421,6 +1496,13 @@ export class GameManager {
         const humanPlayerIds = Array.from(this.players.keys());
         const aiPlayerIds = Array.from(this.aiPlayers.keys());
 
+        logger.info('Assigning random picker', {
+            component: 'GameManager',
+            humanPlayerIds,
+            aiPlayerIds,
+            singlePlayerMode: this.gameConfig.singlePlayerMode
+        });
+
         // In single player mode, always start with the human player
         if (this.gameConfig.singlePlayerMode && humanPlayerIds.length > 0) {
             this.currentPickerId = humanPlayerIds[0];
@@ -1434,6 +1516,18 @@ export class GameManager {
             if (allPlayerIds.length > 0) {
                 const randomIndex = Math.floor(Math.random() * allPlayerIds.length);
                 this.currentPickerId = allPlayerIds[randomIndex];
+                logger.info('Assigned random picker', {
+                    component: 'GameManager',
+                    pickerId: this.currentPickerId,
+                    allPlayerIds,
+                    randomIndex
+                });
+            } else {
+                logger.error('No players available to assign as picker', {
+                    component: 'GameManager',
+                    humanPlayerIds,
+                    aiPlayerIds
+                });
             }
         }
     }

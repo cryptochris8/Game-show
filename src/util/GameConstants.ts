@@ -74,16 +74,16 @@ export const AUDIO = {
 
 // Camera Configuration
 export const CAMERA = {
-    DEFAULT_FOV: 85,
-    DEFAULT_ZOOM: 1.2,
+    DEFAULT_FOV: 75,
+    DEFAULT_ZOOM: 1.0,
     INTRO_FOV: 70,
     CLOSEUP_FOV: 50,
     WIDE_FOV: 90,
     MIN_ZOOM: 0.5,
     MAX_ZOOM: 2.0,
-    // Fixed camera position for game view
-    GAME_VIEW_POSITION: { x: 15, y: 5, z: 2 },
-    GAME_VIEW_TARGET: { x: 9, y: 3, z: -5 },
+    // Fixed camera position for game view - elevated wide shot of entire game area
+    GAME_VIEW_POSITION: { x: 9, y: 12, z: 5 },
+    GAME_VIEW_TARGET: { x: 9, y: 4, z: -8 },
     // Host camera position
     HOST_VIEW_POSITION: { x: 9, y: 6, z: 3 },
     HOST_VIEW_TARGET: { x: 9, y: 4, z: -1 },

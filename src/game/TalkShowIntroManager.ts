@@ -4,6 +4,7 @@
 import { Player, World, Entity, PlayerCameraMode, PlayerManager, RigidBodyType } from 'hytopia';
 import { logger } from '../util/Logger';
 import { PodiumManager, PodiumPosition } from './PodiumManager';
+import { CAMERA } from '../util/GameConstants';
 
 export interface IntroSequenceOptions {
     skipIntro?: boolean;
@@ -947,10 +948,11 @@ export class TalkShowIntroManager {
             this.currentPlayers.forEach(player => {
                 try {
                     // Return to wide game show shot
-                    player.camera.setAttachedToPosition({ x: 15, y: 6, z: 1 });
-                    player.camera.setTrackedPosition({ x: 9, y: 4, z: -8 }); // Center of all podiums
-                    player.camera.setFov(75); // Wide angle to see all contestants
-                    player.camera.setZoom(1.0); // Normal zoom
+                    // Use the updated camera constants for proper game show view
+                    player.camera.setAttachedToPosition(CAMERA.GAME_VIEW_POSITION);
+                    player.camera.setTrackedPosition(CAMERA.GAME_VIEW_TARGET);
+                    player.camera.setFov(CAMERA.DEFAULT_FOV);
+                    player.camera.setZoom(CAMERA.DEFAULT_ZOOM);
 
                     logger.debug(`Camera returned to wide shot for player ${player.username}`, {
                         component: 'TalkShowIntroManager',

@@ -377,10 +377,11 @@ export class PodiumManager {
                 1 - 2 * (rotation.y * rotation.y + rotation.z * rotation.z)
             );
 
-            // Set camera to first-person mode for proper control
-            player.camera.setMode(PlayerCameraMode.FIRST_PERSON);
-            player.camera.setOffset({ x: 0, y: 0.4, z: 0 }); // Head height offset
-            player.camera.setForwardOffset(0.1); // Slightly forward for better view
+            // DON'T set camera mode - preserve the fixed camera setup from main server
+            // The fixed camera mount provides the optimal game show perspective
+            // player.camera.setMode(PlayerCameraMode.FIRST_PERSON); // REMOVED - was overriding fixed camera
+            // player.camera.setOffset({ x: 0, y: 0.4, z: 0 }); // REMOVED
+            // player.camera.setForwardOffset(0.1); // REMOVED
 
             // Note: In Hytopia SDK, camera orientation is typically controlled by player input
             // The entity rotation will visually show the correct facing direction
@@ -442,26 +443,44 @@ export class PodiumManager {
                     });
                 }
             } else {
-                // Check for AI entities
-                const aiEntities = this.world.entityManager.getAllNonPlayerEntities();
-                const aiEntity = aiEntities.find(e => e.id?.toString() === playerId || e.name === playerId);
+                // Check for AI entities using available world APIs
+                try {
+                    // Try to find AI entity using world entity methods
+                    const allEntities = this.world.entities || [];
+                    const aiEntity = allEntities.find(e =>
+                        e.id?.toString() === playerId ||
+                        e.name === playerId ||
+                        (e as any).aiPlayerId === playerId
+                    );
 
-                if (aiEntity && aiEntity.isSpawned) {
-                    try {
-                        aiEntity.setRotation(position.rotation);
-                        logger.debug('Corrected AI orientation', {
+                    if (aiEntity && aiEntity.isSpawned) {
+                        try {
+                            aiEntity.setRotation(position.rotation);
+                            logger.debug('Corrected AI orientation', {
+                                component: 'PodiumManager',
+                                aiId: playerId,
+                                podiumNumber,
+                                rotation: position.rotation
+                            });
+                        } catch (error) {
+                            logger.warn('Failed to correct AI orientation', {
+                                component: 'PodiumManager',
+                                aiId: playerId,
+                                error: (error as Error).message
+                            });
+                        }
+                    } else {
+                        logger.warn('AI entity not found for orientation correction', {
                             component: 'PodiumManager',
                             aiId: playerId,
-                            podiumNumber,
-                            rotation: position.rotation
-                        });
-                    } catch (error) {
-                        logger.warn('Failed to correct AI orientation', {
-                            component: 'PodiumManager',
-                            aiId: playerId,
-                            error: (error as Error).message
+                            podiumNumber
                         });
                     }
+                } catch (error) {
+                    logger.error('Error accessing world entities for AI orientation', error as Error, {
+                        component: 'PodiumManager',
+                        playerId
+                    });
                 }
             }
         });
