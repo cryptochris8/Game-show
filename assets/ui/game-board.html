@@ -71,7 +71,9 @@
   .round-info {
     text-align: center;
     position: absolute;
-    left: 2rem;
+    top: 1rem;
+    right: 25%;
+    transform: translateX(50%);
   }
 
   .round-label {
@@ -759,7 +761,7 @@
       <div class="round-label">Current Round</div>
       <div class="round-name" id="roundName">ROUND 1</div>
     </div>
-    <div class="picker-info" style="flex: 1; text-align: center; color: var(--accent-yellow);">
+    <div class="picker-info" style="position: absolute; left: 25%; top: 1rem; transform: translateX(-50%); text-align: center; color: var(--accent-blue);">
       <div class="picker-label" style="font-size: 0.8rem; opacity: 0.8;">Current Picker</div>
       <div class="picker-name" id="currentPickerName" style="font-size: 1.2rem; font-weight: bold;">---</div>
     </div>
