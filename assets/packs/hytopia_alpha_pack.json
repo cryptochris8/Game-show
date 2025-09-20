@@ -1,0 +1,420 @@
+{
+  "packId": "hytopia-alpha-001",
+  "title": "Hytopia Alpha Trivia Pack",
+  "description": "Special alpha release trivia pack featuring Hytopia platform knowledge for the community",
+  "version": "1.0.0",
+  "categories": [
+    {
+      "name": "HYTOPIA PLATFORM & ARCHITECTURE",
+      "clues": [
+        {
+          "clue": "What is the primary architectural advantage of Hytopia's server-authoritative design?",
+          "answer": "Players cannot execute hacks like teleporting or position spoofing",
+          "choices": [
+            "Faster client rendering performance",
+            "Players cannot execute hacks like teleporting or position spoofing",
+            "Reduced server hosting costs",
+            "Easier mobile development"
+          ],
+          "correctChoice": 1,
+          "value": 100
+        },
+        {
+          "clue": "What technology stack does Hytopia use for high-performance server computation?",
+          "answer": "Rust compiled to WebAssembly",
+          "choices": [
+            "Node.js with V8 engine",
+            "Python with NumPy",
+            "Rust compiled to WebAssembly",
+            "C++ with OpenGL"
+          ],
+          "correctChoice": 2,
+          "value": 200
+        },
+        {
+          "clue": "How do players access Hytopia games?",
+          "answer": "Simply by clicking a link in their browser",
+          "choices": [
+            "Download and install a desktop application",
+            "Simply by clicking a link in their browser",
+            "Purchase and download from an app store",
+            "Install a browser extension first"
+          ],
+          "correctChoice": 1,
+          "value": 300
+        },
+        {
+          "clue": "What protocol is Hytopia planning to support for next-generation networking?",
+          "answer": "QUIC",
+          "choices": [
+            "HTTP/3",
+            "WebRTC",
+            "QUIC",
+            "gRPC"
+          ],
+          "correctChoice": 2,
+          "value": 400
+        },
+        {
+          "clue": "What graphics library does Hytopia's browser client use for 3D rendering?",
+          "answer": "Three.js with WebGL2 optimizations",
+          "choices": [
+            "Babylon.js with WebGL",
+            "Three.js with WebGL2 optimizations",
+            "Unity WebGL exports",
+            "Custom WebAssembly renderer"
+          ],
+          "correctChoice": 1,
+          "value": 500
+        }
+      ]
+    },
+    {
+      "name": "SDK DEVELOPMENT BASICS",
+      "clues": [
+        {
+          "clue": "Which programming language is used for Hytopia's scripting layer?",
+          "answer": "TypeScript/JavaScript",
+          "choices": [
+            "Python",
+            "C++",
+            "TypeScript/JavaScript",
+            "Rust"
+          ],
+          "correctChoice": 2,
+          "value": 100
+        },
+        {
+          "clue": "What are the two main types of entities you can create in Hytopia?",
+          "answer": "Block Entities and Model Entities",
+          "choices": [
+            "Static Entities and Dynamic Entities",
+            "Player Entities and NPC Entities",
+            "Block Entities and Model Entities",
+            "Physics Entities and Visual Entities"
+          ],
+          "correctChoice": 2,
+          "value": 200
+        },
+        {
+          "clue": "What must you call on an entity before it appears in the game world?",
+          "answer": ".spawn()",
+          "choices": [
+            ".create()",
+            ".spawn()",
+            ".initialize()",
+            ".activate()"
+          ],
+          "correctChoice": 1,
+          "value": 300
+        },
+        {
+          "clue": "What file format does Hytopia use for 3D model entities?",
+          "answer": "GLTF (.gltf)",
+          "choices": [
+            "OBJ (.obj)",
+            "FBX (.fbx)",
+            "GLTF (.gltf)",
+            "3DS (.3ds)"
+          ],
+          "correctChoice": 2,
+          "value": 400
+        },
+        {
+          "clue": "What callback function is provided when you start a Hytopia server?",
+          "answer": "startServer(world => {})",
+          "choices": [
+            "initGame(server => {})",
+            "startServer(world => {})",
+            "createWorld(game => {})",
+            "launchHytopia(instance => {})"
+          ],
+          "correctChoice": 1,
+          "value": 500
+        }
+      ]
+    },
+    {
+      "name": "GAME PUBLISHING & DEPLOYMENT",
+      "clues": [
+        {
+          "clue": "What command creates a package for uploading to the Hytopia platform?",
+          "answer": "hytopia package",
+          "choices": [
+            "hytopia build",
+            "hytopia deploy",
+            "hytopia package",
+            "hytopia publish"
+          ],
+          "correctChoice": 2,
+          "value": 100
+        },
+        {
+          "clue": "What free service does Hytopia recommend for multiplayer testing with friends?",
+          "answer": "cloudflared tunneling",
+          "choices": [
+            "ngrok tunneling",
+            "cloudflared tunneling",
+            "Heroku hosting",
+            "GitHub Pages"
+          ],
+          "correctChoice": 1,
+          "value": 200
+        },
+        {
+          "clue": "What environment variable disables SSL for local tunnel testing?",
+          "answer": "NODE_ENV=production",
+          "choices": [
+            "SSL_DISABLED=true",
+            "NODE_ENV=production",
+            "TUNNEL_MODE=true",
+            "HYTOPIA_SSL=false"
+          ],
+          "correctChoice": 1,
+          "value": 300
+        },
+        {
+          "clue": "Where do you manage your published games on Hytopia?",
+          "answer": "The Create Portal at hytopia.com/create",
+          "choices": [
+            "The Developer Dashboard at hytopia.com/dev",
+            "The Create Portal at hytopia.com/create",
+            "The Admin Panel at hytopia.com/admin",
+            "The Studio Interface at hytopia.com/studio"
+          ],
+          "correctChoice": 1,
+          "value": 400
+        },
+        {
+          "clue": "What can friends do to join your game during testing?",
+          "answer": "Use the '...' menu next to your name in their friends list",
+          "choices": [
+            "Send you a direct message requesting access",
+            "Use the '...' menu next to your name in their friends list",
+            "Enter a special testing code you provide",
+            "Wait for an automatic game invitation"
+          ],
+          "correctChoice": 1,
+          "value": 500
+        }
+      ]
+    },
+    {
+      "name": "PHYSICS & ENTITIES",
+      "clues": [
+        {
+          "clue": "What is the default rigid body type for entities in Hytopia?",
+          "answer": "RigidBodyType.DYNAMIC",
+          "choices": [
+            "RigidBodyType.STATIC",
+            "RigidBodyType.DYNAMIC",
+            "RigidBodyType.KINEMATIC",
+            "RigidBodyType.FIXED"
+          ],
+          "correctChoice": 1,
+          "value": 100
+        },
+        {
+          "clue": "What should you enable to prevent fast-moving objects from tunneling through walls?",
+          "answer": "Continuous Collision Detection (CCD)",
+          "choices": [
+            "High-frequency physics updates",
+            "Continuous Collision Detection (CCD)",
+            "Enhanced rigid body mass",
+            "Collision group filtering"
+          ],
+          "correctChoice": 1,
+          "value": 200
+        },
+        {
+          "clue": "What type of rigid body is unaffected by external forces but can affect other objects?",
+          "answer": "KINEMATIC_VELOCITY",
+          "choices": [
+            "FIXED",
+            "DYNAMIC",
+            "KINEMATIC_VELOCITY",
+            "STATIC"
+          ],
+          "correctChoice": 2,
+          "value": 300
+        },
+        {
+          "clue": "What are colliders used for in Hytopia physics?",
+          "answer": "Shapes that can collide with other shapes or detect object entry/exit",
+          "choices": [
+            "Visual mesh representations only",
+            "Shapes that can collide with other shapes or detect object entry/exit",
+            "Audio trigger zones exclusively",
+            "Lighting calculation boundaries"
+          ],
+          "correctChoice": 1,
+          "value": 400
+        },
+        {
+          "clue": "What physics feature allows you to cast an invisible line to detect intersections?",
+          "answer": "Raycasts",
+          "choices": [
+            "Collision queries",
+            "Raycasts",
+            "Physics probes",
+            "Intersection tests"
+          ],
+          "correctChoice": 1,
+          "value": 500
+        }
+      ]
+    },
+    {
+      "name": "TOOLS & WORKFLOW",
+      "clues": [
+        {
+          "clue": "What command shows all available Hytopia CLI commands?",
+          "answer": "hytopia help",
+          "choices": [
+            "hytopia --help",
+            "hytopia help",
+            "hytopia commands",
+            "hytopia info"
+          ],
+          "correctChoice": 1,
+          "value": 100
+        },
+        {
+          "clue": "What key toggles debug info panels in the Hytopia client?",
+          "answer": "Tilde (~) key",
+          "choices": [
+            "F12 key",
+            "Tab key",
+            "Tilde (~) key",
+            "Escape key"
+          ],
+          "correctChoice": 2,
+          "value": 200
+        },
+        {
+          "clue": "How do you initialize a new project using the 'zombies-fps' template?",
+          "answer": "hytopia init --template zombies-fps",
+          "choices": [
+            "hytopia create zombies-fps",
+            "hytopia init --template zombies-fps",
+            "hytopia new --type zombies-fps",
+            "hytopia template zombies-fps"
+          ],
+          "correctChoice": 1,
+          "value": 300
+        },
+        {
+          "clue": "What query parameter keeps debug panels visible through hot reloads?",
+          "answer": "?debug",
+          "choices": [
+            "?dev",
+            "?debug",
+            "?info",
+            "?panels"
+          ],
+          "correctChoice": 1,
+          "value": 400
+        },
+        {
+          "clue": "What class provides native error logging with complete stack traces?",
+          "answer": "ErrorHandler",
+          "choices": [
+            "Logger",
+            "ErrorHandler",
+            "DebugHelper",
+            "TraceManager"
+          ],
+          "correctChoice": 1,
+          "value": 500
+        }
+      ]
+    },
+    {
+      "name": "HYTOPIA HUMOR",
+      "clues": [
+        {
+          "clue": "Which Hytopia team member has the best hair?",
+          "answer": "Rich",
+          "choices": [
+            "Temp",
+            "Rich",
+            "Honk",
+            "Ark"
+          ],
+          "correctChoice": 1,
+          "value": 100
+        },
+        {
+          "clue": "Who posts the most in the Hytopia Discord?",
+          "answer": "Al Yeehaw Games",
+          "choices": [
+            "Ark",
+            "Al Yeehaw Games",
+            "Ashoka",
+            "Shrimp"
+          ],
+          "correctChoice": 1,
+          "value": 200
+        },
+        {
+          "clue": "What asset from the Hytopia SDK would you use to defend yourself?",
+          "answer": "Baguette",
+          "choices": [
+            "Sword",
+            "Shears",
+            "Baguette",
+            "Feather"
+          ],
+          "correctChoice": 2,
+          "value": 300
+        },
+        {
+          "clue": "Which of the following is your most favorite token ever?",
+          "answer": "$HYBUX",
+          "choices": [
+            "$WRLD ETH",
+            "$TOPIA ETH",
+            "$WRLD Polygon Matic",
+            "$HYBUX"
+          ],
+          "correctChoice": 3,
+          "value": 400
+        },
+        {
+          "clue": "What does Steal My Brainrot even mean?",
+          "answer": "Claude code combined with cursor still had no damn clue",
+          "choices": [
+            "Claude code combined with cursor still had no damn clue",
+            "Sky Garden is okay I guess",
+            "wen moon?",
+            "Voxfire is pretty badass"
+          ],
+          "correctChoice": 0,
+          "value": 500
+        }
+      ]
+    }
+  ],
+  "dailyDoubles": [
+    {
+      "category": 1,
+      "index": 3
+    },
+    {
+      "category": 3,
+      "index": 2
+    }
+  ],
+  "finalRound": {
+    "category": "HYTOPIA ULTIMATE",
+    "clue": "This decentralized gaming platform aims to compete with Roblox and Minecraft by offering browser-based multiplayer games with server-authoritative architecture.",
+    "answer": "What is Hytopia?",
+    "choices": [
+      "Roblox",
+      "Minecraft",
+      "Hytopia",
+      "Fortnite"
+    ],
+    "correctChoice": 2
+  }
+}

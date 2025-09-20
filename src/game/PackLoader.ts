@@ -120,7 +120,7 @@ export class PackLoader {
      * Load the default demo pack
      */
     static async loadDefaultPack(): Promise<LoadResult> {
-        return this.loadPackByName('trivia_pack');
+        return this.loadPackByName('hytopia_alpha_pack');
     }
 
     /**

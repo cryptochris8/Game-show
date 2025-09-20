@@ -29,7 +29,7 @@ import { AnswerNormalizer } from './Normalize';
 import { logger } from '../util/Logger';
 import { TimerManager } from '../util/TimerManager';
 import { InputValidator, rateLimit } from '../util/InputValidator';
-import { TIMING, GAME_CONSTANTS, SCORES, BOARD, ERROR_MESSAGES, SUCCESS_MESSAGES } from '../util/GameConstants';
+import { TIMING, GAME_CONSTANTS, SCORES, BOARD, ERROR_MESSAGES, SUCCESS_MESSAGES, DEFAULT_CONFIG } from '../util/GameConstants';
 import AIPlayer, { AI_PERSONALITIES, AIPersonality, AIGameActions } from './AIPlayer';
 import PodiumManager from './PodiumManager';
 import TalkShowIntroManager from './TalkShowIntroManager';
@@ -83,7 +83,7 @@ export class GameManager {
     constructor(world: World, config: Partial<GameConfig> = {}) {
         this.world = world;
         this.gameConfig = {
-            packName: 'trivia_pack',
+            packName: DEFAULT_CONFIG.PACK_NAME,
             autoStart: true,
             autoHostDelay: TIMING.AUTO_HOST_DELAY_MS,
             singlePlayerMode: false,
@@ -541,7 +541,7 @@ export class GameManager {
         console.log('🐝 Starting Buzzchain - Buzzy Bee is ready to host!');
         
         // Load the trivia pack
-        const packResult = await PackLoader.loadDefaultPack();
+        const packResult = await PackLoader.loadPackByName(this.gameConfig.packName);
         if (!packResult.success || !packResult.boardData) {
             console.error('Failed to load trivia pack:', packResult.error);
             this.broadcastMessage('Failed to load trivia pack. Please try again.');
@@ -1301,7 +1301,7 @@ export class GameManager {
         this.gamePhase = GamePhase.FINAL;
         
         // Load pack for Final Round data
-        const packResult = await PackLoader.loadDefaultPack();
+        const packResult = await PackLoader.loadPackByName(this.gameConfig.packName);
         if (!packResult.success || !packResult.finalRound) {
             console.error('Failed to load Final Round data');
             return;

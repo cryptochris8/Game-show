@@ -162,7 +162,7 @@ export const SUCCESS_MESSAGES = {
 
 // Default Configuration
 export const DEFAULT_CONFIG = {
-    PACK_NAME: 'trivia_pack',
+    PACK_NAME: 'hytopia_alpha_pack',
     AUTO_START: true,
     SKIP_INTRO: false,
     DEBUG_MODE: false,

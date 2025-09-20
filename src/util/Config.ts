@@ -91,9 +91,16 @@ export class ConfigManager {
    * Load configuration from environment variables
    */
   public loadFromEnvironment(): void {
+    console.log('🔧 Loading config from environment...');
+    console.log('🔧 Default packName:', this.gameConfig.packName);
+    console.log('🔧 BUZZCHAIN_PACK_NAME env var:', process.env.BUZZCHAIN_PACK_NAME);
+
     // Game config from env
     if (process.env.BUZZCHAIN_PACK_NAME) {
       this.gameConfig.packName = process.env.BUZZCHAIN_PACK_NAME;
+      console.log('🔧 PackName overridden by env var to:', this.gameConfig.packName);
+    } else {
+      console.log('🔧 Using default packName:', this.gameConfig.packName);
     }
 
     if (process.env.BUZZCHAIN_AUTO_START) {
@@ -179,7 +186,7 @@ export class ConfigManager {
    */
   private getDefaultGameConfig(): GameConfig {
     return {
-      packName: 'trivia_pack',
+      packName: 'hytopia_alpha_pack',
       autoStart: true,
       autoHostDelay: 15000,
       minPlayers: 2,
